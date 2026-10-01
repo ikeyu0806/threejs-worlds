@@ -1,25 +1,16 @@
 {
-  "name": "afterlight-city",
+  "name": "threejs-worlds",
   "version": "1.0.0",
-  "description": "A rainy cyberpunk city in React and Three.js",
+  "description": "A collection of independent Three.js worlds",
   "private": true,
-  "scripts": {
-    "dev": "vite --host 0.0.0.0",
-    "build": "vite build",
-    "preview": "vite preview --host 0.0.0.0"
-  },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "type": "module",
-  "dependencies": {
-    "lucide-react": "^1.49.0",
-    "react": "^19.3.0",
-    "react-dom": "^19.3.0",
-    "three": "^0.186.1"
-  },
-  "devDependencies": {
-    "@vitejs/plugin-react": "^6.1.1",
-    "vite": "^8.3.1"
+  "workspaces": ["worlds/*"],
+  "scripts": {
+    "dev": "npm run dev --workspace=@threejs-worlds/cyberpunk --",
+    "dev:cyberpunk": "npm run dev --workspace=@threejs-worlds/cyberpunk --",
+    "build": "npm run build --workspaces",
+    "build:cyberpunk": "npm run build --workspace=@threejs-worlds/cyberpunk --",
+    "preview": "npm run preview --workspace=@threejs-worlds/cyberpunk --",
+    "preview:cyberpunk": "npm run preview --workspace=@threejs-worlds/cyberpunk --"
   }
 }
