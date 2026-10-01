@@ -36,7 +36,8 @@ try {
       root: world.directory,
       configFile: resolve(world.directory, 'vite.config.js'),
       base: world.base,
-      server: { middlewareMode: true, hmr: { server: httpServer, path: `__hmr-${world.id}` } },
+      appType: 'mpa',
+      server: { middlewareMode: true, ws: { server: httpServer, path: `__hmr-${world.id}` } },
     }));
   }
   await new Promise((accept, reject) => {
