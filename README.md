@@ -1,24 +1,21 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。現在は [cyberpunk](./worlds/cyberpunk/README.md) のみ実装しています。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md) と [水族館](./worlds/aquarium/README.md) へ移動できます。
 
 ## 構成
 
 ```text
 worlds/
-  cyberpunk/
-    src/             # ワールドの実装
-    public/          # 素材・モデル
-    artifacts/       # スクリーンショット
-    index.html
-    vite.config.js
-    package.json
-    README.md
-package.json         # ワールド共通の実行コマンド
-package-lock.json    # 依存パッケージのバージョン管理
+  entrance/          # ORBIT：各ワールドの入口
+  cyberpunk/         # AFTERLIGHT：雨とネオンの街
+  aquarium/          # PELAGIC：静かな海の水族館
+shared/              # ワールド一覧・描画・操作の共通処理
+scripts/             # まとめて起動・ビルド結果の集約
+package.json
+package-lock.json
 ```
 
-npm workspaces を使い、各ワールドが依存パッケージとビルド設定を持ちます。ビルド結果は各ワールドの `dist/` に出力します。
+npm workspaces を使い、各ワールドがソース・素材・資料・ビルド設定を持ちます。Node.js 22.12 以降が必要です。
 
 ## 起動・ビルド
 
@@ -26,17 +23,27 @@ npm workspaces を使い、各ワールドが依存パッケージとビルド�
 
 ```sh
 npm install
-npm run dev                 # cyberpunk を起動します
+npm run dev                 # 全ワールドを同じ URL 配下で起動します
 npm run build               # 全ワールドをビルドします
-npm run preview             # cyberpunk のビルド結果を確認します
+npm run preview             # ビルド結果を確認します
 ```
 
-cyberpunk を指定する場合は、`dev:cyberpunk`、`build:cyberpunk`、`preview:cyberpunk` も使えます。
+開発時は `http://localhost:5173`、プレビュー時は `http://localhost:4173` を開いてください。
+
+| ワールド | パス |
+| --- | --- |
+| エントランス | `/` |
+| cyberpunk | `/cyberpunk/` |
+| 水族館 | `/aquarium/` |
+
+各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
+
+個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
 
 ## 今後の追加方針
 
-`worlds/entrance/` を各ワールドへの入口となるエントランスとして追加する予定です。砂漠やオーロラのある雪のワールドも同じ階層に追加します。これらはまだ実装していません。
+砂漠やオーロラのある雪のワールドも同じ階層に追加する予定です。
 
-新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
+新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` に追加します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
 
-個別のワールドは `npm run dev --workspace=worlds/<ワールド名>` で起動できます。エントランス実装時に、既定の起動先とワールド間の移動方法を整えます。
+水族館は外部モデルなしで動作します。追加モデルの制作仕様は [こちら](./worlds/aquarium/MODEL_BRIEF.md) に記載しています。

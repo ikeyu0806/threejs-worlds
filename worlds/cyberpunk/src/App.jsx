@@ -121,7 +121,7 @@ export default function App() {
         <span>AFTERLIGHT<span className="brand-sub">WORLD EXPLORER</span></span>
       </button>
       <nav className="top-nav" aria-label="メイン"><button className="active" onClick={() => setDialog(null)}>探索<span>EXPLORE</span></button><button onClick={() => setDialog('world')}>世界観<span>THE WORLD</span></button><button onClick={() => setDialog('references')}>参考イメージ<span>INSPIRATION</span><ArrowUpRight size={12} /></button></nav>
-      <div className="header-right"><span className="connection"><i /> LIVE WORLD</span><span className="header-divider" /><button className="icon-button" aria-label="表示設定" onClick={() => setDialog('settings')}><Settings2 size={18} /></button></div>
+      <div className="header-right"><a className="world-return" href="/" aria-label="エントランスへ戻る"><ArrowLeft size={15} /><span>エントランス</span></a><span className="connection"><i /> LIVE WORLD</span><span className="header-divider" /><button className="icon-button" aria-label="表示設定" onClick={() => setDialog('settings')}><Settings2 size={18} /></button></div>
     </header>
 
     <aside className="district-label hud"><span className="small-line" /><span>九龍北区</span><span className="mono">KOWLOON NORTH / 2086</span></aside>

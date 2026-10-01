@@ -8,10 +8,10 @@ React・Vite・Three.js で作った、雨とネオンのサイバーパンク�
 
 ```sh
 npm install
-npm run dev:cyberpunk
+npm run dev
 ```
 
-表示された URL を開いてください。通常は `http://localhost:5173` です。`npm run build:cyberpunk` でビルドし、`npm run preview:cyberpunk` で確認できます。
+`http://localhost:5173/cyberpunk/` を開いてください。ヘッダーの戻り口からエントランスへ移動できます。`npm run build:cyberpunk` で個別にビルドできます。
 
 ## 操作
 

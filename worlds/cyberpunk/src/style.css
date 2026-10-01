@@ -30,6 +30,8 @@ button:hover { color: var(--mint); }
 .top-nav .active { color: #edf6ee; }
 .top-nav .active::after { position: absolute; content: ''; width: 26px; height: 2px; background: var(--mint); bottom: -1px; left: 0; box-shadow: 0 0 12px #a4efd945; }
 .header-right { display: flex; gap: 22px; align-items: center; }
+.world-return { display: flex; align-items: center; gap: 8px; padding: 10px 0; color: #aec5be; font-size: 10px; white-space: nowrap; }
+.world-return:focus-visible { outline: 2px solid var(--mint); outline-offset: 4px; }
 .connection { display: flex; align-items: center; gap: 9px; font: 9px monospace; letter-spacing: 1.4px; color: #aec5be; }
 .connection i { width: 5px; height: 5px; border-radius: 100%; background: var(--mint); box-shadow: 0 0 10px #a4efd981; }
 .header-divider, .toolbar-divider { display: block; width: 1px; height: 17px; background: var(--line); }
@@ -168,7 +170,8 @@ select { width: 100%; padding: 12px; background: #152b2c; border: 1px solid #749
   .header { inset-inline: 20px; height: 78px; }
   .brand { font-size: 14px; letter-spacing: 2px; gap: 9px; } .brand svg { width: 22px; } .brand-sub { font-size: 6px; letter-spacing: 2.3px; }
   .top-nav { margin-left: auto; gap: 16px; margin-right: 10px; } .top-nav button { font-size: 9px; } .top-nav button:first-child, .top-nav button:last-child { display: none; }
-  .header-right { gap: 0; } .header-right .icon-button { padding-right: 0; }
+  .header-right { gap: 10px; } .header-right .icon-button { padding-right: 0; }
+  .world-return { padding: 10px 4px; } .world-return span { display: none; }
   .district-label { left: 22px; top: 102px; gap: 8px; font-size: 10px; letter-spacing: 2px; } .district-label .mono { font-size: 6px; letter-spacing: 1px; } .small-line { width: 12px; }
   .weather { top: 99px; right: 21px; gap: 7px; } .weather-line, .weather-code { display: none; } .weather div > span { font-size: 16px; } .weather small { font-size: 7px; }
   .hero { left: 27px; bottom: 203px; width: 280px; } h1 { font-size: 84px; } .hero-kicker { font-size: 7px; letter-spacing: 1.5px; margin-bottom: 16px; }
