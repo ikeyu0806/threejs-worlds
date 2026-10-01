@@ -26,6 +26,7 @@ npm install
 npm run dev                 # 全ワールドを同じ URL 配下で起動します
 npm run build               # 全ワールドをビルドします
 npm run preview             # ビルド結果を確認します
+npm test                    # ビルド後に各ワールドの配信を確認します
 ```
 
 開発時は `http://localhost:5173`、プレビュー時は `http://localhost:4173` を開いてください。
