@@ -29,4 +29,9 @@ export const worlds = [
     description: '看板の谷間を、ゆっくり歩く。',
     href: '/akihabara/', color: '#f0b429', category: 'CITY / ELECTRIC',
   },
+  {
+    id: 'shinjuku', number: '07', title: 'SHINJUKU', subtitle: '新宿',
+    description: '塔の足元で、夜が濃くなる。',
+    href: '/shinjuku/', color: '#7eb6ff', category: 'CITY / NIGHT',
+  },
 ];

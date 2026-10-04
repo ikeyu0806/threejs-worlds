@@ -1,6 +1,6 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md)、[渋谷](./worlds/shibuya/README.md)、[秋葉原](./worlds/akihabara/README.md) へ移動できます。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md)、[渋谷](./worlds/shibuya/README.md)、[秋葉原](./worlds/akihabara/README.md)、[新宿](./worlds/shinjuku/README.md) へ移動できます。
 
 ## 公開ワールド
 
@@ -15,6 +15,7 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | [古都（HEIAN）](https://threejs-worlds.pages.dev/heian/) | 朝霧のなか、朱雀門と庭の池を歩く古都です。 |
 | [渋谷（SCRAMBLE）](https://threejs-worlds.pages.dev/shibuya/) | 夕方のスクランブル交差点です。 |
 | [秋葉原（AKIBA）](https://threejs-worlds.pages.dev/akihabara/) | 縦看板が並ぶ電気街です。 |
+| [新宿（SHINJUKU）](https://threejs-worlds.pages.dev/shinjuku/) | 夜の大通りと都庁のツインタワーです。 |
 
 ## 構成
 
@@ -27,6 +28,7 @@ worlds/
   heian/             # HEIAN：朝霧の古都
   shibuya/           # SCRAMBLE：渋谷の交差点
   akihabara/         # AKIBA：秋葉原の電気街
+  shinjuku/          # SHINJUKU：新宿の夜の塔
 shared/              # ワールド一覧・描画・操作の共通処理
 scripts/             # まとめて起動・ビルド結果の集約
 package.json
@@ -58,10 +60,11 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 | 古都 | `/heian/` |
 | 渋谷 | `/shibuya/` |
 | 秋葉原 | `/akihabara/` |
+| 新宿 | `/shinjuku/` |
 
 各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
 
-個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium`・`dev:cosmos`・`dev:heian`・`dev:shibuya`・`dev:akihabara` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
+個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium`・`dev:cosmos`・`dev:heian`・`dev:shibuya`・`dev:akihabara`・`dev:shinjuku` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
 
 ## Cloudflare Pages での公開
 

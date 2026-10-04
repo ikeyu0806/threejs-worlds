@@ -15,6 +15,7 @@ const routes = [
   { path: '/heian/', title: 'HEIAN', directory: 'heian' },
   { path: '/shibuya/', title: 'SCRAMBLE', directory: 'shibuya' },
   { path: '/akihabara/', title: 'AKIBA', directory: 'akihabara' },
+  { path: '/shinjuku/', title: 'SHINJUKU', directory: 'shinjuku' },
 ];
 
 async function start(script) {
