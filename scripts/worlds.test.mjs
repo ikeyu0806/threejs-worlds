@@ -13,6 +13,7 @@ const routes = [
   { path: '/cyberpunk/', title: 'AFTERLIGHT', directory: 'cyberpunk' },
   { path: '/cosmos/', title: 'APHELION', directory: 'cosmos' },
   { path: '/heian/', title: 'HEIAN', directory: 'heian' },
+  { path: '/shibuya/', title: 'SCRAMBLE', directory: 'shibuya' },
 ];
 
 async function start(script) {

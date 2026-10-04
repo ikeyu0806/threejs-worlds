@@ -19,4 +19,9 @@ export const worlds = [
     description: '朝霧の庭で、都の静けさに触れる。',
     href: '/heian/', color: '#c46a45', category: 'CAPITAL / DAWN',
   },
+  {
+    id: 'shibuya', number: '05', title: 'SCRAMBLE', subtitle: '渋谷',
+    description: '信号が変わるたび、人が街を横切る。',
+    href: '/shibuya/', color: '#e25b8a', category: 'CITY / CROSSING',
+  },
 ];

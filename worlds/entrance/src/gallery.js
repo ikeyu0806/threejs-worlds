@@ -15,9 +15,23 @@ function arch(radius, height, bottom = 0, hole = false) {
   return shape;
 }
 
-const portalSpacing = worlds.length > 2 ? 9 : 11;
-const portalXs = worlds.map((_, index) => (index - (worlds.length - 1) / 2) * portalSpacing);
-const galleryDistance = (Math.abs(portalXs.at(-1) ?? 5.5) + 4.2) / Math.tan(THREE.MathUtils.degToRad(worlds.length > 2 ? 27 : 24));
+function portalLayout(count) {
+  if (count <= 4) {
+    const spacing = count > 2 ? 9 : 11;
+    return Array.from({ length: count }, (_, index) => ({ x: (index - (count - 1) / 2) * spacing, z: -1, yaw: 0 }));
+  }
+  const radius = 18, step = 0.26, arc = step * (count - 1);
+  return Array.from({ length: count }, (_, index) => {
+    const t = (index / (count - 1) - 0.5) * arc;
+    return { x: Math.sin(t) * radius, z: radius * (1 - Math.cos(t)) - 1.2, yaw: -t };
+  });
+}
+const portalPoses = portalLayout(worlds.length);
+const portalXs = portalPoses.map(item => item.x);
+const crowded = worlds.length > 4;
+const halfSpan = Math.max(...portalXs.map(x => Math.abs(x)), 5.5);
+const viewAngle = crowded ? 31 : worlds.length > 2 ? 27 : 24;
+const galleryDistance = (halfSpan + (crowded ? 2.2 : 4.2)) / Math.tan(THREE.MathUtils.degToRad(viewAngle));
 
 export function createGallery(container, { onHover, onError }) {
   const portals = [], raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
@@ -28,7 +42,7 @@ export function createGallery(container, { onHover, onError }) {
     return raycaster.intersectObjects(portals, false)[0]?.object.userData.world;
   }
   const stage = createStage(container, {
-    background: '#e8e4dc', fog: 0.015, position: [0, 5.4, galleryDistance - 1], target: [0, 3.6, -2], fov: worlds.length > 2 ? 54 : 48, mobileFov: 88,
+    background: '#e8e4dc', fog: crowded ? 0.011 : 0.015, position: [0, 5.4, galleryDistance - 1], target: [0, 3.6, -2], fov: crowded ? 62 : worlds.length > 2 ? 54 : 48, mobileFov: 88,
     label: `石造りのギャラリーに浮かぶ球体と${worlds.length}つのゲート。ゲートまたは画面下のリンクからワールドへ移動できます。`,
     exposure: 0.95, bloom: 0.12, bloomThreshold: 2.5, onError,
     onHover: event => { const world = intersect(event); stage.canvas.style.cursor = world ? 'pointer' : 'grab'; onHover(world?.id ?? null); },
@@ -56,14 +70,16 @@ export function createGallery(container, { onHover, onError }) {
   sunlight.shadow.normalBias = 0.04;
   const bounce = new THREE.DirectionalLight('#d5e4ed', 1.7); bounce.position.set(12, 6, 8); scene.add(bounce);
 
-  const outerColumn = (portalXs.at(-1) ?? 5.5) + 7.5;
+  const outerColumn = halfSpan + (crowded ? 5 : 7.5);
   const hall = Math.max(31, outerColumn + 8);
   const columnXs = [-outerColumn, outerColumn];
-  for (let i = 0; i < portalXs.length - 1; i++) {
-    const mid = (portalXs[i] + portalXs[i + 1]) / 2;
-    if (Math.abs(mid) > 2.8) columnXs.push(mid);
+  if (!crowded) {
+    for (let i = 0; i < portalXs.length - 1; i++) {
+      const mid = (portalXs[i] + portalXs[i + 1]) / 2;
+      if (Math.abs(mid) > 2.8) columnXs.push(mid);
+    }
+    if (outerColumn + 7 < hall - 2) columnXs.push(-(outerColumn + 7), outerColumn + 7);
   }
-  if (outerColumn + 7 < hall - 2) columnXs.push(-(outerColumn + 7), outerColumn + 7);
   const centerBlocked = portalXs.some(x => Math.abs(x) < 3);
 
   // A textured stone floor, open colonnade and sunken display plinths.
@@ -85,7 +101,7 @@ export function createGallery(container, { onHover, onError }) {
     box(limestone, [x, 0.3, -4], [1.4, 0.6, 11]);
     box(limestone, [x, 11.8, -4], [1.7, 0.5, 11]);
   }
-  for (const x of portalXs) {
+  if (!crowded) for (const x of portalXs) {
     const shape = arch(3.15, 10.2); shape.holes.push(arch(2.55, 9.6, 0, true));
     mesh(new THREE.ExtrudeGeometry(shape, { depth: 0.65, bevelEnabled: false, curveSegments: 36 }), ivory, [x, 0, -7]);
     mesh(new THREE.ShapeGeometry(arch(2.55, 9.6)), material('#c4c0b4'), [x, 0, -7.03]);
@@ -102,7 +118,7 @@ export function createGallery(container, { onHover, onError }) {
   }
 
   const portalShader = world => new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3 }[world.id] ?? 1 }, focus: { value: 0 } },
+    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3, shibuya: 4, akihabara: 5, shinjuku: 6 }[world.id] ?? 1 }, focus: { value: 0 } },
     vertexShader: 'varying vec2 vUv; varying vec3 vPosition; void main(){vUv=uv; vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vUv; varying vec3 vPosition; uniform float time; uniform float kind; uniform float focus;
       float hash(float p){return fract(sin(p*127.1)*43758.5453);}
@@ -143,7 +159,7 @@ export function createGallery(container, { onHover, onError }) {
           float ring=smoothstep(.018,.0,abs(length(pc*vec2(.9,2.5))-.24));
           c+=ring*vec3(.75,.68,.5)*(1.-body);
           c+=vec3(.32,.24,.52)*exp(-length((uv-vec2(.78,.66))*vec2(3.,2.2))*2.);
-        }else{
+        }else if(kind<3.5){
           c=mix(vec3(.55,.45,.38),vec3(.93,.88,.8),smoothstep(.15,.85,uv.y));
           float gate=step(.18,uv.y)*step(uv.y,.72)*step(abs(uv.x-.5),.2);
           float roof=step(.6,uv.y)*step(uv.y,.8)*step(abs(uv.x-.5),.3);
@@ -155,6 +171,26 @@ export function createGallery(container, { onHover, onError }) {
           c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.22,.28))*vec2(8.,10.))*3.);
           c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.8,.24))*vec2(8.,10.))*3.);
           c=mix(c,vec3(.78,.74,.68),smoothstep(.22,0.,uv.y)*.45);
+        }else if(kind<4.5){
+          c=mix(vec3(.16,.1,.14),vec3(.45,.22,.32),uv.y);
+          float stripe=step(.55,fract(uv.y*9.));
+          if(uv.y<.28) c=mix(vec3(.12,.12,.14),vec3(.85,.86,.88),stripe);
+          float screen=step(.42,uv.y)*step(uv.y,.78)*step(abs(uv.x-.32),.18);
+          c=mix(c,mix(vec3(.95,.2,.45),vec3(.15,.75,.85),step(.5,fract(uv.y*5.+time*.2))),screen);
+          c+=vec3(.9,.35,.55)*exp(-length((uv-vec2(.75,.62))*vec2(5.,3.))*2.);
+        }else if(kind<5.5){
+          c=mix(vec3(.08,.05,.08),vec3(.22,.08,.1),uv.y);
+          float sign=step(.5,fract(uv.x*7.));
+          if(sign>.5&&uv.y>.2&&uv.y<.86) c=mix(vec3(.85,.16,.18),vec3(.95,.78,.2),step(.5,fract(uv.y*3.+floor(uv.x*7.))));
+          c+=vec3(.2,.55,.95)*step(.35,fract(uv.x*11.))*step(.25,uv.y)*step(uv.y,.45);
+        }else{
+          c=mix(vec3(.02,.04,.1),vec3(.08,.1,.18),uv.y);
+          float tower=step(abs(uv.x-.32),.12)+step(abs(uv.x-.68),.14);
+          if(tower>.5&&uv.y>.15){ c=vec3(.04,.06,.1);
+            vec2 w=fract(uv*vec2(18.,28.));
+            if(w.x>.25&&w.x<.7&&w.y>.2&&w.y<.65) c+=mix(vec3(.95,.78,.42),vec3(.45,.62,.9),step(.7,fract(uv.x*9.+uv.y*4.)));
+          }
+          c+=vec3(.95,.7,.35)*exp(-length((uv-vec2(.5,.16))*vec2(8.,14.))*2.2);
         }
         c*=1.+focus*.3; gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
@@ -163,8 +199,8 @@ export function createGallery(container, { onHover, onError }) {
   });
   const portalMaterials = [];
   worlds.forEach((world, index) => {
-    const x = portalXs[index];
-    const group = new THREE.Group(); group.position.set(x, 0.15, -1); scene.add(group);
+    const pose = portalPoses[index];
+    const group = new THREE.Group(); group.position.set(pose.x, 0.15, pose.z); group.rotation.y = pose.yaw; if (crowded) group.scale.setScalar(0.88); scene.add(group);
     mesh(new THREE.CylinderGeometry(2.55, 2.65, 0.18, 64), limestone, [0, 0.01, 0], [1, 1, 1], group);
     mesh(new THREE.CylinderGeometry(2.35, 2.45, 0.17, 64), ivory, [0, 0.15, 0], [1, 1, 1], group);
     const frame = arch(1.92, 7.05); frame.holes.push(arch(1.56, 6.65, 0.34, true));
@@ -179,7 +215,7 @@ export function createGallery(container, { onHover, onError }) {
     paint.fillStyle = '#49483d'; paint.font = '30px sans-serif'; paint.textAlign = 'center'; paint.fillText(`${world.number}  —  ${world.title}`, 384, 67);
     const plateTexture = new THREE.CanvasTexture(plateCanvas); plateTexture.colorSpace = THREE.SRGBColorSpace;
     mesh(new THREE.PlaneGeometry(3.1, 0.45), new THREE.MeshBasicMaterial({ map: plateTexture }), [0, 0.8, 0.26], [1, 1, 1], group);
-    const lamp = new THREE.PointLight(world.color, 20, 8, 1.6); lamp.position.set(x, 3.3, 1); scene.add(lamp);
+    const lamp = new THREE.PointLight(world.color, 20, 8, 1.6); lamp.position.set(pose.x, 3.3, pose.z + Math.cos(pose.yaw)); scene.add(lamp);
   });
 
   const centerBase = worlds.length > 2 ? [0, 9.8, -4.4] : [0, 4.2, -0.2];
@@ -201,8 +237,8 @@ export function createGallery(container, { onHover, onError }) {
   gradient.addColorStop(0, 'rgba(70,62,42,.5)'); gradient.addColorStop(1, 'rgba(70,62,42,0)');
   shadowCtx.fillStyle = gradient; shadowCtx.fillRect(0, 0, 128, 128);
   const shadowTexture = new THREE.CanvasTexture(shadowTextureCanvas);
-  for (const x of centerBlocked ? portalXs : [...portalXs, 0]) {
-    const shadow = mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false }), [x, -0.075, -0.4]); shadow.rotation.x = -Math.PI / 2;
+  for (const pose of centerBlocked ? portalPoses : [...portalPoses, { x: 0, z: -0.4 }]) {
+    const shadow = mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false }), [pose.x, -0.075, pose.z]); shadow.rotation.x = -Math.PI / 2;
   }
 
   scene.traverse(object => {

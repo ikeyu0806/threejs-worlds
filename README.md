@@ -1,6 +1,6 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md) へ移動できます。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md)、[渋谷](./worlds/shibuya/README.md) へ移動できます。
 
 ## 公開ワールド
 
@@ -13,6 +13,7 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
 | [宇宙（APHELION）](https://threejs-worlds.pages.dev/cosmos/) | 環のある惑星と星雲を眺める観測甲板です。 |
 | [古都（HEIAN）](https://threejs-worlds.pages.dev/heian/) | 朝霧のなか、朱雀門と庭の池を歩く古都です。 |
+| [渋谷（SCRAMBLE）](https://threejs-worlds.pages.dev/shibuya/) | 夕方のスクランブル交差点です。 |
 
 ## 構成
 
@@ -23,6 +24,7 @@ worlds/
   aquarium/          # PELAGIC：静かな海の水族館
   cosmos/            # APHELION：遠い軌道の宇宙
   heian/             # HEIAN：朝霧の古都
+  shibuya/           # SCRAMBLE：渋谷の交差点
 shared/              # ワールド一覧・描画・操作の共通処理
 scripts/             # まとめて起動・ビルド結果の集約
 package.json
@@ -52,10 +54,11 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 | 水族館 | `/aquarium/` |
 | 宇宙 | `/cosmos/` |
 | 古都 | `/heian/` |
+| 渋谷 | `/shibuya/` |
 
 各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
 
-個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium`・`dev:cosmos`・`dev:heian` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
+個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium`・`dev:cosmos`・`dev:heian`・`dev:shibuya` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
 
 ## Cloudflare Pages での公開
 

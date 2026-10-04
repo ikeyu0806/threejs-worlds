@@ -34,7 +34,7 @@ export default function App() {
     <div className="gallery-spacer"><span className="gallery-side-note">A DIFFERENT WORLD.<br />A DIFFERENT FEELING.</span><span className="gallery-instruction"><Icon name="compass" size={14} /> ゲートをクリックして、その先へ。</span></div>
 
     <section className="worlds-section" id="worlds" tabIndex="-1" aria-labelledby="worlds-title">
-      <div className="worlds-heading"><h2 id="worlds-title">次は、どこへ。</h2><span>{['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX'][worlds.length - 1] ?? worlds.length} WORLDS, YOUR OWN PACE</span></div>
+      <div className="worlds-heading"><h2 id="worlds-title">次は、どこへ。</h2><span>{['ONE', 'TWO', 'THREE', 'FOUR', 'FIVE', 'SIX', 'SEVEN', 'EIGHT'][worlds.length - 1] ?? worlds.length} WORLDS, YOUR OWN PACE</span></div>
       <div className="world-links">{worlds.map(world => <a key={world.id} href={world.href} className={`world-card ${focused === world.id ? 'focused' : ''}`} onMouseEnter={() => setFocused(world.id)} onMouseLeave={() => setFocused(null)} onFocus={() => setFocused(world.id)} onBlur={() => setFocused(null)} style={{ '--world-color': world.color }}><span className="world-number">{world.number}</span><div className="world-details"><div className="world-category">{world.category}</div><h3>{world.title}<span>{world.subtitle}</span></h3><p>{world.description}</p></div><span className="world-enter"><Icon size={22} /><span>この世界へ</span></span></a>)}</div>
     </section>
 
