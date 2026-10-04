@@ -1,0 +1,2 @@
+.world-footer-identity { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.world-copyright { display: block; font-size: .625rem; font-weight: 400; line-height: 1.5; letter-spacing: .02em; white-space: nowrap; }

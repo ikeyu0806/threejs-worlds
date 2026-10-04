@@ -41,9 +41,9 @@ a:focus-visible, button:focus-visible, canvas:focus-visible { outline: 2px solid
 .world-enter { margin-left: auto; display: flex; align-items: center; flex-direction: column; gap: 14px; flex-shrink: 0; }
 .world-enter > span { font-size: .5rem; letter-spacing: .08em; }
 .entrance-footer { min-height: 68px; display: flex; align-items: center; justify-content: space-between; gap: 20px; font-size: .47rem; letter-spacing: .1em; color: #5f685b; }
-.entrance-footer > span { display: flex; align-items: center; gap: 16px; }
+.entrance-footer .footer-tagline { display: flex; align-items: center; gap: 16px; }
 .entrance-footer i { width: 3px; height: 3px; background: #85927c; }
-.entrance-footer > div { display: flex; align-items: center; gap: 20px; font-size: .57rem; letter-spacing: .04em; }
+.entrance-footer-controls { display: flex; align-items: center; gap: 20px; font-size: .57rem; letter-spacing: .04em; }
 .entrance-footer button { background: none; border: 1px solid #a3ad9b; border-radius: 50%; width: 32px; height: 32px; display: grid; place-items: center; }
 .gallery-error { position: fixed; left: 50%; top: 45%; transform: translate(-50%, -50%); padding: 20px; width: min(420px, calc(100vw - 40px)); background: #f4f0eaf2; border: 1px solid #9a9989; font-size: .8rem; line-height: 1.8; }
 .skip-link { position: fixed; top: 10px; left: 10px; transform: translateY(-150%); padding: 16px; background: #f5f1e8; z-index: 10; }
@@ -70,8 +70,8 @@ a:focus-visible, button:focus-visible, canvas:focus-visible { outline: 2px solid
   .world-card p { font-size: .58rem; }
   .world-enter > span { display: none; }
   .entrance-footer { min-height: 65px; }
-  .entrance-footer > span { font-size: .39rem; gap: 7px; letter-spacing: .04em; }
-  .entrance-footer > div > span { display: none; }
+  .entrance-footer .footer-tagline { font-size: .39rem; gap: 7px; letter-spacing: .04em; }
+  .entrance-footer-controls > span { display: none; }
   .gallery-instruction { font-size: .54rem; }
 }
 @media (prefers-reduced-motion: reduce) { .world-card { transition: none; } }

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../../../shared/icons.jsx';
+import Copyright from '../../../shared/Copyright.jsx';
 import { createAquarium, exhibits } from './aquarium.js';
 
 export default function App() {
@@ -70,7 +71,7 @@ export default function App() {
         {exhibits.map(item => <button key={item.id} aria-pressed={exhibit === item.id} onClick={() => travel(item)}><span className="exhibit-number">{item.number}</span><span>{item.name}<small>{item.en}</small></span><span className="exhibit-arrow">{exhibit === item.id ? '●' : '↗'}</span></button>)}
       </nav>
       <footer className="aquarium-footer">
-        <div className="exhibit-caption"><span>{current.number} /</span> {current.note}</div>
+        <div className="world-footer-identity"><div className="exhibit-caption"><span>{current.number} /</span> {current.note}</div><Copyright /></div>
         <div className="toolbar">
           <button aria-label={paused ? '生きものの動きを再開' : '生きものの動きを停止'} aria-pressed={paused} onClick={() => setPaused(value => !value)}><Icon name={paused ? 'play' : 'pause'} size={17} /></button>
           <button aria-label="風景を PNG 保存" disabled={!ready || !!error} onClick={capture}><Icon name="camera" size={18} /></button>

@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Icon } from '../../../shared/icons.jsx';
+import Copyright from '../../../shared/Copyright.jsx';
 import { worlds } from '../../../shared/worlds.js';
 import { createGallery } from './gallery.js';
 
@@ -37,7 +38,7 @@ export default function App() {
       <div className="world-links">{worlds.map(world => <a key={world.id} href={world.href} className={`world-card ${focused === world.id ? 'focused' : ''}`} onMouseEnter={() => setFocused(world.id)} onMouseLeave={() => setFocused(null)} onFocus={() => setFocused(world.id)} onBlur={() => setFocused(null)} style={{ '--world-color': world.color }}><span className="world-number">{world.number}</span><div className="world-details"><div className="world-category">{world.category}</div><h3>{world.title}<span>{world.subtitle}</span></h3><p>{world.description}</p></div><span className="world-enter"><Icon size={22} /><span>この世界へ</span></span></a>)}</div>
     </section>
 
-    <footer className="entrance-footer"><span>ORBIT <i /> A COLLECTION OF SMALL ESCAPES</span><div><span>ドラッグで見回す</span><button onClick={() => setPaused(value => !value)} aria-label={paused ? 'ギャラリーの動きを再開' : 'ギャラリーの動きを停止'} aria-pressed={paused}><Icon name={paused ? 'play' : 'pause'} size={15} /></button></div></footer>
+    <footer className="entrance-footer"><div className="world-footer-identity"><span className="footer-tagline">ORBIT <i /> A COLLECTION OF SMALL ESCAPES</span><Copyright /></div><div className="entrance-footer-controls"><span>ドラッグで見回す</span><button onClick={() => setPaused(value => !value)} aria-label={paused ? 'ギャラリーの動きを再開' : 'ギャラリーの動きを停止'} aria-pressed={paused}><Icon name={paused ? 'play' : 'pause'} size={15} /></button></div></footer>
     {error && <p className="gallery-error" role="alert">{error}</p>}
   </main>;
 }
