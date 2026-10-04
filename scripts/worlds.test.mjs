@@ -11,6 +11,7 @@ const routes = [
   { path: '/', title: 'ORBIT', directory: 'entrance' },
   { path: '/aquarium/', title: 'PELAGIC', directory: 'aquarium' },
   { path: '/cyberpunk/', title: 'AFTERLIGHT', directory: 'cyberpunk' },
+  { path: '/cosmos/', title: 'APHELION', directory: 'cosmos' },
 ];
 
 async function start(script) {

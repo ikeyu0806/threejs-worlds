@@ -1,6 +1,6 @@
 # ORBIT — ワールドエントランス
 
-石造りのギャラリーと2つのゲートを持つ Three.js のエントランスです。cyberpunk と水族館へ移動できます。
+石造りのギャラリーと各ワールドへのゲートを持つ Three.js のエントランスです。cyberpunk、水族館、宇宙へ移動できます。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/` を開いてください。
 

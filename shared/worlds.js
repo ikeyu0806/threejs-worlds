@@ -9,4 +9,9 @@ export const worlds = [
     description: '青の奥へ、ゆっくりと。海の住人と過ごす時間。',
     href: '/aquarium/', color: '#76b8b4', category: 'OCEAN / SANCTUARY',
   },
+  {
+    id: 'cosmos', number: '03', title: 'APHELION', subtitle: '遠い軌道',
+    description: '光の少ない海で、環のある星を見る。',
+    href: '/cosmos/', color: '#9aa8e8', category: 'SPACE / QUIET ORBIT',
+  },
 ];

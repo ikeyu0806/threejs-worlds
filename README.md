@@ -1,6 +1,6 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md) と [水族館](./worlds/aquarium/README.md) へ移動できます。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md) へ移動できます。
 
 ## 公開ワールド
 
@@ -11,6 +11,7 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | [エントランス（ORBIT）](https://threejs-worlds.pages.dev/) | 各ワールドへつながるギャラリーです。 |
 | [水族館（PELAGIC）](https://threejs-worlds.pages.dev/aquarium/) | 魚群やエイ、ウミガメ、クラゲが泳ぐ水族館です。 |
 | [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
+| [宇宙（APHELION）](https://threejs-worlds.pages.dev/cosmos/) | 環のある惑星と星雲を眺める観測甲板です。 |
 
 ## 構成
 
@@ -19,6 +20,7 @@ worlds/
   entrance/          # ORBIT：各ワールドの入口
   cyberpunk/         # AFTERLIGHT：雨とネオンの街
   aquarium/          # PELAGIC：静かな海の水族館
+  cosmos/            # APHELION：遠い軌道の宇宙
 shared/              # ワールド一覧・描画・操作の共通処理
 scripts/             # まとめて起動・ビルド結果の集約
 package.json
@@ -46,10 +48,11 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 | エントランス | `/` |
 | cyberpunk | `/cyberpunk/` |
 | 水族館 | `/aquarium/` |
+| 宇宙 | `/cosmos/` |
 
 各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
 
-個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
+個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium`・`dev:cosmos` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
 
 ## Cloudflare Pages での公開
 
