@@ -182,7 +182,7 @@ export function createGallery(container, { onHover, onError }) {
     const lamp = new THREE.PointLight(world.color, 20, 8, 1.6); lamp.position.set(x, 3.3, 1); scene.add(lamp);
   });
 
-  const centerBase = centerBlocked ? [0, 10.6, -5.2] : [0, 4.2, -0.2];
+  const centerBase = worlds.length > 2 ? [0, 9.8, -4.4] : [0, 4.2, -0.2];
   const centerpiece = new THREE.Group(); centerpiece.position.set(...centerBase); scene.add(centerpiece);
   mesh(new THREE.SphereGeometry(0.95, 48, 32), material('#acb5a7', { metalness: 0.63, roughness: 0.22 }), [0, 0, 0], [1, 1, 1], centerpiece);
   const rings = [];

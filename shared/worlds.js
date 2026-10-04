@@ -14,4 +14,9 @@ export const worlds = [
     description: '光の少ない海で、環のある星を見る。',
     href: '/cosmos/', color: '#9aa8e8', category: 'SPACE / QUIET ORBIT',
   },
+  {
+    id: 'heian', number: '04', title: 'HEIAN', subtitle: '雅の古都',
+    description: '朝霧の庭で、都の静けさに触れる。',
+    href: '/heian/', color: '#c46a45', category: 'CAPITAL / DAWN',
+  },
 ];
