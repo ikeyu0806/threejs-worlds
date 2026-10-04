@@ -24,4 +24,9 @@ export const worlds = [
     description: '信号が変わるたび、人が街を横切る。',
     href: '/shibuya/', color: '#e25b8a', category: 'CITY / CROSSING',
   },
+  {
+    id: 'akihabara', number: '06', title: 'AKIBA', subtitle: '秋葉原',
+    description: '看板の谷間を、ゆっくり歩く。',
+    href: '/akihabara/', color: '#f0b429', category: 'CITY / ELECTRIC',
+  },
 ];
