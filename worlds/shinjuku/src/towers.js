@@ -2,14 +2,14 @@ import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 
 export const vistas = [
-  { id: 'avenue', number: '01', name: '大通り', en: 'AVENUE', position: [0, 4.2, 18], target: [0, 14, -30], note: '塔の足元で、夜が濃くなる。' },
+  { id: 'avenue', number: '01', name: '大通り', en: 'AVENUE', position: [0, 5.4, 16], target: [0, 18, -24], note: '塔の足元で、夜が濃くなる。' },
   { id: 'rise', number: '02', name: '高層', en: 'RISE', position: [5, 9, 6], target: [-8, 36, -24], note: '窓の光が、縦に積もっている。' },
-  { id: 'tocho', number: '03', name: '都庁', en: 'TWIN TOWERS', position: [-2, 7, 10], target: [0, 32, -46], note: 'ふたつの塔が、夜の先に立つ。' },
+  { id: 'tocho', number: '03', name: '都庁', en: 'TWIN TOWERS', position: [-2, 7, 8], target: [0, 32, -32], note: 'ふたつの塔が、夜の先に立つ。' },
 ];
 
 export function createTowers(container, onError) {
   const stage = createStage(container, {
-    background: '#070b16', fog: 0.011, position: vistas[0].position, target: vistas[0].target,
+    background: '#070b16', fog: 0.008, position: vistas[0].position, target: vistas[0].target,
     label: '新宿の夜。高層ビルと都庁のツインタワー。ドラッグで見回せます。',
     bloom: 0.4, bloomThreshold: 0.7, exposure: 1.08, fov: 52, mobileFov: 74,
     bounds: { minX: -6, maxX: 6, minZ: 2, maxZ: 20 }, onError,
@@ -32,19 +32,20 @@ export function createTowers(container, onError) {
 
   const windows = document.createElement('canvas'); windows.width = windows.height = 256;
   const paint = windows.getContext('2d');
-  paint.fillStyle = '#0c121c'; paint.fillRect(0, 0, 256, 256);
+  paint.fillStyle = '#000000'; paint.fillRect(0, 0, 256, 256);
   for (let y = 8; y < 256; y += 14) for (let x = 8; x < 256; x += 12) {
-    if (random() > 0.42) {
-      paint.fillStyle = random() > 0.75 ? '#9eb6d8' : '#e7c27a';
-      paint.globalAlpha = 0.45 + random() * 0.55;
+    if (random() > 0.28) {
+      paint.fillStyle = random() > 0.72 ? '#d7e6ff' : '#ffe1a4';
       paint.fillRect(x, y, 6, 8);
     }
   }
-  paint.globalAlpha = 1;
   const windowMap = new THREE.CanvasTexture(windows); windowMap.colorSpace = THREE.SRGBColorSpace;
   windowMap.wrapS = windowMap.wrapT = THREE.RepeatWrapping;
   windowMap.repeat.set(1, 4);
-  const towerMaterial = standard('#141b28', { map: windowMap, emissive: '#2a2418', emissiveIntensity: 0.18, metalness: 0.35, roughness: 0.45 });
+  const towerMaterial = new THREE.MeshStandardMaterial({
+    color: '#101820', emissive: '#ffffff', emissiveMap: windowMap, emissiveIntensity: 1.45,
+    roughness: 0.62, metalness: 0.12,
+  });
 
   mesh(new THREE.PlaneGeometry(80, 90), standard('#12151c', { roughness: 0.94 }), [0, 0, -8]).rotation.x = -Math.PI / 2;
   for (const x of [-4.2, 4.2]) box(new THREE.MeshBasicMaterial({ color: '#f2e2b0' }), [x, 0.04, 4], [0.08, 0.02, 36]);
@@ -60,14 +61,14 @@ export function createTowers(container, onError) {
     shop.position.set(side * 6.5, 2.4, z + 4); scene.add(shop);
   });
 
-  const tochoMat = standard('#1a2433', { map: windowMap, emissive: '#243044', emissiveIntensity: 0.22, metalness: 0.4, roughness: 0.4 });
+  const tochoMat = towerMaterial;
   for (const x of [-3.2, 3.2]) {
-    box(tochoMat, [x, 34, -48], [4.2, 68, 4.2]);
-    box(tochoMat, [x, 70, -48], [2.2, 6, 2.2]);
+    box(tochoMat, [x, 34, -32], [4.2, 68, 4.2]);
+    box(tochoMat, [x, 70, -32], [2.2, 6, 2.2]);
   }
-  box(tochoMat, [0, 62, -48], [6.4, 2.2, 2.4]);
-  const crown = new THREE.PointLight('#f0d7a0', 30, 40, 2);
-  crown.position.set(0, 66, -44); scene.add(crown);
+  box(tochoMat, [0, 62, -32], [6.4, 2.2, 2.4]);
+  const crown = new THREE.PointLight('#f0d7a0', 40, 50, 2);
+  crown.position.set(0, 66, -28); scene.add(crown);
 
   const flickers = [];
   for (let i = 0; i < 18; i++) {

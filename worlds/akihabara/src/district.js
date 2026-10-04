@@ -9,7 +9,7 @@ export const vistas = [
 
 export function createDistrict(container, onError) {
   const stage = createStage(container, {
-    background: '#d5e2ea', fog: 0.02, position: vistas[0].position, target: vistas[0].target,
+    background: '#c5d5e0', fog: 0.01, position: vistas[0].position, target: vistas[0].target,
     label: '秋葉原の電気街。縦看板とアーケード。ドラッグで見回せます。',
     bloom: 0.32, bloomThreshold: 0.68, exposure: 1.02, fov: 56, mobileFov: 78,
     bounds: { minX: -2.4, maxX: 2.4, minZ: 1, maxZ: 18 }, onError,

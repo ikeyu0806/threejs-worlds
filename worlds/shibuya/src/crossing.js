@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 
 export const vistas = [
-  { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 3.4, 16], target: [0, 3.2, -4], note: '信号が変わるたび、人が街を横切る。' },
+  { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 6.2, 14], target: [0, 2.2, -2], note: '信号が変わるたび、人が街を横切る。' },
   { id: 'screens', number: '02', name: '大型ビジョン', en: 'SCREENS', position: [7, 5.2, 4], target: [-4, 8, -12], note: '壁一面の光が、夕方を染めている。' },
   { id: 'station', number: '03', name: '駅前', en: 'STATION', position: [-6, 3.2, 12], target: [4, 5, -8], note: '円いビルと、待ち人の場所。' },
 ];
@@ -26,7 +26,7 @@ export function createCrossing(container, onError) {
   }
   function box(material, position, scale, parent) { return mesh(cube, material, position, scale, parent); }
 
-  scene.add(new THREE.HemisphereLight('#ffd0c4', '#2a2030', 0.7));
+  scene.add(new THREE.HemisphereLight('#ffd0c4', '#2a2030', 1.15));
   const sun = new THREE.DirectionalLight('#ffc2a0', 1.8);
   sun.position.set(16, 18, 8); scene.add(sun);
 
@@ -48,8 +48,8 @@ export function createCrossing(container, onError) {
   }
   block(-14, -12, 8, 7, 18, '#4a3a44');
   block(12, -14, 9, 8, 22, '#3a3340');
-  block(14, 10, 7, 8, 14, '#463848');
-  block(-13, 12, 8, 6, 11, '#3e3642');
+  block(16, 2, 7, 8, 14, '#463848');
+  block(-16, 4, 8, 6, 11, '#3e3642');
   mesh(new THREE.CylinderGeometry(4.2, 4.4, 17, 20), standard('#5a4550', { roughness: 0.62 }), [-9, 8.5, -6]);
   box(dark, [-9, 17.3, -6], [6.2, 0.5, 6.2]);
 
