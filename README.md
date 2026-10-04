@@ -2,6 +2,16 @@
 
 Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md) と [水族館](./worlds/aquarium/README.md) へ移動できます。
 
+## 公開ワールド
+
+以下のリンクから各ワールドを体験できます。
+
+| ワールド | 内容 |
+| --- | --- |
+| [エントランス（ORBIT）](https://threejs-worlds.pages.dev/) | 各ワールドへつながるギャラリーです。 |
+| [水族館（PELAGIC）](https://threejs-worlds.pages.dev/aquarium/) | 魚群やエイ、ウミガメ、クラゲが泳ぐ水族館です。 |
+| [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
+
 ## 構成
 
 ```text
@@ -42,8 +52,6 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 個別作業には `dev:entrance`・`dev:cyberpunk`・`dev:aquarium` も使えます。個別起動では各ワールドが別のポートになるため、ワールド間の往復は `npm run dev` で確認してください。`build:<ワールド名>` と `preview:<ワールド名>` も使えます。
 
 ## Cloudflare Pages での公開
-
-公開サイトは [こちら](https://threejs-worlds.pages.dev/) です。
 
 GitHub のリポジトリを連携し、以下の設定でサイト全体を公開します。
 
