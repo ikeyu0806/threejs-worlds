@@ -43,6 +43,8 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 
 ## Cloudflare Pages での公開
 
+公開サイトは [こちら](https://threejs-worlds.pages.dev/) です。
+
 GitHub のリポジトリを連携し、以下の設定でサイト全体を公開します。
 
 | 項目 | 設定 |
