@@ -1,6 +1,6 @@
 # AFTERLIGHT — 九龍北区
 
-React・Vite・Three.js で作った、雨とネオンのサイバーパンク街です。街並みや雨、ドローンなどは手続き生成しています。
+React・Vite・Three.js で作った、雨とネオンのサイバーパンク街です。屋台と雨合羽の通行人は blender-works の GLB で、路地や雨、ドローンは手続き生成しています。画面の参照は [REFERENCES.md](./REFERENCES.md) です。
 
 ## 起動
 

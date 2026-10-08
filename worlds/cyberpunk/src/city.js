@@ -4,6 +4,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
+import { loadModel } from '../../../shared/models.js';
 
 export const DISTRICTS = [
   { id: 'alley', name: '龍門路地', en: 'DRAGON ALLEY', number: '01', position: [0, 2.3, 17], yaw: 0, pitch: 0.09, description: '眠らない屋台。消えないネオン。街の入口は、いつも雨の匂いがする。' },
@@ -21,7 +22,7 @@ function generator(seed) {
   };
 }
 
-export function createCity(container, callbacks = {}) {
+export async function createCity(container, callbacks = {}) {
   const random = generator(80923);
   const mobile = window.matchMedia('(max-width: 700px)').matches;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -266,14 +267,7 @@ export function createCity(container, callbacks = {}) {
     box('steel', side * 4.7, 0.4, z, 0.18, 0.8, 0.18);
     box('amber', side * 4.7, 0.65, z, 0.2, 0.09, 0.2);
   }
-  box('steel', -4.8, 0.95, -3, 1.1, 1.9, 3.8);
-  box('trim', -4.55, 1.8, -3, 1.6, 0.12, 4.3);
-  box('amber', -3.73, 1.7, -3, 0.03, 0.04, 3.5);
   sign('龍門麺屋', '#ffd4a0', -4, 3.9, -3, 2.8, 0.9, { sub: 'HOT NOODLES / 24 HOURS' });
-  for (let i = 0; i < 5; i++) {
-    const stool = addMesh(new THREE.CylinderGeometry(0.24, 0.22, 0.12, 12), materials.awning, -3.4, 0.85, -4.5 + i * 0.75);
-    box('steel', stool.position.x, 0.4, stool.position.z, 0.06, 0.8, 0.06);
-  }
   // Repair terminal with its own luminous display.
   box('steel', 5.05, 1.4, -23, 0.9, 2.8, 1.3);
   sign('義体認証', '#7bfce3', 4.56, 1.95, -23, 0.95, 0.7, { rotation: -Math.PI / 2, sub: 'IDENTITY / SCAN' });
@@ -333,25 +327,7 @@ export function createCity(container, callbacks = {}) {
   const beam = new THREE.Mesh(own(new THREE.ConeGeometry(2.3, 6, 24, 1, true)), coneMat);
   beam.position.y = -3.1; drone.add(beam);
 
-  // Low-detail inhabitants establish scale without depending on character assets.
   const inhabitants = [];
-  const coat = own(new THREE.MeshStandardMaterial({ color: '#142027', roughness: 0.94 }));
-  for (let i = 0; i < 9; i++) {
-    const person = new THREE.Group();
-    const body = new THREE.Mesh(own(new THREE.ConeGeometry(0.23, 0.9, 7)), coat);
-    body.position.y = 1; person.add(body);
-    const head = new THREE.Mesh(own(new THREE.SphereGeometry(0.135, 8, 6)), coat); head.position.y = 1.6; person.add(head);
-    for (const side of [-1, 1]) {
-      const leg = new THREE.Mesh(own(new THREE.CylinderGeometry(0.065, 0.075, 0.67, 6)), coat);
-      leg.position.set(side * 0.11, 0.36, 0); person.add(leg);
-    }
-    if (i % 2 === 0) {
-      const umbrella = new THREE.Mesh(own(new THREE.ConeGeometry(0.65, 0.2, 12, 1, true)), materials.black);
-      umbrella.position.y = 1.96; person.add(umbrella);
-    }
-    person.position.set((random() - 0.5) * 7, 0, -15 - random() * 83);
-    scene.add(person); inhabitants.push({ person, z: person.position.z, phase: random() * 10 });
-  }
 
   // Wet pavement: a planar reflection with animated surface distortion and grain.
   const reflectionShader = {
@@ -479,6 +455,19 @@ export function createCity(container, callbacks = {}) {
     camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
     renderer.setSize(w, h); composer.setSize(w, h);
   }
+  const stall = await loadModel('noodle_stall.glb');
+  stall.scene.position.set(-4.2, 0, -3);
+  stall.scene.rotation.y = Math.PI / 2;
+  scene.add(stall.scene);
+  const rainPerson = await loadModel('rain_person.glb');
+  for (let i = 0; i < 10; i++) {
+    const person = rainPerson.scene.clone(true);
+    person.position.set((random() - 0.5) * 5.2, 0, 8 - random() * 90);
+    person.rotation.y = random() * Math.PI * 2;
+    scene.add(person);
+    inhabitants.push({ person, z: person.position.z, phase: random() * 10 });
+  }
+
   const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(container); resize();
   let last = performance.now(), elapsed = 0, frame = 0, statusTimer = 0;
   const cameraEuler = new THREE.Euler(0, 0, 0, 'YXZ');

@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
+import { loadModel } from '../../../shared/models.js';
 
 export const exhibits = [
   { id: 'ocean', number: '01', name: '大海の窓', en: 'OPEN OCEAN', position: [0, 3.7, 15], target: [0, 5, -15], note: 'ゆるやかに泳ぐエイと、光をほどく魚群。' },
@@ -7,7 +8,7 @@ export const exhibits = [
   { id: 'jelly', number: '03', name: '月の漂流', en: 'MOON JELLIES', position: [-11, 3.9, 5.5], target: [-12, 5.3, -12], note: '淡い光をまとって、ただ、漂う。' },
 ];
 
-export function createAquarium(container, onError) {
+export async function createAquarium(container, onError) {
   const stage = createStage(container, {
     background: '#031923', fog: 0.011, position: exhibits[0].position, target: exhibits[0].target,
     label: '大水槽の魚群、エイ、ウミガメ、クラゲ。ドラッグで見回せます。',
@@ -71,7 +72,7 @@ export function createAquarium(container, onError) {
         float ray=pow(max(0.,sin(vUv.x*41.+vUv.y*3.+sin(time*.17)*.3)),14.);
         float ray2=pow(max(0.,sin(vUv.x*69.-vUv.y*6.-time*.035)),24.);
         vec3 c=mix(deep,shallow,pow(vUv.y,1.9));
-        c+=vec3(.15,.38,.4)*(ray*.21+ray2*.1)*pow(vUv.y,1.2);
+        c+=vec3(.22,.5,.52)*(ray*.34+ray2*.16)*pow(vUv.y,1.05);
         c+=vec3(.045,.13,.16)*exp(-length((vUv-vec2(.47,.72))*vec2(2.,1.))*3.);
         gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
@@ -174,6 +175,13 @@ export function createAquarium(container, onError) {
   const eyeMaterial = new THREE.MeshBasicMaterial({ color: '#061a23' });
   for (const x of [-0.5, 0.5]) mesh(sphere, eyeMaterial, [x, 0.05, -1], [0.09, 0.08, 0.1], manta);
   manta.scale.setScalar(1.25);
+  const mantaTwo = manta.clone(true);
+  mantaTwo.scale.setScalar(0.72);
+  scene.add(mantaTwo);
+
+  const whale = (await loadModel('whale_shark.glb')).scene;
+  whale.scale.setScalar(1.05);
+  scene.add(whale);
 
   const turtle = new THREE.Group(); scene.add(turtle);
   const shell = standard('#688a79', { flatShading: true, roughness: 0.55 });
@@ -228,6 +236,8 @@ export function createAquarium(container, onError) {
     bodies.instanceMatrix.needsUpdate = tails.instanceMatrix.needsUpdate = true;
     manta.position.set(Math.sin(time * 0.1) * 5, 6.3 + Math.sin(time * 0.24) * 0.6, -16 + Math.cos(time * 0.1) * 2);
     manta.rotation.set(0.48 + Math.sin(time * 0.24) * 0.08, -0.4 + Math.sin(time * 0.1) * 0.8, Math.sin(time * 0.3) * 0.1);
+    mantaTwo.position.set(-4 + Math.cos(time * 0.08) * 6, 4.2 + Math.sin(time * 0.2) * 0.4, -20);
+    mantaTwo.rotation.set(0.2, 0.8 + Math.sin(time * 0.08) * 0.5, -0.1);
     for (let i = 0; i < mantaPositions.count; i++) {
       const x = mantaBase[i * 3];
       mantaPositions.setY(i, mantaBase[i * 3 + 1] + Math.sin(time * 1.7 - Math.abs(x) * 0.45) * Math.pow(Math.abs(x) / 3.6, 1.4) * 0.65);
@@ -235,6 +245,8 @@ export function createAquarium(container, onError) {
     mantaPositions.needsUpdate = true; mantaGeometry.computeVertexNormals();
     turtle.position.set(9 + Math.sin(time * 0.12) * 3, 4.3 + Math.cos(time * 0.25) * 0.35, -14);
     turtle.rotation.set(0.1, -0.65 + Math.sin(time * 0.12) * 0.3, 0.1);
+    whale.position.set(Math.sin(time * 0.06) * 9, 5.5 + Math.sin(time * 0.18) * 0.35, -17);
+    whale.rotation.set(0.04, Math.PI / 2 + Math.cos(time * 0.06) * 0.45, Math.sin(time * 0.22) * 0.06);
     for (const { pivot, x } of flippers) pivot.rotation.z = Math.sin(time * 1.6) * x * 0.22;
     for (const { group, base, size, phase } of jellies) {
       group.position.y = base[1] + Math.sin(time * 0.35 + phase) * 0.5;

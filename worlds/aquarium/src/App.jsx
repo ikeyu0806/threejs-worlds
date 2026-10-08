@@ -12,9 +12,16 @@ export default function App() {
   const current = exhibits.find(item => item.id === exhibit);
 
   useEffect(() => {
-    try { stage.current = createAquarium(host.current, setError); setReady(true); }
-    catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
-    return () => stage.current?.dispose();
+    let active = true;
+    (async () => {
+      try {
+        const created = await createAquarium(host.current, setError);
+        if (!active) { created.dispose(); return; }
+        stage.current = created;
+        setReady(true);
+      } catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
+    })();
+    return () => { active = false; stage.current?.dispose(); };
   }, []);
   useEffect(() => { stage.current?.pause(paused); }, [paused]);
   useEffect(() => { stage.current?.quality(quality); }, [quality]);

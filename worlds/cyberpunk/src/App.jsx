@@ -58,12 +58,17 @@ export default function App() {
   const notify = message => { setToast(message); clearTimeout(toastTimeout.current); toastTimeout.current = setTimeout(() => setToast(''), 3500); };
 
   useEffect(() => {
-    try {
-      city.current = createCity(host.current, { onReady: () => setReady(true), onPosition: setPosition });
-    } catch (e) {
-      console.error(e); setError('3D表示を開始できませんでした。WebGL 2に対応したブラウザで、ハードウェアアクセラレーションを有効にしてください。');
-    }
-    return () => { city.current?.dispose(); audio.current?.dispose(); clearTimeout(toastTimeout.current); };
+    let active = true;
+    (async () => {
+      try {
+        const created = await createCity(host.current, { onReady: () => setReady(true), onPosition: setPosition });
+        if (!active) { created.dispose(); return; }
+        city.current = created;
+      } catch (e) {
+        console.error(e); setError('3D表示を開始できませんでした。WebGL 2に対応したブラウザで、ハードウェアアクセラレーションを有効にしてください。');
+      }
+    })();
+    return () => { active = false; city.current?.dispose(); audio.current?.dispose(); clearTimeout(toastTimeout.current); };
   }, []);
   useEffect(() => { city.current?.setMode(mode); }, [mode]);
   useEffect(() => { city.current?.setPaused(paused || !!dialog); }, [paused, dialog]);

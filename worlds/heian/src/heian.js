@@ -153,6 +153,12 @@ export function createCapital(container, onError) {
   });
   const pond = mesh(new THREE.CircleGeometry(4.6, 48), water, [8.6, 0.035, -4.2]);
   pond.rotation.x = -Math.PI / 2;
+  const koiGeometry = new THREE.SphereGeometry(0.16, 10, 8);
+  koiGeometry.scale(2.4, 0.42, 0.75);
+  const koiColors = ['#c4553a', '#e8d7c4', '#1d1a18'].map(color => standard(color, { roughness: 0.42, metalness: 0.08 }));
+  const koi = koiColors.map(material => new THREE.InstancedMesh(koiGeometry, material, 3));
+  for (const school of koi) { school.frustumCulled = false; scene.add(school); }
+  const koiData = Array.from({ length: 9 }, (_, index) => ({ radius: 1.2 + (index % 3) * 0.9, phase: index, school: index % 3 }));
   box(stone, [8.6, 0.08, -1.15], [1.3, 0.12, 2.4]);
   box(stone, [7.4, 0.2, -0.2], [0.9, 0.16, 0.9]);
   const rockGeometry = new THREE.DodecahedronGeometry(0.45, 0);
@@ -190,6 +196,15 @@ export function createCapital(container, onError) {
 
   stage.animate((time, dt) => {
     water.uniforms.time.value = time;
+    koiData.forEach((fish, index) => {
+      const angle = fish.phase + time * 0.35;
+      dummy.position.set(8.6 + Math.cos(angle) * fish.radius, 0.12, -4.2 + Math.sin(angle) * fish.radius * 0.72);
+      dummy.rotation.set(0, -angle + Math.PI / 2, 0);
+      dummy.updateMatrix();
+      const school = koi[fish.school];
+      school.setMatrixAt(Math.floor(index / 3), dummy.matrix);
+    });
+    for (const school of koi) school.instanceMatrix.needsUpdate = true;
     lanterns.forEach((light, index) => { light.intensity = 2.6 + Math.sin(time * 2.2 + index) * 0.45; });
     moon.position.y = 15.5 + Math.sin(time * 0.15) * 0.05;
     mists.forEach((sheet, index) => { sheet.position.x += Math.sin(time * 0.2 + index) * 0.002; });

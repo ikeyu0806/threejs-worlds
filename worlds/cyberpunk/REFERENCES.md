@@ -1,5 +1,7 @@
 # Visual references
 
+屋台と雨合羽の通行人は blender-works の worlds hero kit（`noodle_stall.glb`、`rain_person.glb`）です。狭い路地、頭上の配線、濡れた路面は Cyberpunk 2077 の Japantown / Kabuki、およびブレードランナー以降のアジア系ネオノワールを参照しています。
+
 2026-10-01に「cyberpunk asian alley neon rain night city」でWeb画像検索。提供されたGoogle画像検索の方向性から、狭い路地、突き出す縦看板、頭上の配線、濡れた路面、暖色と青緑の混在を採用。
 
 | 作品 | 作者／サイト | 採用した視覚要素 |

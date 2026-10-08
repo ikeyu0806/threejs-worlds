@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
+import { loadModel } from '../../../shared/models.js';
 
 export const vistas = [
   { id: 'deck', number: '01', name: '観測甲板', en: 'OBSERVATION', position: [0, 4.5, 20], target: [-1, 8, -40], note: '甲板の縁から、環のある星を眺める。' },
@@ -7,7 +8,7 @@ export const vistas = [
   { id: 'nebula', number: '03', name: '星雲の縁', en: 'NEBULA', position: [-10, 7.4, 16], target: [12, 12, -36], note: '色をほどいた雲が、ゆっくり流れる。' },
 ];
 
-export function createCosmos(container, onError) {
+export async function createCosmos(container, onError) {
   const stage = createStage(container, {
     background: '#070814', fog: 0.0065, position: vistas[0].position, target: vistas[0].target,
     label: '環のある惑星と星雲、観測甲板。ドラッグで見回せます。',
@@ -213,6 +214,31 @@ export function createCosmos(container, onError) {
   const dust = new THREE.Points(moteGeometry, new THREE.PointsMaterial({ color: '#d5def8', size: 0.035, transparent: true, opacity: 0.45, depthWrite: false }));
   scene.add(dust);
 
+  const [asteroids, debris, fighter] = await Promise.all([
+    loadModel('asteroid_set.glb'),
+    loadModel('space_debris_set.glb'),
+    loadModel('trace_fighter.glb'),
+  ]);
+  const field = [];
+  for (let i = 0; i < 4; i++) {
+    const rock = asteroids.scene.clone(true);
+    rock.position.set(-8 + Math.cos(i * 1.4) * 22, 7 + i * 2.2, -30 - i * 6);
+    rock.scale.setScalar(0.7 + i * 0.15);
+    scene.add(rock);
+    field.push(rock);
+  }
+  for (let i = 0; i < 3; i++) {
+    const scrap = debris.scene.clone(true);
+    scrap.position.set(12 - i * 6, 5.5 + i, -18 - i * 8);
+    scrap.scale.setScalar(0.42);
+    scrap.rotation.y = i;
+    scene.add(scrap);
+    field.push(scrap);
+  }
+  const ship = fighter.scene;
+  ship.scale.setScalar(0.55);
+  scene.add(ship);
+
   stage.animate(time => {
     planetMaterial.uniforms.time.value = rings.material.uniforms.time.value = nebula.material.uniforms.time.value = starMaterial.uniforms.time.value = time;
     moonPivot.rotation.y = time * 0.08;
@@ -221,6 +247,9 @@ export function createCosmos(container, onError) {
     probe.position.set(Math.cos(time * 0.16) * 6.5, 8.1 + Math.sin(time * 0.42) * 0.35, deckCenter.z + Math.sin(time * 0.16) * 4.2);
     probe.rotation.y = -time * 0.16;
     dust.position.y = Math.sin(time * 0.2) * 0.25;
+    field.forEach((piece, index) => { piece.rotation.y = time * (0.05 + index * 0.01); });
+    ship.position.set(Math.cos(time * 0.12) * 14, 6.4 + Math.sin(time * 0.3) * 0.6, deckCenter.z - 6 + Math.sin(time * 0.12) * 10);
+    ship.rotation.y = -time * 0.12 + Math.PI;
   });
   return stage;
 }

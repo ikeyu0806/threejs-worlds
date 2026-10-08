@@ -86,4 +86,4 @@ GitHub のリポジトリを連携し、以下の設定でサイト全体を公�
 
 新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` に追加します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
 
-水族館は外部モデルなしで動作します。追加モデルの制作仕様は [こちら](./worlds/aquarium/MODEL_BRIEF.md) に記載しています。
+水族館は [制作仕様](./worlds/aquarium/MODEL_BRIEF.md) の生きもののうち、ジンベエザメを blender-works の GLB で配置しています。街の建物と人物も同じく blender-works で作り、各ワールドの `public/models/` に置いています。

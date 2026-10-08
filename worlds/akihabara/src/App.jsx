@@ -12,9 +12,16 @@ export default function App() {
   const current = vistas.find(item => item.id === vista);
 
   useEffect(() => {
-    try { stage.current = createDistrict(host.current, setError); setReady(true); }
-    catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
-    return () => stage.current?.dispose();
+    let active = true;
+    (async () => {
+      try {
+        const created = await createDistrict(host.current, setError);
+        if (!active) { created.dispose(); return; }
+        stage.current = created;
+        setReady(true);
+      } catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
+    })();
+    return () => { active = false; stage.current?.dispose(); };
   }, []);
   useEffect(() => { stage.current?.pause(paused); }, [paused]);
   useEffect(() => { stage.current?.quality(quality); }, [quality]);
