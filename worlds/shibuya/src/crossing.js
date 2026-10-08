@@ -40,7 +40,7 @@ export async function createCrossing(container, onError) {
   const stage = createStage(container, {
     background: '#4a3040', fog: 0.012, position: vistas[0].position, target: vistas[0].target,
     label: '渋谷のスクランブル交差点。曲面ビジョン、円筒の商業ビル、駅前の広場。ドラッグで見回せます。',
-    bloom: 0.42, bloomThreshold: 0.62, exposure: 1.08, fov: 52, mobileFov: 74,
+    bloom: 0.28, bloomThreshold: 0.82, exposure: 1.02, fov: 52, mobileFov: 74,
     bounds: { minX: -9, maxX: 9, minZ: 0, maxZ: 18 }, onError,
   });
   const { scene } = stage;
@@ -94,7 +94,8 @@ export async function createCrossing(container, onError) {
           float col=floor(vUv.x*6.);
           float row=floor(vUv.y*8.+time*.28);
           float h=fract(sin(col*127.1+row*311.7)*43758.5);
-          vec3 c=mix(vec3(.03,.02,.04), mix(tint, vec3(.95,.95,.98), step(.72,h)), step(.18,h));
+          vec3 c=mix(vec3(.04,.03,.05), mix(tint, vec3(.45,.42,.48), step(.7,h)), step(.22,h));
+          c*=.55;
           c*=.8+.2*step(.9,fract(vUv.y*22.-time*1.4));
           gl_FragColor=vec4(c,1.);
           #include <tonemapping_fragment>
@@ -124,14 +125,17 @@ export async function createCrossing(container, onError) {
     loadModel('street_person.glb'),
   ]);
   qfront.scene.position.set(6.5, 0, -18);
+  qfront.scene.traverse(object => {
+    if (object.isMesh && object.material?.emissiveIntensity > 1) object.material.emissiveIntensity = 1.4;
+  });
   fashion.scene.position.set(-15, 0, -8);
   fashion.scene.rotation.y = 0.5;
   sky.scene.position.set(18, 0, 8);
   dog.scene.position.set(-6.2, 0, 11.4);
   dog.scene.rotation.y = Math.PI;
   scene.add(qfront.scene, fashion.scene, sky.scene, dog.scene);
-  screen(8.4, 6.2, [6.5, 14, -14.6], 0, '#ff4d88');
-  screen(4.2, 2.4, [2.2, 8.2, -14.7], 0, '#47d0e0');
+  screen(6.4, 4.6, [6.5, 13.2, -14.5], 0, '#ff4d88');
+  screen(3.2, 1.8, [2.4, 8.4, -14.6], 0, '#47d0e0');
   screen(3.4, 5.2, [-15, 12, -2.2], Math.PI / 2, '#ffd36a');
 
   const count = matchMedia('(max-width: 700px)').matches ? 48 : 90;
