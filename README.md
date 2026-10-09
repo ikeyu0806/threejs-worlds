@@ -87,3 +87,5 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` に追加します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
 
 水族館の生きもの・珊瑚・岩・海藻・海底・水槽ギャラリーは、blender-works の PELAGIC Aquarium で制作した13点のGLBです。[制作・受け渡し仕様](./worlds/aquarium/MODEL_BRIEF.md) に再生成手順とモデル一覧を記載しています。街の建物と人物も同じく blender-works で作り、各ワールドの `public/models/` に置いています。
+
+入口・古都・宇宙・九龍・渋谷・秋葉原・新宿には、Blenderで制作・検査した49点の詳細モデルを追加しています。[モデルの制作・受け渡し仕様](MODEL_BRIEF.md) に一覧、再生成、検証方法を記載しています。
