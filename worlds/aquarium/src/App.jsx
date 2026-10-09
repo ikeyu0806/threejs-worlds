@@ -19,7 +19,12 @@ export default function App() {
         if (!active) { created.dispose(); return; }
         stage.current = created;
         setReady(true);
-      } catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
+      } catch (failure) {
+        console.error(failure);
+        if (active) setError(failure.message.startsWith('水族館のモデル')
+          ? '海の生きものを読み込めませんでした。通信状態を確認して、再読み込みしてください。'
+          : '3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。');
+      }
     })();
     return () => { active = false; stage.current?.dispose(); };
   }, []);

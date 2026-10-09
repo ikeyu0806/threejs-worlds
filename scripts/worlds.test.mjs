@@ -52,6 +52,17 @@ async function start(script) {
 
 async function request(url) { return fetch(url, { signal: AbortSignal.timeout(10000) }); }
 
+async function verifyAquariumModels(serverUrl) {
+  const modelDirectory = resolve(root, 'worlds/aquarium/public/models');
+  const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'manifest.json'), 'utf8'));
+  for (const file of Object.keys(manifest.models)) {
+    const response = await request(`${serverUrl}/aquarium/models/${file}`);
+    assert.equal(response.status, 200, file);
+    assert.doesNotMatch(response.headers.get('content-type'), /html/, file);
+    assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(resolve(modelDirectory, file)), file);
+  }
+}
+
 test('development routes serve the correct world, modules and public assets', async context => {
   const server = await start('dev.mjs'); context.after(() => server.close());
   for (const route of routes) {
@@ -59,6 +70,11 @@ test('development routes serve the correct world, modules and public assets', as
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.match(html, new RegExp(`<title>${route.title}`));
+    if (route.directory === 'aquarium') {
+      const favicon = /<link rel="icon"[^>]+href="([^"]+)"/.exec(html)?.[1];
+      assert.ok(favicon);
+      assert.equal((await request(new URL(favicon, server.url + route.path))).status, 200);
+    }
     const source = /<script type="module" src="([^"\s]*src\/main\.jsx)"/.exec(html)?.[1];
     assert.ok(source, `Missing module for ${route.directory}`);
     const module = await request(new URL(source, server.url + route.path));
@@ -71,6 +87,7 @@ test('development routes serve the correct world, modules and public assets', as
   }
   assert.equal((await request(server.url + '/unknown-world/')).status, 404);
   assert.equal((await request(server.url + '/aquarium/unknown-file.js')).status, 404);
+  await verifyAquariumModels(server.url);
 });
 
 test('assembled production site serves every entry and its own bundled assets', async context => {
@@ -91,4 +108,5 @@ test('assembled production site serves every entry and its own bundled assets', 
     }
   }
   assert.equal((await request(server.url + '/unknown-world/')).status, 404);
+  await verifyAquariumModels(server.url);
 });
