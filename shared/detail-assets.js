@@ -23,7 +23,8 @@ export function modelCopy(gltf, position = [0, 0, 0], yaw = 0, scale = 1) {
   const model = gltf.scene.clone(true);
   model.position.set(...position);
   model.rotation.y = yaw;
-  model.scale.setScalar(scale);
+  if (Array.isArray(scale)) model.scale.set(...scale);
+  else model.scale.setScalar(scale);
   return model;
 }
 

@@ -1,0 +1,60 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "shinjuku",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "01c2e183f09ac3efbe8777e607f73c687d642a9a",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "avenue_furniture.glb",
+      "sha256": "f19913d227afc56e8c109464ae7d669be9142f15e2ece6ed873f45d7969c11bb",
+      "triangles": 3264,
+      "materials": 7,
+      "embedded_images": 3,
+      "bytes": 254608
+    },
+    {
+      "file": "black_taxi.glb",
+      "sha256": "63e6578c9329c4e77c8ceee91380ff609bfe4dd7dc5fd6082c885db4d80907d4",
+      "triangles": 11524,
+      "materials": 5,
+      "embedded_images": 1,
+      "bytes": 488232
+    },
+    {
+      "file": "cocoon.glb",
+      "sha256": "894190d4d189fb46101df40ff7f96fdd62a909b047cc1a5acfeb80b95c9720b3",
+      "triangles": 34924,
+      "materials": 5,
+      "embedded_images": 2,
+      "bytes": 1998472
+    },
+    {
+      "file": "office_facade.glb",
+      "sha256": "12f9fa7ee50cfa751a26e341df5d8f738fdea55a46903103bdf595e5c770b431",
+      "triangles": 51948,
+      "materials": 6,
+      "embedded_images": 2,
+      "bytes": 2237728
+    },
+    {
+      "file": "station_canopy.glb",
+      "sha256": "c9ebc6162a8a6462d2d9d3133571e1a4db901bc2da9845a985124c2190d92afd",
+      "triangles": 2472,
+      "materials": 4,
+      "embedded_images": 2,
+      "bytes": 183900
+    },
+    {
+      "file": "tocho.glb",
+      "sha256": "456e56e69a6fd3ead2f7ed2a175a0892a267d3db605924dfe250a012d1cc8121",
+      "triangles": 12944,
+      "materials": 8,
+      "embedded_images": 2,
+      "bytes": 839032
+    }
+  ]
+}
