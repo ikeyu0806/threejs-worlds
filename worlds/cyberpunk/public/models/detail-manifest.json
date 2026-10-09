@@ -1,0 +1,60 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "cyberpunk",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "6db2e4c5b4b2ef6134241c296b8ac9f8844a7bc7",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "alley_facade.glb",
+      "sha256": "2f680f34843511a76f3099863968135830a90a5f00a4a1ff45073ebd915c61ea",
+      "triangles": 48564,
+      "materials": 7,
+      "embedded_images": 2,
+      "bytes": 2095584
+    },
+    {
+      "file": "alley_facade_distant.glb",
+      "sha256": "0bb3a8437be4edc1bc24f476caef17f14172a14945c554da8dbce0f9b1f4ffce",
+      "triangles": 3484,
+      "materials": 7,
+      "embedded_images": 2,
+      "bytes": 325972
+    },
+    {
+      "file": "alley_props.glb",
+      "sha256": "f6bfb7372725b8fc73c11ccd3458dc890493728f57d303f5ac597ff83d2b1afb",
+      "triangles": 4980,
+      "materials": 4,
+      "embedded_images": 2,
+      "bytes": 271444
+    },
+    {
+      "file": "pedestrian_bridge.glb",
+      "sha256": "9c02619e2f02f216f283840db2928d16b661231b48f4b50b9b143ae63125477b",
+      "triangles": 19760,
+      "materials": 3,
+      "embedded_images": 1,
+      "bytes": 800720
+    },
+    {
+      "file": "service_drone.glb",
+      "sha256": "7b8a0daae5981261e4d240ef79ab81d825cc1c7bbab4f53550fb56c813850e3d",
+      "triangles": 15360,
+      "materials": 5,
+      "embedded_images": 1,
+      "bytes": 629916
+    },
+    {
+      "file": "vending_terminal.glb",
+      "sha256": "bdaf876b14002ed9437c2ecdaf46fb4c87cc51374feab0e0ed2e70565dc9bbab",
+      "triangles": 3644,
+      "materials": 5,
+      "embedded_images": 1,
+      "bytes": 180136
+    }
+  ]
+}

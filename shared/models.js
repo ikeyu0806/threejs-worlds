@@ -11,6 +11,22 @@ export function loadModel(file) {
   return loader.loadAsync(modelUrl(file));
 }
 
+export function disposeModelTree(root, resources = new Set()) {
+  root.traverse(object => {
+    if (object.geometry) resources.add(object.geometry);
+    for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
+      if (!material) continue;
+      resources.add(material);
+      for (const value of Object.values(material)) if (value?.isTexture) resources.add(value);
+      for (const uniform of Object.values(material.uniforms ?? {})) if (uniform.value?.isTexture) resources.add(uniform.value);
+    }
+  });
+  for (const resource of resources) {
+    if (resource.isTexture) resource.source?.data?.close?.();
+    resource.dispose?.();
+  }
+}
+
 export async function placeModel(scene, file, position, rotationY = 0, scale = 1) {
   const gltf = await loadModel(file);
   const model = gltf.scene;

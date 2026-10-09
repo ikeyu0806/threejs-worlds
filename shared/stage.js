@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { disposeModelTree } from './models.js';
 
 export function seededRandom(seed) {
   return () => {
@@ -163,17 +164,7 @@ export function createStage(container, options) {
       disposed = true;
       renderer.setAnimationLoop(null); observer.disconnect();
       for (const callback of cleanup) callback();
-      const resources = new Set();
-      scene.traverse(object => {
-        if (object.geometry) resources.add(object.geometry);
-        for (const material of Array.isArray(object.material) ? object.material : [object.material]) {
-          if (!material) continue;
-          resources.add(material);
-          for (const value of Object.values(material)) if (value?.isTexture) resources.add(value);
-          for (const uniform of Object.values(material.uniforms ?? {})) if (uniform.value?.isTexture) resources.add(uniform.value);
-        }
-      });
-      for (const resource of resources) resource.dispose();
+      disposeModelTree(scene);
       for (const pass of composer.passes) pass.dispose?.();
       composer.dispose(); renderer.dispose(); canvas.remove();
     },

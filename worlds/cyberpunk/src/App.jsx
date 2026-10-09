@@ -65,7 +65,7 @@ export default function App() {
         if (!active) { created.dispose(); return; }
         city.current = created;
       } catch (e) {
-        console.error(e); setError('3D表示を開始できませんでした。WebGL 2に対応したブラウザで、ハードウェアアクセラレーションを有効にしてください。');
+        console.error(e); if (active) setError(e.message || '3D表示を開始できませんでした。');
       }
     })();
     return () => { active = false; city.current?.dispose(); audio.current?.dispose(); clearTimeout(toastTimeout.current); };

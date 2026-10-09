@@ -4,7 +4,8 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
-import { loadModel } from '../../../shared/models.js';
+import { crowdFrom, disposeModelTree } from '../../../shared/models.js';
+import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
 
 export const DISTRICTS = [
   { id: 'alley', name: '龍門路地', en: 'DRAGON ALLEY', number: '01', position: [0, 2.3, 17], yaw: 0, pitch: 0.09, description: '眠らない屋台。消えないネオン。街の入口は、いつも雨の匂いがする。' },
@@ -159,6 +160,7 @@ export async function createCity(container, callbacks = {}) {
     return mesh;
   }
 
+  const facadePoses = [], propPoses = [];
   // Architecture: repeated structure is instanced, while unique signs stay editable.
   for (const side of [-1, 1]) {
     for (let i = 0; i < 15; i++) {
@@ -166,41 +168,8 @@ export async function createCity(container, callbacks = {}) {
       const height = 18 + random() * 27;
       const x = side * (10.5 + random() * 0.7);
       const facadeX = side * 6.1;
-      const wall = ['wall', 'wall2', 'wall3'][Math.floor(random() * 3)];
-      box(wall, x, height / 2, z, 9, height, 8.05);
-      box('steel', facadeX, 0.18, z, 0.7, 0.36, 8.1);
-      for (let floor = 0; floor < Math.floor(height / 3.3); floor++) {
-        const y = 4.4 + floor * 3;
-        if (y > height - 1) break;
-        box('steel', facadeX - side * 0.05, y - 1.05, z, 0.32, 0.13, 8.2);
-        for (let window = 0; window < 4; window++) {
-          const wz = z - 2.9 + window * 1.85;
-          box('black', facadeX - side * 0.07, y, wz, 0.15, 1.95, 1.35);
-          const light = random();
-          box(light > 0.82 ? 'warmWindow' : light > 0.67 ? 'coolWindow' : 'glass', facadeX - side * 0.17, y, wz, 0.1, 1.55, 1.04);
-          box('steel', facadeX - side * 0.25, y, wz, 0.07, 1.6, 0.055);
-          box('steel', facadeX - side * 0.25, y, wz, 0.07, 0.06, 1.07);
-          if (random() > 0.5 && floor < 6) {
-            box('trim', facadeX - side * 0.43, y - 0.67, wz + 0.74, 0.6, 0.56, 0.73);
-            box('black', facadeX - side * 0.76, y - 0.67, wz + 0.74, 0.04, 0.42, 0.57);
-            for (let slat = 0; slat < 5; slat++) box('steel', facadeX - side * 0.8, y - 0.85 + slat * 0.09, wz + 0.74, 0.03, 0.028, 0.57);
-          }
-        }
-      }
-      // Downpipes, utility conduits, shop shutters, protruding awnings.
-      box('trim', facadeX - side * 0.24, height / 2, z + 3.66, 0.14, height, 0.14);
-      for (let shop = 0; shop < 3; shop++) {
-        const sz = z - 2.6 + shop * 2.6;
-        box('black', facadeX - side * 0.16, 1.55, sz, 0.13, 2.65, 2.36);
-        if (shop === 1 && i % 3 !== 0) {
-          box('warmWindow', facadeX - side * 0.24, 1.6, sz, 0.05, 2.2, 1.9);
-          for (const offset of [-0.7, 0, 0.7]) box('black', facadeX - side * 0.31, 1.6, sz + offset, 0.06, 2.5, 0.065);
-        } else {
-          for (let slat = 0; slat < 18; slat++) box('steel', facadeX - side * 0.27, 0.35 + slat * 0.135, sz, 0.08, 0.09, 2.2);
-        }
-      }
-      box('awning', facadeX - side * 0.8, 3.25, z, 1.8, 0.15, 7.5);
-      box(i % 2 ? 'cyan' : 'red', facadeX - side * 1.7, 3.2, z, 0.05, 0.045, 6.6);
+      random(); // Preserve the street layout seed consumed by the former wall variant.
+      facadePoses.push({ position: [x, 0, z], yaw: side < 0 ? Math.PI / 2 : -Math.PI / 2, height });
       if (i < 12) {
         const labels = side < 0 ? ['龍門', '夜市', '義体修理', '金龍飯店', '記憶', '九龍', '不夜城', '電気', '幸福', '茶館', '賭場', '新生'] : ['電脳', 'ホテル', '診療所', '未来', '無線', '新世界', '遊戯', '紅龍', '電子', '光速', '人造', '銀河'];
         const colors = side < 0 ? ['#ff647b', '#ffc588', '#8fffe0'] : ['#75fce3', '#cb9bff', '#ff819b'];
@@ -230,10 +199,6 @@ export async function createCity(container, callbacks = {}) {
 
   // Overhead bridges and an illuminated gate break the long perspective.
   for (const z of [-44, -82]) {
-    box('steel', 0, 12.5, z, 13.5, 0.6, 2.7);
-    box('black', 0, 14.2, z, 13.5, 0.15, 2.8);
-    for (let x = -6; x <= 6; x += 0.8) box('trim', x, 13.45, z + 1.35, 0.05, 1.7, 0.05);
-    box('cyan', 0, 12.22, z + 1.36, 12.8, 0.045, 0.045);
     sign(z === -44 ? '九 龍 北 区' : '新 世 界', '#8afce2', 0, 10.2, z + 1.4, 6.5, 1.4, { sub: z === -44 ? 'SECTOR 09 / NO CORPORATE JURISDICTION' : 'THE FUTURE BELONGS TO YOU' });
     pointLight('#57ddc4', 65, 0, 10, z + 3, 22);
   }
@@ -256,11 +221,7 @@ export async function createCity(container, callbacks = {}) {
     box('black', side * 4.8, 3.3, z, 0.17, 0.13, 0.17);
     box('black', side * 4.8, 2.42, z, 0.17, 0.12, 0.17);
     if (i % 4 === 0) pointLight('#ff8952', 16, side * 4.4, 2.5, z, 8);
-    if (i % 3 === 0) {
-      box('steel', side * 5.05, 0.55, z - 3, 1.2, 1.1, 1.6);
-      box('black', side * 5.05, 1.14, z - 3, 1.28, 0.12, 1.7);
-      box('amber', side * 4.38, 0.8, z - 3, 0.03, 0.12, 0.36);
-    }
+    if (i % 3 === 0) propPoses.push({ position: [side * 5.05, 0, z - 3], yaw: side < 0 ? Math.PI / 2 : -Math.PI / 2 });
   }
   for (let i = 0; i < 12; i++) {
     const side = i % 2 ? -1 : 1, z = 9 - i * 8;
@@ -269,9 +230,7 @@ export async function createCity(container, callbacks = {}) {
   }
   sign('龍門麺屋', '#ffd4a0', -4, 3.9, -3, 2.8, 0.9, { sub: 'HOT NOODLES / 24 HOURS' });
   // Repair terminal with its own luminous display.
-  box('steel', 5.05, 1.4, -23, 0.9, 2.8, 1.3);
-  sign('義体認証', '#7bfce3', 4.56, 1.95, -23, 0.95, 0.7, { rotation: -Math.PI / 2, sub: 'IDENTITY / SCAN' });
-  box('cyan', 4.55, 0.68, -23, 0.03, 0.1, 0.6);
+  sign('義体認証', '#7bfce3', 4.37, 2.05, -23, 0.95, 0.7, { rotation: -Math.PI / 2, sub: 'IDENTITY / SCAN' });
 
   // Graffiti and flyers are original canvas textures.
   const graffiti = canvasTexture(512, 256, ctx => {
@@ -313,16 +272,6 @@ export async function createCity(container, callbacks = {}) {
 
   // A surveillance drone patrols the street, casting a cyan search beam.
   const drone = new THREE.Group(); scene.add(drone);
-  const droneBody = new THREE.Mesh(own(new THREE.SphereGeometry(0.3, 12, 8)), materials.steel);
-  droneBody.scale.set(1.7, 0.6, 1); drone.add(droneBody);
-  const droneEye = new THREE.Mesh(own(new THREE.SphereGeometry(0.09, 8, 8)), materials.red);
-  droneEye.position.set(0, -0.03, 0.29); drone.add(droneEye);
-  for (const side of [-1, 1]) {
-    const rotor = new THREE.Mesh(own(new THREE.TorusGeometry(0.32, 0.035, 6, 20)), materials.steel);
-    rotor.rotation.x = Math.PI / 2; rotor.position.x = side * 0.7; drone.add(rotor);
-    const light = new THREE.Mesh(own(new THREE.TorusGeometry(0.31, 0.014, 6, 20)), materials.cyan);
-    light.rotation.x = Math.PI / 2; light.position.set(side * 0.7, -0.03, 0); drone.add(light);
-  }
   const coneMat = own(new THREE.MeshBasicMaterial({ color: '#6edbd2', transparent: true, opacity: 0.022, side: THREE.DoubleSide, depthWrite: false, blending: THREE.AdditiveBlending }));
   const beam = new THREE.Mesh(own(new THREE.ConeGeometry(2.3, 6, 24, 1, true)), coneMat);
   beam.position.y = -3.1; drone.add(beam);
@@ -455,11 +404,44 @@ export async function createCity(container, callbacks = {}) {
     camera.aspect = w / Math.max(1, h); camera.updateProjectionMatrix();
     renderer.setSize(w, h); composer.setSize(w, h);
   }
-  const stall = await loadModel('noodle_stall.glb');
-  stall.scene.position.set(-4.2, 0, -3);
-  stall.scene.rotation.y = Math.PI / 2;
-  scene.add(stall.scene);
-  const rainPerson = await loadModel('rain_person.glb');
+  let frame = 0, resizeObserver = null;
+  function disposeCity() {
+    if (disposed) return;
+    disposed = true; cancelAnimationFrame(frame); resizeObserver?.disconnect(); clearKeys();
+    renderer.domElement.removeEventListener('pointerdown', onPointerDown);
+    renderer.domElement.removeEventListener('pointermove', onPointerMove);
+    renderer.domElement.removeEventListener('pointerup', onPointerUp);
+    renderer.domElement.removeEventListener('pointercancel', onPointerUp);
+    window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', clearKeys);
+    document.removeEventListener('visibilitychange', clearKeys);
+    reflector.dispose(); composer.passes.forEach(pass => pass.dispose?.()); composer.dispose();
+    disposeModelTree(scene, resources); renderer.dispose(); renderer.domElement.remove();
+  }
+  const lightingStage = { scene, renderer, dispose: disposeCity, quality() {}, onDispose: callback => own({ dispose: callback }) };
+  const [facadeModel, bridgeModel, terminalModel, droneModel, propsModel, facadeDistant, stall, rainPerson] = await loadStageModels(lightingStage, ['alley_facade.glb', 'pedestrian_bridge.glb', 'vending_terminal.glb', 'service_drone.glb', 'alley_props.glb', 'alley_facade_distant.glb', 'noodle_stall.glb', 'rain_person.glb']);
+  const facadeLevels = [crowdFrom(facadeModel.scene, facadePoses.length), crowdFrom(facadeDistant.scene, facadePoses.length)];
+  const facadePose = new THREE.Object3D();
+  let lastFacadeZ = Infinity;
+  function updateFacades() {
+    if (Math.abs(camera.position.z - lastFacadeZ) < 2) return;
+    lastFacadeZ = camera.position.z;
+    const counts = [0, 0];
+    for (const pose of facadePoses) {
+      const level = Math.abs(pose.position[2] - camera.position.z) < (mobile ? 20 : 32) ? 0 : 1;
+      facadePose.position.set(...pose.position); facadePose.rotation.set(0, pose.yaw, 0); facadePose.scale.set(1, pose.height / 24, 1); facadePose.updateMatrix();
+      for (const part of facadeLevels[level]) part.mesh.setMatrixAt(counts[level], facadePose.matrix);
+      counts[level]++;
+    }
+    facadeLevels.forEach((parts, level) => { for (const part of parts) { part.mesh.count = counts[level]; part.mesh.instanceMatrix.needsUpdate = true; } });
+  }
+  facadeLevels.forEach((parts, level) => parts.forEach((part, index) => { part.mesh.name = `Facade.LOD${level}.${index}`; scene.add(part.mesh); }));
+  updateFacades();
+  for (const z of [-44, -82]) scene.add(modelCopy(bridgeModel, [0, 12.2, z]));
+  for (const pose of propPoses) scene.add(modelCopy(propsModel, pose.position, pose.yaw, .75));
+  scene.add(modelCopy(terminalModel, [5.05, 0, -23], -Math.PI / 2));
+  drone.add(modelCopy(droneModel));
+  stall.scene.position.set(-4.2, 0, -3); stall.scene.rotation.y = Math.PI / 2; scene.add(stall.scene);
+  enhanceStage(lightingStage, moon, { extent: 65, target: [0, 0, -40], environment: .3 });
   for (let i = 0; i < 10; i++) {
     const person = rainPerson.scene.clone(true);
     person.position.set((random() - 0.5) * 5.2, 0, 8 - random() * 90);
@@ -468,16 +450,16 @@ export async function createCity(container, callbacks = {}) {
     inhabitants.push({ person, z: person.position.z, phase: random() * 10 });
   }
 
-  const resizeObserver = new ResizeObserver(resize); resizeObserver.observe(container); resize();
-  let last = performance.now(), elapsed = 0, frame = 0, statusTimer = 0;
+  resizeObserver = new ResizeObserver(resize); resizeObserver.observe(container); resize();
+  let last = performance.now(), elapsed = 0, statusTimer = 0;
   const cameraEuler = new THREE.Euler(0, 0, 0, 'YXZ');
   function animate(now) {
     if (disposed) return;
     frame = requestAnimationFrame(animate);
     const dt = Math.min((now - last) / 1000, 0.05); last = now;
     if (document.hidden) return;
-    if (!paused) {
-      elapsed += dt;
+    if (!paused || destination) {
+      if (!paused) elapsed += dt;
       if (destination) {
         const speed = reducedMotion ? 1 : 1 - Math.exp(-dt * 3);
         camera.position.lerp(destination.position, speed);
@@ -498,7 +480,7 @@ export async function createCity(container, callbacks = {}) {
       }
       cameraEuler.set(-pitch, yaw + (mode === 'cinematic' && !dragging && !reducedMotion && !destination ? Math.sin(elapsed * 0.11) * 0.016 : 0), 0);
       camera.quaternion.setFromEuler(cameraEuler);
-      if (!reducedMotion) {
+      if (!paused && !reducedMotion) {
         drone.position.set(Math.sin(elapsed * 0.23) * 2.2, 7.5 + Math.sin(elapsed * 0.6) * 0.35, -20 + Math.sin(elapsed * 0.12) * 20);
         drone.rotation.y = Math.sin(elapsed * 0.2) * 0.3;
         holoGroup.rotation.y = elapsed * 0.18; core.rotation.z = elapsed * 0.1;
@@ -520,7 +502,7 @@ export async function createCity(container, callbacks = {}) {
         reflector.material.uniforms.uTime.value = elapsed;
       }
     }
-    composer.render(dt);
+    updateFacades(); composer.render(dt);
     statusTimer += dt;
     if (statusTimer > 0.25) { callbacks.onPosition?.({ x: camera.position.x, z: camera.position.z, yaw }); statusTimer = 0; }
   }
@@ -528,6 +510,7 @@ export async function createCity(container, callbacks = {}) {
   frame = requestAnimationFrame(animate);
   callbacks.onReady?.();
   return {
+    scene, camera, renderer, canvas: renderer.domElement,
     setMode(value) { mode = value; clearKeys(); },
     setPaused(value) { paused = value; clearKeys(); },
     setTouchMove(x, y) { touchMove = [x, y]; },
@@ -540,23 +523,14 @@ export async function createCity(container, callbacks = {}) {
       rainAmount = value; rain.visible = value > 0; rainMat.opacity = value * 0.3;
       rainGeo.setDrawRange(0, Math.floor(rainCount * value) * 2);
       bloom.strength = bloomValue; scene.fog.density = fog;
+      lightingStage.quality(quality);
       renderer.setPixelRatio(Math.min(window.devicePixelRatio, quality === 'high' ? (mobile ? 1.25 : 1.5) : 1)); resize();
       reflector.visible = quality === 'high'; roadMat.opacity = quality === 'high' ? 0.52 : 1;
     },
     capture() {
-      composer.render();
+      updateFacades(); composer.render();
       return new Promise(resolve => renderer.domElement.toBlob(resolve, 'image/png'));
     },
-    dispose() {
-      disposed = true; cancelAnimationFrame(frame); resizeObserver.disconnect(); clearKeys();
-      renderer.domElement.removeEventListener('pointerdown', onPointerDown);
-      renderer.domElement.removeEventListener('pointermove', onPointerMove);
-      renderer.domElement.removeEventListener('pointerup', onPointerUp);
-      renderer.domElement.removeEventListener('pointercancel', onPointerUp);
-      window.removeEventListener('keydown', onKeyDown); window.removeEventListener('keyup', onKeyUp); window.removeEventListener('blur', clearKeys);
-      document.removeEventListener('visibilitychange', clearKeys);
-      reflector.dispose(); composer.passes.forEach(pass => pass.dispose?.()); composer.dispose();
-      resources.forEach(resource => resource.dispose?.()); renderer.dispose(); renderer.domElement.remove();
-    },
+    dispose: disposeCity,
   };
 }
