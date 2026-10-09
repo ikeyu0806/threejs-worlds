@@ -1,0 +1,76 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "shibuya",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "d02909cb689e8e630ce1da3b59017e66cda1d6d8",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "commercial_block.glb",
+      "sha256": "dbad5f4febace574d5679b2aea6f93864b1aeac5e695d4f3fd6ff83d8c1a75d5",
+      "triangles": 19008,
+      "materials": 6,
+      "embedded_images": 2,
+      "bytes": 873152
+    },
+    {
+      "file": "electric_bus.glb",
+      "sha256": "6b4555eeeb55e355a382584293e0eb6d2ada38f1b350d136b6447949e4130cdc",
+      "triangles": 15512,
+      "materials": 6,
+      "embedded_images": 1,
+      "bytes": 652280
+    },
+    {
+      "file": "fashion_tower.glb",
+      "sha256": "f1e6a450d529ea5c6bc6ca12c255388914666e7c42a68a2f585a9c28c45123a7",
+      "triangles": 44088,
+      "materials": 6,
+      "embedded_images": 2,
+      "bytes": 1879332
+    },
+    {
+      "file": "meet_dog.glb",
+      "sha256": "301cf2e71e18d5ea8dcae54b93f108f85722734147098b81622ff79844a04bd5",
+      "triangles": 6016,
+      "materials": 3,
+      "embedded_images": 2,
+      "bytes": 280776
+    },
+    {
+      "file": "plaza_furniture.glb",
+      "sha256": "de27134e217d33b6078f153c2fcd35bcacee4e5e87ed6e3ac8fa37f6c47ef4a6",
+      "triangles": 4576,
+      "materials": 7,
+      "embedded_images": 3,
+      "bytes": 304424
+    },
+    {
+      "file": "qfront.glb",
+      "sha256": "78d352b8ea6c79f25d23e794a5eba9e071d77311433545364e90b91477934bda",
+      "triangles": 11340,
+      "materials": 7,
+      "embedded_images": 2,
+      "bytes": 556816
+    },
+    {
+      "file": "signal_mast.glb",
+      "sha256": "c7caf28939deef738eb6025cd94d7749b06d1e259656789e0acc45ac6b7d476f",
+      "triangles": 2276,
+      "materials": 4,
+      "embedded_images": 1,
+      "bytes": 111240
+    },
+    {
+      "file": "sky_tower.glb",
+      "sha256": "6305d97f2455b132db510812ecd7b4953e175869d206023bd9016887a815fbc9",
+      "triangles": 36212,
+      "materials": 6,
+      "embedded_images": 2,
+      "bytes": 1585704
+    }
+  ]
+}

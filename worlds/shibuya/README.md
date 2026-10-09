@@ -10,3 +10,9 @@
 - 街の案内で軽量表示に切り替えられます。動きを減らす設定と背景タブの描画休止に対応しています。
 
 WebGL 2 対応のブラウザが必要です。
+
+## Detailed Blender crossing
+
+既存の商業塔を制作ソースから拡張し、窓枠・エントランス・屋上設備を加える。信号柱、電気バス、広場のベンチと植栽、秋田犬のブロンズ像、周辺ビルも `blender-works/assets/environments/worlds_detail_kit/shibuya.py` で制作。GLBの制作commitとSHA256は `public/models/detail-manifest.json` に記録する。
+
+道路の表示と大型ビジョン、群衆と信号の周期はブラウザで制御。モデルはPBR環境反射とdesktopの影に対応し、mobile/軽量では影を省略する。

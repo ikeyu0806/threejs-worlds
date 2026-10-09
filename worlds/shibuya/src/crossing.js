@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
-import { crowdFrom, loadModel } from '../../../shared/models.js';
+import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
+import { crowdFrom } from '../../../shared/models.js';
 
 export const vistas = [
   { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 8.2, 18], target: [2, 4, -8], note: 'ハチ公口の前で、全員が一度に渡る。' },
@@ -46,17 +47,6 @@ export async function createCrossing(container, onError) {
   const { scene } = stage;
   const random = seededRandom(109);
   const standard = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.72, ...extra });
-  const concrete = standard('#3a3438');
-  const dark = standard('#221c22', { roughness: 0.5, metalness: 0.2 });
-  const cube = new THREE.BoxGeometry(1, 1, 1);
-  function box(material, position, scale, parent = scene) {
-    const result = new THREE.Mesh(cube, material);
-    result.position.set(...position);
-    result.scale.set(...scale);
-    parent.add(result);
-    return result;
-  }
-
   scene.add(new THREE.HemisphereLight('#ffd2c2', '#2a2030', 1.25));
   const sun = new THREE.DirectionalLight('#ffc2a0', 2.1);
   sun.position.set(-18, 22, 10);
@@ -71,24 +61,18 @@ export async function createCrossing(container, onError) {
   crossing.position.set(0, 0.02, 0);
   scene.add(crossing);
 
-  function block(x, z, w, d, h, color = '#3c3640') {
-    box(standard(color, { roughness: 0.8 }), [x, h / 2, z], [w, h, d]);
-    for (let floor = 2; floor < h - 2; floor += 3) {
-      box(dark, [x, floor, z + d / 2 + 0.05], [w * 0.82, 0.7, 0.08]);
-    }
+  const [qfront, fashion, sky, dog, person, block, signal, bus, plaza] = await loadStageModels(stage, ['qfront.glb', 'fashion_tower.glb', 'sky_tower.glb', 'meet_dog.glb', 'street_person.glb', 'commercial_block.glb', 'signal_mast.glb', 'electric_bus.glb', 'plaza_furniture.glb']);
+  for (const [x, z, width, depth, height] of [[-22, 6, 10, 8, 16], [22, -6, 9, 8, 20], [-20, -18, 12, 8, 14], [0, 24, 28, 10, 12]]) {
+    const building = modelCopy(block, [x, 0, z], z === 24 ? Math.PI : 0);
+    building.scale.set(width / 10, height / 18, depth / 8); scene.add(building);
   }
-  block(-22, 6, 10, 8, 16, '#4a3a44');
-  block(22, -6, 9, 8, 20, '#3a3340');
-  block(-20, -18, 12, 8, 14, '#463848');
-  box(concrete, [0, 6, 24], [28, 12, 10]);
-  box(dark, [0, 12.2, 22], [22, 0.6, 8]);
-  box(standard('#6a5a62'), [8, 1.2, 14], [6, 2.4, 3]);
+  scene.add(modelCopy(bus, [13.5, 0, 4], Math.PI), modelCopy(bus, [-13.5, 0, -7]), modelCopy(plaza, [-9, 0, 11.4], -Math.PI / 2));
 
   const screens = [];
-  function screen(width, height, position, rotationY, tint) {
+  function screen(width, height, position, rotationY, tint, surface = null) {
     const material = new THREE.ShaderMaterial({
-      uniforms: { time: { value: 0 }, tint: { value: new THREE.Color(tint) } },
-      vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
+      uniforms: { time: { value: 0 }, tint: { value: new THREE.Color(tint) }, useModelUV: { value: surface ? 1 : 0 }, bounds: { value: new THREE.Vector4() } },
+      vertexShader: 'varying vec2 vUv; uniform float useModelUV; uniform vec4 bounds; void main(){vUv=useModelUV>.5?(position.xy-bounds.xy)/bounds.zw:uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
       fragmentShader: `varying vec2 vUv; uniform float time; uniform vec3 tint;
         void main(){
           float col=floor(vUv.x*6.);
@@ -102,39 +86,35 @@ export async function createCrossing(container, onError) {
           #include <colorspace_fragment>
         }`,
     });
-    const panel = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
-    panel.position.set(...position);
-    panel.rotation.y = rotationY;
-    scene.add(panel);
+    if (surface) {
+      surface.geometry.computeBoundingBox();
+      const { min, max } = surface.geometry.boundingBox;
+      material.uniforms.bounds.value.set(min.x, min.y, max.x - min.x, max.y - min.y);
+      surface.material.dispose(); surface.material = material;
+    } else {
+      const panel = new THREE.Mesh(new THREE.PlaneGeometry(width, height), material);
+      panel.position.set(...position); panel.rotation.y = rotationY; scene.add(panel);
+    }
     screens.push(material);
   }
 
   const lamps = [];
   for (const [x, z] of [[-12.2, -12.2], [12.2, -12.2], [-12.2, 12.2], [12.2, 12.2]]) {
-    box(dark, [x, 2.2, z], [0.16, 4.4, 0.16]);
-    const lamp = box(new THREE.MeshBasicMaterial({ color: '#ff4455' }), [x, 4.3, z], [0.28, 0.7, 0.28]);
-    lamps.push(lamp);
-    scene.add(new THREE.PointLight('#ff6677', 4, 8, 2).translateX(x).translateY(4).translateZ(z));
+    const mast = modelCopy(signal, [x, 0, z], Math.atan2(-x, -z)); scene.add(mast);
+    mast.traverse(object => { if (object.isMesh && object.name.endsWith('.Signal')) lamps.push(object); });
   }
 
-  const [qfront, fashion, sky, dog, person] = await Promise.all([
-    loadModel('qfront.glb'),
-    loadModel('fashion_tower.glb'),
-    loadModel('sky_tower.glb'),
-    loadModel('meet_dog.glb'),
-    loadModel('street_person.glb'),
-  ]);
   qfront.scene.position.set(6.5, 0, -18);
   qfront.scene.traverse(object => {
-    if (object.isMesh && object.material?.emissiveIntensity > 1) object.material.emissiveIntensity = 1.4;
+    if (object.isMesh && object.material?.name === 'Qfront.Screen') screen(0, 0, null, 0, '#ff4d88', object);
+    else if (object.isMesh && object.material?.emissiveIntensity > 1) object.material.emissiveIntensity = 1.4;
   });
   fashion.scene.position.set(-15, 0, -8);
   fashion.scene.rotation.y = 0.5;
   sky.scene.position.set(18, 0, 8);
   dog.scene.position.set(-6.2, 0, 11.4);
-  dog.scene.rotation.y = Math.PI;
+  dog.scene.rotation.y = .35;
   scene.add(qfront.scene, fashion.scene, sky.scene, dog.scene);
-  screen(6.4, 4.6, [6.5, 13.2, -14.5], 0, '#ff4d88');
   screen(3.2, 1.8, [2.4, 8.4, -14.6], 0, '#47d0e0');
   screen(3.4, 5.2, [-15, 12, -2.2], Math.PI / 2, '#ffd36a');
 
@@ -168,11 +148,12 @@ export async function createCrossing(container, onError) {
   const dummy = new THREE.Object3D();
   const coatColor = new THREE.Color();
 
+  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -5], environment: .35 });
   stage.animate(time => {
     for (const material of screens) material.uniforms.time.value = time;
     const cycle = (time % 16);
     const walking = cycle > 6 && cycle < 14;
-    for (const lamp of lamps) lamp.material.color.set(walking ? '#35e07a' : '#ff4455');
+    for (const lamp of lamps) { lamp.material.color.set(walking ? '#35e07a' : '#ff4455'); lamp.material.emissive.copy(lamp.material.color); }
     const alpha = walking ? Math.min(1, (cycle - 6) / 7) : (cycle >= 14 ? 1 : 0);
     const eased = alpha * alpha * (3 - 2 * alpha);
     crowd.forEach((personPath, index) => {
