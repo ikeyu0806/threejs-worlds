@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
-import { crowdFrom } from '../../../shared/models.js';
+import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 import { loadStageModels, modelCopy, enhanceStage } from '../../../shared/detail-assets.js';
 
 export const vistas = [
@@ -118,13 +118,13 @@ export async function createDistrict(container, onError) {
     arcade.intensity = 16 + Math.sin(time * 3) * 4;
     walkers.forEach((walker, index) => {
       const travel = ((walker.phase + time * walker.speed * 0.08) % 1) * 36 - 14;
-      dummy.position.set(walker.x, 0, walker.direction > 0 ? travel : -travel);
+      dummy.position.set(walker.x, .02, walker.direction > 0 ? travel : -travel);
       dummy.rotation.set(0, walker.direction > 0 ? 0 : Math.PI, 0);
       dummy.scale.setScalar(0.94);
       dummy.updateMatrix();
       coatColor.set(walker.coat);
+      setCrowdPose(parts, index, dummy.matrix, time * 6 + walker.phase * Math.PI * 2, .24);
       for (const part of parts) {
-        part.mesh.setMatrixAt(index, dummy.matrix);
         if (part.tint) part.mesh.setColorAt(index, coatColor);
       }
     });

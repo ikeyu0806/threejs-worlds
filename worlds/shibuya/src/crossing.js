@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
-import { crowdFrom } from '../../../shared/models.js';
+import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 
 export const vistas = [
   { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 8.2, 18], target: [2, 4, -8], note: 'ハチ公口の前で、全員が一度に渡る。' },
@@ -101,7 +101,7 @@ export async function createCrossing(container, onError) {
   const lamps = [];
   for (const [x, z] of [[-12.2, -12.2], [12.2, -12.2], [-12.2, 12.2], [12.2, 12.2]]) {
     const mast = modelCopy(signal, [x, 0, z], Math.atan2(-x, -z)); scene.add(mast);
-    mast.traverse(object => { if (object.isMesh && object.name.endsWith('.Signal')) lamps.push(object); });
+    mast.traverse(object => { if (object.isMesh && object.material?.name.endsWith('.Signal')) lamps.push(object); });
   }
 
   qfront.scene.position.set(6.5, 0, -18);
@@ -158,14 +158,14 @@ export async function createCrossing(container, onError) {
     const eased = alpha * alpha * (3 - 2 * alpha);
     crowd.forEach((personPath, index) => {
       dummy.position.lerpVectors(personPath.from, personPath.to, eased);
-      dummy.position.y = 0;
+      dummy.position.y = walking ? .02 : 0;
       const direction = personPath.to.clone().sub(personPath.from);
       dummy.rotation.set(0, Math.atan2(direction.x, direction.z), 0);
       dummy.scale.setScalar(0.92 + (personPath.offset % 0.12));
       dummy.updateMatrix();
       coatColor.set(personPath.coat);
+      setCrowdPose(parts, index, dummy.matrix, time * 6 + personPath.offset * Math.PI * 2, walking ? .24 : 0);
       for (const part of parts) {
-        part.mesh.setMatrixAt(index, dummy.matrix);
         if (part.tint) part.mesh.setColorAt(index, coatColor);
       }
     });

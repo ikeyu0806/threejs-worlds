@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "shibuya",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "d02909cb689e8e630ce1da3b59017e66cda1d6d8",
+  "source_commit": "c220bb7910aa8175e37fae62a69c8da553c6f677",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -71,6 +71,14 @@
       "materials": 6,
       "embedded_images": 2,
       "bytes": 1585704
+    },
+    {
+      "file": "street_person.glb",
+      "sha256": "e37678fbbb27fd1a23615aa4c52747327c2ff42b816df751f1cffc550fe04df3",
+      "triangles": 2200,
+      "materials": 4,
+      "embedded_images": 1,
+      "bytes": 140912
     }
   ]
 }

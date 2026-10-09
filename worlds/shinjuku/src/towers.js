@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
-import { crowdFrom } from '../../../shared/models.js';
+import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 import { loadStageModels, modelCopy, enhanceStage } from '../../../shared/detail-assets.js';
 
 export const vistas = [
@@ -88,12 +88,12 @@ export async function createTowers(container, onError) {
     });
     walkers.forEach((walker, index) => {
       const z = ((walker.phase + time * walker.speed * 0.05) % 1) * 22;
-      dummy.position.set(walker.side, 0, z);
+      dummy.position.set(walker.side, .02, z);
       dummy.rotation.set(0, walker.side > 0 ? Math.PI : 0, 0);
       dummy.updateMatrix();
       coatColor.set(walker.coat);
+      setCrowdPose(parts, index, dummy.matrix, time * 6 + walker.phase * Math.PI * 2, .24);
       for (const part of parts) {
-        part.mesh.setMatrixAt(index, dummy.matrix);
         if (part.tint) part.mesh.setColorAt(index, coatColor);
       }
     });

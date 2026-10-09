@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "akihabara",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "779b1c33f8bc98d57f47a70b1ce555aa5705aeba",
+  "source_commit": "c220bb7910aa8175e37fae62a69c8da553c6f677",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -55,6 +55,14 @@
       "materials": 4,
       "embedded_images": 2,
       "bytes": 1299624
+    },
+    {
+      "file": "street_person.glb",
+      "sha256": "70668e0417162953abab7c113db453106952a346493924865e88bb049d2621e9",
+      "triangles": 2200,
+      "materials": 4,
+      "embedded_images": 1,
+      "bytes": 140916
     },
     {
       "file": "utility_pole.glb",

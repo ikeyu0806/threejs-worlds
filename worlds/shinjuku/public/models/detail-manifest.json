@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "shinjuku",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "01c2e183f09ac3efbe8777e607f73c687d642a9a",
+  "source_commit": "c220bb7910aa8175e37fae62a69c8da553c6f677",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -47,6 +47,14 @@
       "materials": 4,
       "embedded_images": 2,
       "bytes": 183900
+    },
+    {
+      "file": "street_person.glb",
+      "sha256": "72cb3edd3acfc4380154ab80aa7b606de075d6104ea61d26732cad4e509be209",
+      "triangles": 2200,
+      "materials": 4,
+      "embedded_images": 1,
+      "bytes": 140912
     },
     {
       "file": "tocho.glb",
