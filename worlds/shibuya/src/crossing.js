@@ -66,12 +66,12 @@ export async function createCrossing(container, onError) {
     const building = modelCopy(block, [x, 0, z], z === 24 ? Math.PI : 0);
     building.scale.set(width / 10, height / 18, depth / 8); scene.add(building);
   }
-  scene.add(modelCopy(bus, [13.5, 0, 4], Math.PI), modelCopy(bus, [-13.5, 0, -7]), modelCopy(plaza, [-9, 0, 11.4], -Math.PI / 2));
+  scene.add(modelCopy(bus, [18, 0, 1.05], -Math.PI / 2), modelCopy(bus, [-19, 0, .2], Math.PI / 2), modelCopy(plaza, [-9, 0, 11.4], -Math.PI / 2));
 
   const screens = [];
   function screen(width, height, position, rotationY, tint, surface = null) {
     const material = new THREE.ShaderMaterial({
-      uniforms: { time: { value: 0 }, tint: { value: new THREE.Color(tint) }, useModelUV: { value: surface ? 1 : 0 }, bounds: { value: new THREE.Vector4() } },
+      uniforms: { time: { value: 0 }, tint: { value: new THREE.Color(tint) }, useModelUV: { value: surface ? 1 : 0 }, bounds: { value: new THREE.Vector4(0, 0, 1, 1) } },
       vertexShader: 'varying vec2 vUv; uniform float useModelUV; uniform vec4 bounds; void main(){vUv=useModelUV>.5?(position.xy-bounds.xy)/bounds.zw:uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
       fragmentShader: `varying vec2 vUv; uniform float time; uniform vec3 tint;
         void main(){
