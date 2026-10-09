@@ -27,4 +27,4 @@ description: Three.jsのワールドを追加・修正し、必要な3Dモデル
 
 ## 作業単位
 
-基盤、モデルの取り込み、ワールドごとの配置を分け、各単位で表示を確認してから commit する。`main` へ push すると Cloudflare Pages が `npm run build` の `dist/` を公開する。
+基盤、モデルの取り込み、ワールドごとの配置を分け、各単位で表示を確認してから commit する。`main` へ push すると GitHub Actions がビルドとテストを実行し、成功後に Cloudflare Pages が `npm run build` の `dist/` を公開する。

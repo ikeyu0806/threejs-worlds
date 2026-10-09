@@ -68,7 +68,7 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 
 ## Cloudflare Pages での公開
 
-GitHub のリポジトリを連携し、以下の設定でサイト全体を公開します。
+`main` への push で GitHub Actions が `npm ci`、`npm run build`、`npm test` を実行します。テストが成功すると、リポジトリシークレット `CLOUDFLARE_PAGES_DEPLOY_HOOK` から Cloudflare Pages の本番ビルドを起動します。本番ブランチの Git 連携による自動ビルドは止めてあり、テストを通過したコミットだけが公開されます。`main` 以外のブランチは、これまでどおり Cloudflare Pages がプレビューをビルドします。
 
 | 項目 | 設定 |
 | --- | --- |
@@ -78,7 +78,7 @@ GitHub のリポジトリを連携し、以下の設定でサイト全体を公�
 | 出力ディレクトリ | `dist` |
 | Node.js | `.node-version` の `24` |
 
-`main` に変更を push すると自動で更新されます。静的ファイルのみを配信するため、Cloudflare Pages の無料枠で運用できます。
+静的ファイルのみを配信するため、Cloudflare Pages の無料枠で運用できます。
 
 ## 今後の追加方針
 
