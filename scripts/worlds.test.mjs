@@ -63,6 +63,20 @@ async function verifyAquariumModels(serverUrl) {
   }
 }
 
+async function verifyDetailedModels(serverUrl) {
+  for (const world of ['entrance']) {
+    const modelDirectory = resolve(root, 'worlds', world, 'public/models');
+    const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'detail-manifest.json'), 'utf8'));
+    const prefix = world === 'entrance' ? '' : `/${world}`;
+    for (const { file } of manifest.assets) {
+      const response = await request(`${serverUrl}${prefix}/models/${file}`);
+      assert.equal(response.status, 200, `${world}/${file}`);
+      assert.doesNotMatch(response.headers.get('content-type'), /html/);
+      assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(resolve(modelDirectory, file)), `${world}/${file}`);
+    }
+  }
+}
+
 test('development routes serve the correct world, modules and public assets', async context => {
   const server = await start('dev.mjs'); context.after(() => server.close());
   for (const route of routes) {
@@ -70,7 +84,7 @@ test('development routes serve the correct world, modules and public assets', as
     assert.equal(response.status, 200);
     const html = await response.text();
     assert.match(html, new RegExp(`<title>${route.title}`));
-    if (route.directory === 'aquarium') {
+    {
       const favicon = /<link rel="icon"[^>]+href="([^"]+)"/.exec(html)?.[1];
       assert.ok(favicon);
       assert.equal((await request(new URL(favicon, server.url + route.path))).status, 200);
@@ -88,6 +102,7 @@ test('development routes serve the correct world, modules and public assets', as
   assert.equal((await request(server.url + '/unknown-world/')).status, 404);
   assert.equal((await request(server.url + '/aquarium/unknown-file.js')).status, 404);
   await verifyAquariumModels(server.url);
+  await verifyDetailedModels(server.url);
 });
 
 test('assembled production site serves every entry and its own bundled assets', async context => {
@@ -109,4 +124,5 @@ test('assembled production site serves every entry and its own bundled assets', 
   }
   assert.equal((await request(server.url + '/unknown-world/')).status, 404);
   await verifyAquariumModels(server.url);
+  await verifyDetailedModels(server.url);
 });

@@ -138,7 +138,7 @@ export function createStage(container, options) {
 
   return {
     scene, camera, renderer, canvas,
-    animate: callback => callbacks.push(callback),
+    animate: callback => { callbacks.push(callback); animated = false; },
     onDispose: callback => cleanup.push(callback),
     travel(nextPosition, nextTarget) {
       walking = false; clearInput(); yaw = pitch = 0;

@@ -1,0 +1,36 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "entrance",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "a5f966ad56f56fac59f597007948df13892ef8f9",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "limestone_atrium.glb",
+      "sha256": "e247deeb5f43ce73c37ebefbb372c3a7f7a496c20572aef7f111583d7bdba660",
+      "triangles": 32184,
+      "materials": 5,
+      "embedded_images": 2,
+      "bytes": 1419216
+    },
+    {
+      "file": "orbit_sculpture.glb",
+      "sha256": "9bbd0189450a230260eba6cb2ac08669f33a9e4551ed56dcff0ca044034cac74",
+      "triangles": 27440,
+      "materials": 2,
+      "embedded_images": 1,
+      "bytes": 1032344
+    },
+    {
+      "file": "portal_frame.glb",
+      "sha256": "b97e58460d936ba7ce13bb30dd3b9c4339df4aeb351bdd9da2b21b13e06ee2b6",
+      "triangles": 13084,
+      "materials": 3,
+      "embedded_images": 2,
+      "bytes": 617756
+    }
+  ]
+}

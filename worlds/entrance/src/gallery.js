@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
+import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
 import { worlds } from '../../../shared/worlds.js';
 
 function arch(radius, height, bottom = 0, hole = false) {
@@ -33,7 +34,7 @@ const halfSpan = Math.max(...portalXs.map(x => Math.abs(x)), 5.5);
 const viewAngle = crowded ? 31 : worlds.length > 2 ? 27 : 24;
 const galleryDistance = (halfSpan + (crowded ? 2.2 : 4.2)) / Math.tan(THREE.MathUtils.degToRad(viewAngle));
 
-export function createGallery(container, { onHover, onError }) {
+export async function createGallery(container, { onHover, onError }) {
   const portals = [], raycaster = new THREE.Raycaster(), pointer = new THREE.Vector2();
   function intersect(event) {
     const rect = stage.canvas.getBoundingClientRect();
@@ -51,36 +52,12 @@ export function createGallery(container, { onHover, onError }) {
   const { scene } = stage;
   const random = seededRandom(1947);
   const material = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.6, ...extra });
-  const limestone = material('#ddd6c7');
-  const ivory = material('#e7e0d2', { roughness: 0.4 });
-  const metal = material('#a8936b', { metalness: 0.7, roughness: 0.3 });
-  const warm = new THREE.MeshBasicMaterial({ color: '#fbe8c4' });
-  const cube = new THREE.BoxGeometry(1, 1, 1);
   function mesh(geometry, mat, position, scale = [1, 1, 1], parent = scene) {
     const object = new THREE.Mesh(geometry, mat); object.position.set(...position); object.scale.set(...scale); parent.add(object); return object;
   }
-  function box(mat, position, scale, parent) { return mesh(cube, mat, position, scale, parent); }
   scene.add(new THREE.HemisphereLight('#fff8e8', '#98978b', 3));
   const sunlight = new THREE.DirectionalLight('#fff2d2', 3.5); sunlight.position.set(-14, 25, 12); scene.add(sunlight);
-  stage.renderer.shadowMap.enabled = true;
-  stage.renderer.shadowMap.type = THREE.PCFShadowMap;
-  sunlight.castShadow = true;
-  sunlight.shadow.mapSize.set(2048, 2048);
-  Object.assign(sunlight.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 75 });
-  sunlight.shadow.normalBias = 0.04;
   const bounce = new THREE.DirectionalLight('#d5e4ed', 1.7); bounce.position.set(12, 6, 8); scene.add(bounce);
-
-  const outerColumn = halfSpan + (crowded ? 5 : 7.5);
-  const hall = Math.max(31, outerColumn + 8);
-  const columnXs = [-outerColumn, outerColumn];
-  if (!crowded) {
-    for (let i = 0; i < portalXs.length - 1; i++) {
-      const mid = (portalXs[i] + portalXs[i + 1]) / 2;
-      if (Math.abs(mid) > 2.8) columnXs.push(mid);
-    }
-    if (outerColumn + 7 < hall - 2) columnXs.push(-(outerColumn + 7), outerColumn + 7);
-  }
-  const centerBlocked = portalXs.some(x => Math.abs(x) < 3);
 
   // A textured stone floor, open colonnade and sunken display plinths.
   const canvas = document.createElement('canvas'); canvas.width = canvas.height = 512;
@@ -95,27 +72,8 @@ export function createGallery(container, { onHover, onError }) {
   texture.wrapS = texture.wrapT = THREE.RepeatWrapping; texture.repeat.set(18, 18);
   const floor = mesh(new THREE.PlaneGeometry(110, 110), material('#ded8cb', { map: texture, metalness: 0.14, roughness: 0.32 }), [0, -0.1, 0]);
   floor.rotation.x = -Math.PI / 2;
-  box(limestone, [0, 7.5, -10], [hall * 2, 15, 1]);
-  for (const x of columnXs) {
-    box(ivory, [x, 6, -4], [0.9, 12, 10]);
-    box(limestone, [x, 0.3, -4], [1.4, 0.6, 11]);
-    box(limestone, [x, 11.8, -4], [1.7, 0.5, 11]);
-  }
-  if (!crowded) for (const x of portalXs) {
-    const shape = arch(3.15, 10.2); shape.holes.push(arch(2.55, 9.6, 0, true));
-    mesh(new THREE.ExtrudeGeometry(shape, { depth: 0.65, bevelEnabled: false, curveSegments: 36 }), ivory, [x, 0, -7]);
-    mesh(new THREE.ShapeGeometry(arch(2.55, 9.6)), material('#c4c0b4'), [x, 0, -7.03]);
-  }
-  box(ivory, [0, 12.7, -3], [hall * 2 - 10, 0.7, 17]);
-  const lightCount = Math.max(5, worlds.length + 2);
-  for (let i = 0; i < lightCount; i++) {
-    const x = (i - (lightCount - 1) / 2) * ((hall * 2 - 16) / lightCount);
-    box(warm, [x, 12.3, -1], [0.045, 0.03, 14]);
-  }
-  for (const x of [-8.8, 8.8]) {
-    box(metal, [x, -0.065, 5], [0.026, 0.015, 28]);
-    box(limestone, [x, 0.25, -2.5], [0.6, 0.5, 0.6]);
-  }
+  const [atrium, frameModel, sculpture] = await loadStageModels(stage, ['limestone_atrium.glb', 'portal_frame.glb', 'orbit_sculpture.glb']);
+  scene.add(modelCopy(atrium));
 
   const portalShader = world => new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3, shibuya: 4, akihabara: 5, shinjuku: 6 }[world.id] ?? 1 }, focus: { value: 0 } },
@@ -201,10 +159,7 @@ export function createGallery(container, { onHover, onError }) {
   worlds.forEach((world, index) => {
     const pose = portalPoses[index];
     const group = new THREE.Group(); group.position.set(pose.x, 0.15, pose.z); group.rotation.y = pose.yaw; if (crowded) group.scale.setScalar(0.88); scene.add(group);
-    mesh(new THREE.CylinderGeometry(2.55, 2.65, 0.18, 64), limestone, [0, 0.01, 0], [1, 1, 1], group);
-    mesh(new THREE.CylinderGeometry(2.35, 2.45, 0.17, 64), ivory, [0, 0.15, 0], [1, 1, 1], group);
-    const frame = arch(1.92, 7.05); frame.holes.push(arch(1.56, 6.65, 0.34, true));
-    mesh(new THREE.ExtrudeGeometry(frame, { depth: 0.48, bevelEnabled: true, bevelThickness: 0.06, bevelSize: 0.055, bevelSegments: 2, curveSegments: 36 }), ivory, [0, 0.3, -0.3], [1, 1, 1], group);
+    group.add(modelCopy(frameModel));
     const rim = arch(1.59, 6.68, 0.3); rim.holes.push(arch(1.55, 6.63, 0.34, true));
     mesh(new THREE.ShapeGeometry(rim), new THREE.MeshBasicMaterial({ color: world.color }), [0, 0.3, 0.23], [1, 1, 1], group);
     const shader = portalShader(world); portalMaterials.push({ id: world.id, shader });
@@ -219,18 +174,8 @@ export function createGallery(container, { onHover, onError }) {
   });
 
   const centerBase = worlds.length > 2 ? [0, 9.8, -4.4] : [0, 4.2, -0.2];
-  const centerpiece = new THREE.Group(); centerpiece.position.set(...centerBase); scene.add(centerpiece);
-  mesh(new THREE.SphereGeometry(0.95, 48, 32), material('#acb5a7', { metalness: 0.63, roughness: 0.22 }), [0, 0, 0], [1, 1, 1], centerpiece);
-  const rings = [];
-  for (let i = 0; i < 3; i++) {
-    const ring = mesh(new THREE.TorusGeometry(1.5 + i * 0.15, 0.017, 6, 100), metal, [0, 0, 0], [1, 1, 1], centerpiece);
-    ring.rotation.set(0.7 + i * 0.5, i * 1.1, i * 0.4); rings.push(ring);
-  }
-  if (!centerBlocked) {
-    mesh(new THREE.CylinderGeometry(1.9, 2.2, 0.17, 64), limestone, [0, 0, 0]);
-    mesh(new THREE.CylinderGeometry(1.5, 1.65, 0.22, 64), ivory, [0, 0.2, 0]);
-    mesh(new THREE.CylinderGeometry(0.6, 0.85, 1.7, 48), ivory, [0, 1.15, 0]);
-  }
+  const centerpiece = modelCopy(sculpture, centerBase); scene.add(centerpiece);
+  const centerBlocked = portalXs.some(x => Math.abs(x) < 3);
   const shadowTextureCanvas = document.createElement('canvas'); shadowTextureCanvas.width = shadowTextureCanvas.height = 128;
   const shadowCtx = shadowTextureCanvas.getContext('2d');
   const gradient = shadowCtx.createRadialGradient(64, 64, 0, 64, 64, 64);
@@ -241,16 +186,12 @@ export function createGallery(container, { onHover, onError }) {
     const shadow = mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false }), [pose.x, -0.075, pose.z]); shadow.rotation.x = -Math.PI / 2;
   }
 
-  scene.traverse(object => {
-    if (object.isMesh && object.material.isMeshStandardMaterial && !object.material.transparent) {
-      object.castShadow = true; object.receiveShadow = true;
-    }
-  });
+  enhanceStage(stage, sunlight, { extent: 32, environment: 0.28 });
 
   let focused = null;
   stage.animate(time => {
     centerpiece.position.y = centerBase[1] + Math.sin(time * 0.45) * (centerBlocked ? 0.08 : 0.14);
-    rings.forEach((ring, index) => { ring.rotation.y = time * (0.035 + index * 0.02) + index * 1.1; });
+    centerpiece.rotation.y = time * 0.045;
     for (const { shader } of portalMaterials) shader.uniforms.time.value = time;
   });
   stage.focus = id => {

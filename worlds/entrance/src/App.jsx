@@ -8,9 +8,15 @@ export default function App() {
   const container = useRef(null), stage = useRef(null);
   const [focused, setFocused] = useState(null), [paused, setPaused] = useState(false), [error, setError] = useState('');
   useEffect(() => {
-    try { stage.current = createGallery(container.current, { onHover: setFocused, onError: setError }); }
-    catch (failure) { console.error(failure); setError('3D 表示を開始できませんでした。画面下のリンクから各ワールドへ移動できます。'); }
-    return () => stage.current?.dispose();
+    let active = true;
+    createGallery(container.current, { onHover: setFocused, onError: setError }).then(created => {
+      if (!active) { created.dispose(); return; }
+      stage.current = created;
+    }).catch(failure => {
+      console.error(failure);
+      if (active) setError(failure.message || '3D 表示を開始できませんでした。画面下のリンクから各ワールドへ移動できます。');
+    });
+    return () => { active = false; stage.current?.dispose(); };
   }, []);
   useEffect(() => { stage.current?.focus(focused); }, [focused]);
   useEffect(() => { stage.current?.pause(paused); }, [paused]);

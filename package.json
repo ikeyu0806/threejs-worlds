@@ -7,7 +7,7 @@
   "workspaces": ["worlds/*"],
   "scripts": {
     "dev": "node scripts/dev.mjs",
-    "test": "node --test scripts/worlds.test.mjs scripts/aquarium-assets.test.mjs",
+    "test": "node --test scripts/worlds.test.mjs scripts/aquarium-assets.test.mjs scripts/detail-assets.test.mjs",
     "dev:entrance": "npm run dev --workspace=@threejs-worlds/entrance --",
     "dev:aquarium": "npm run dev --workspace=@threejs-worlds/aquarium --",
     "dev:cyberpunk": "npm run dev --workspace=@threejs-worlds/cyberpunk --",
