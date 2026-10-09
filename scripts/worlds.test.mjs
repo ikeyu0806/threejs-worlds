@@ -21,16 +21,23 @@ const routes = [
 async function start(script) {
   const socket = createServer(); socket.listen(0, '127.0.0.1'); await once(socket, 'listening');
   const port = socket.address().port; await new Promise(accept => socket.close(accept));
-  const child = spawn(process.execPath, [resolve(root, 'scripts', script), '--port', String(port)], { cwd: root, stdio: ['ignore', 'pipe', 'pipe'] });
+  const env = { ...process.env, FORCE_COLOR: '0' };
+  delete env.NO_COLOR;
+  const child = spawn(process.execPath, [resolve(root, 'scripts', script), '--port', String(port)], {
+    cwd: root,
+    stdio: ['ignore', 'pipe', 'pipe'],
+    env,
+  });
   let output = '';
   try {
     await new Promise((accept, reject) => {
       const timer = setTimeout(() => reject(new Error(`Server did not start: ${output}`)), 15000);
       function finish(error) { clearTimeout(timer); error ? reject(error) : accept(); }
+      function ready() { if (output.replace(/\u001b\[[0-9;]*m/g, '').includes(`:${port}/`)) finish(); }
       child.once('error', finish);
       child.once('exit', code => finish(new Error(`Server exited (${code}): ${output}`)));
-      child.stdout.on('data', chunk => { output += chunk; if (output.includes(`:${port}/`)) finish(); });
-      child.stderr.on('data', chunk => { output += chunk; });
+      child.stdout.on('data', chunk => { output += chunk; ready(); });
+      child.stderr.on('data', chunk => { output += chunk; ready(); });
     });
   } catch (error) { child.kill('SIGTERM'); throw error; }
   return {
