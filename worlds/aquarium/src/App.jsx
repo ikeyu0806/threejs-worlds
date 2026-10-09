@@ -28,9 +28,14 @@ export default function App() {
     })();
     return () => { active = false; stage.current?.dispose(); };
   }, []);
-  useEffect(() => { stage.current?.pause(paused); }, [paused]);
-  useEffect(() => { stage.current?.quality(quality); }, [quality]);
-  useEffect(() => { stage.current?.walk(walking); }, [walking]);
+  useEffect(() => {
+    if (!ready) return;
+    const selected = exhibits.find(item => item.id === exhibit);
+    stage.current?.travel(selected.position, selected.target);
+  }, [ready, exhibit]);
+  useEffect(() => { stage.current?.pause(paused); }, [paused, ready]);
+  useEffect(() => { stage.current?.quality(quality); }, [quality, ready]);
+  useEffect(() => { stage.current?.walk(walking); }, [walking, ready]);
   useEffect(() => {
     const keydown = event => {
       if (['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName) || settings.current?.open) return;

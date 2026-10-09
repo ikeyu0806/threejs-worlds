@@ -61,18 +61,20 @@ export default function App() {
     let active = true;
     (async () => {
       try {
-        const created = await createCity(host.current, { onReady: () => setReady(true), onPosition: setPosition });
+        const created = await createCity(host.current, { onPosition: value => { if (active) setPosition(value); } });
         if (!active) { created.dispose(); return; }
         city.current = created;
+        setReady(true);
       } catch (e) {
         console.error(e); if (active) setError(e.message || '3D表示を開始できませんでした。');
       }
     })();
     return () => { active = false; city.current?.dispose(); audio.current?.dispose(); clearTimeout(toastTimeout.current); };
   }, []);
-  useEffect(() => { city.current?.setMode(mode); }, [mode]);
-  useEffect(() => { city.current?.setPaused(paused || !!dialog); }, [paused, dialog]);
-  useEffect(() => { city.current?.settings(settings); audio.current?.rain(settings.rain); }, [settings]);
+  useEffect(() => { if (ready) city.current?.travel(districtId); }, [ready, districtId]);
+  useEffect(() => { city.current?.setMode(mode); }, [mode, ready]);
+  useEffect(() => { city.current?.setPaused(paused || !!dialog); }, [paused, dialog, ready]);
+  useEffect(() => { city.current?.settings(settings); audio.current?.rain(settings.rain); }, [settings, ready]);
   useEffect(() => () => { if (photo) URL.revokeObjectURL(photo.url); }, [photo]);
   useEffect(() => {
     const onKey = e => {

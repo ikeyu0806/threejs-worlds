@@ -6,20 +6,22 @@ import { createGallery } from './gallery.js';
 
 export default function App() {
   const container = useRef(null), stage = useRef(null);
+  const [ready, setReady] = useState(false);
   const [focused, setFocused] = useState(null), [paused, setPaused] = useState(false), [error, setError] = useState('');
   useEffect(() => {
     let active = true;
     createGallery(container.current, { onHover: setFocused, onError: setError }).then(created => {
       if (!active) { created.dispose(); return; }
       stage.current = created;
+      setReady(true);
     }).catch(failure => {
       console.error(failure);
       if (active) setError(failure.message || '3D 表示を開始できませんでした。画面下のリンクから各ワールドへ移動できます。');
     });
     return () => { active = false; stage.current?.dispose(); };
   }, []);
-  useEffect(() => { stage.current?.focus(focused); }, [focused]);
-  useEffect(() => { stage.current?.pause(paused); }, [paused]);
+  useEffect(() => { stage.current?.focus(focused); }, [focused, ready]);
+  useEffect(() => { stage.current?.pause(paused); }, [paused, ready]);
 
   return <main className="entrance">
     <div ref={container} className="gallery-canvas" />
