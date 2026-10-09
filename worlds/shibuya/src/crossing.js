@@ -101,7 +101,7 @@ export async function createCrossing(container, onError) {
   const lamps = [];
   for (const [x, z] of [[-12.2, -12.2], [12.2, -12.2], [-12.2, 12.2], [12.2, 12.2]]) {
     const mast = modelCopy(signal, [x, 0, z], Math.atan2(-x, -z)); scene.add(mast);
-    mast.traverse(object => { if (object.isMesh && object.material?.name.endsWith('.Signal')) lamps.push(object); });
+    mast.traverse(object => { if (object.isMesh && /\.Signal(Stop|Go)$/.test(object.material?.name)) lamps.push(object); });
   }
 
   qfront.scene.position.set(6.5, 0, -18);
@@ -153,7 +153,11 @@ export async function createCrossing(container, onError) {
     for (const material of screens) material.uniforms.time.value = time;
     const cycle = (time % 16);
     const walking = cycle > 6 && cycle < 14;
-    for (const lamp of lamps) { lamp.material.color.set(walking ? '#35e07a' : '#ff4455'); lamp.material.emissive.copy(lamp.material.color); }
+    for (const lamp of lamps) {
+      const lit = lamp.material.name.endsWith('.SignalGo') === walking;
+      lamp.material.emissiveIntensity = lit ? 2.0 : 0;
+      lamp.material.color.set(lit ? (walking ? '#35e07a' : '#ff4455') : '#182329');
+    }
     const alpha = walking ? Math.min(1, (cycle - 6) / 7) : (cycle >= 14 ? 1 : 0);
     const eased = alpha * alpha * (3 - 2 * alpha);
     crowd.forEach((personPath, index) => {

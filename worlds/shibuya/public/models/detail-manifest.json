@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "shibuya",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "c220bb7910aa8175e37fae62a69c8da553c6f677",
+  "source_commit": "9fdc3da901802d3a4eeea754c55a80a15f55a5f1",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -58,11 +58,11 @@
     },
     {
       "file": "signal_mast.glb",
-      "sha256": "c7caf28939deef738eb6025cd94d7749b06d1e259656789e0acc45ac6b7d476f",
+      "sha256": "4663a8c5e372ead5082e7094b75fba67332bca14cd1dfac319c59d171c265385",
       "triangles": 2276,
-      "materials": 4,
+      "materials": 5,
       "embedded_images": 1,
-      "bytes": 111240
+      "bytes": 112500
     },
     {
       "file": "sky_tower.glb",
