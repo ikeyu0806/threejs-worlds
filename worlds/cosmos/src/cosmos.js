@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
-import { loadModel } from '../../../shared/models.js';
+import { crowdFrom } from '../../../shared/models.js';
+import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
 
 export const vistas = [
   { id: 'deck', number: '01', name: '観測甲板', en: 'OBSERVATION', position: [0, 4.5, 20], target: [-1, 8, -40], note: '甲板の縁から、環のある星を眺める。' },
@@ -18,16 +19,10 @@ export async function createCosmos(container, onError) {
   const { scene } = stage;
   const random = seededRandom(8024);
   const standard = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.55, ...extra });
-  const hull = standard('#232838', { metalness: 0.72, roughness: 0.32 });
-  const trim = standard('#8d93a8', { metalness: 0.8, roughness: 0.28 });
-  const lamp = new THREE.MeshBasicMaterial({ color: '#f0d2a8' });
-  const screen = new THREE.MeshBasicMaterial({ color: '#6f7eae' });
-  const cube = new THREE.BoxGeometry(1, 1, 1);
   function mesh(geometry, material, position, scale = [1, 1, 1], parent = scene) {
     const result = new THREE.Mesh(geometry, material);
     result.position.set(...position); result.scale.set(...scale); parent.add(result); return result;
   }
-  function box(material, position, scale, parent) { return mesh(cube, material, position, scale, parent); }
 
   scene.add(new THREE.HemisphereLight('#24304f', '#07060d', 0.85));
   const sun = new THREE.DirectionalLight('#fff1d4', 2.6);
@@ -38,51 +33,9 @@ export async function createCosmos(container, onError) {
   mesh(new THREE.SphereGeometry(6, 24, 16), new THREE.MeshBasicMaterial({ color: '#ffd7a4', transparent: true, opacity: 0.16, depthWrite: false }), [78, 40, -18]);
 
   const deckCenter = new THREE.Vector3(0, 0, 13);
-  const plate = document.createElement('canvas'); plate.width = plate.height = 512;
-  const paint = plate.getContext('2d');
-  paint.fillStyle = '#1a1e2c'; paint.fillRect(0, 0, 512, 512);
-  paint.strokeStyle = 'rgba(176,186,214,.35)'; paint.lineWidth = 2;
-  for (let i = 0; i <= 8; i++) {
-    paint.beginPath(); paint.moveTo(i * 64, 0); paint.lineTo(i * 64, 512); paint.stroke();
-    paint.beginPath(); paint.moveTo(0, i * 64); paint.lineTo(512, i * 64); paint.stroke();
-  }
-  paint.strokeStyle = 'rgba(214,196,160,.45)'; paint.strokeRect(18, 18, 476, 476);
-  const deckMap = new THREE.CanvasTexture(plate); deckMap.colorSpace = THREE.SRGBColorSpace;
-  deckMap.wrapS = deckMap.wrapT = THREE.RepeatWrapping; deckMap.repeat.set(6, 6);
-  const deck = mesh(new THREE.CircleGeometry(16.4, 80), standard('#242a3c', { map: deckMap, metalness: 0.55, roughness: 0.42 }), [deckCenter.x, 0.04, deckCenter.z]);
-  deck.rotation.x = -Math.PI / 2;
-  mesh(new THREE.CylinderGeometry(16.4, 15.6, 0.7, 80), hull, [0, -0.32, deckCenter.z]);
-  const rail = mesh(new THREE.TorusGeometry(15.5, 0.055, 8, 90), trim, [0, 1.15, deckCenter.z]);
-  rail.rotation.x = Math.PI / 2;
-  const glowRing = mesh(new THREE.TorusGeometry(15.5, 0.018, 6, 90), lamp, [0, 0.08, deckCenter.z]);
-  glowRing.rotation.x = Math.PI / 2;
-  for (let i = 0; i < 28; i++) {
-    const angle = i / 28 * Math.PI * 2;
-    const x = Math.cos(angle) * 15.5, z = deckCenter.z + Math.sin(angle) * 15.5;
-    box(trim, [x, 0.58, z], [0.07, 1.15, 0.07]);
-    if (i % 7 === 0 && Math.abs(Math.sin(angle)) < 0.82) {
-      const plinth = new THREE.Group();
-      plinth.position.set(Math.cos(angle) * 11.2, 0, deckCenter.z + Math.sin(angle) * 11.2);
-      plinth.lookAt(Math.cos(angle) * 24, 1.1, deckCenter.z + Math.sin(angle) * 24);
-      scene.add(plinth);
-      box(hull, [0, 0.7, 0], [0.7, 1.4, 0.35], plinth);
-      box(screen, [0, 1.15, 0.2], [0.36, 0.22, 0.02], plinth);
-    }
-  }
-  mesh(new THREE.CylinderGeometry(4.2, 4.2, 0.08, 48), standard('#121624', { metalness: 0.85, roughness: 0.16, emissive: '#1c2b55', emissiveIntensity: 0.55 }), [0, 0.08, deckCenter.z]);
-  box(hull, [0, 0.55, 6.2], [3.2, 0.12, 0.8]);
-  for (const x of [-1.2, 1.2]) box(trim, [x, 0.28, 6.2], [0.08, 0.5, 0.7]);
-
-  const chart = document.createElement('canvas'); chart.width = 256; chart.height = 160;
-  const chartPaint = chart.getContext('2d');
-  chartPaint.fillStyle = '#10182a'; chartPaint.fillRect(0, 0, 256, 160);
-  chartPaint.strokeStyle = '#c5d2ff'; chartPaint.lineWidth = 2;
-  chartPaint.beginPath(); chartPaint.arc(128, 84, 46, 0, Math.PI * 2); chartPaint.stroke();
-  chartPaint.beginPath(); chartPaint.arc(128, 84, 16, 0, Math.PI * 2); chartPaint.stroke();
-  chartPaint.fillStyle = '#f2e2c4'; chartPaint.beginPath(); chartPaint.arc(166, 64, 4, 0, Math.PI * 2); chartPaint.fill();
-  const chartMap = new THREE.CanvasTexture(chart); chartMap.colorSpace = THREE.SRGBColorSpace;
-  box(hull, [-4.2, 0.85, 16.5], [1.8, 0.9, 0.7]);
-  mesh(new THREE.PlaneGeometry(1.15, 0.62), new THREE.MeshBasicMaterial({ map: chartMap }), [-4.2, 1.05, 16.88]);
+  const [deckModel, probeModel, telescopeModel, asteroids, debris, fighter] = await loadStageModels(stage, ['observation_deck.glb', 'survey_probe.glb', 'orbital_telescope.glb', 'cratered_asteroid.glb', 'space_debris_set.glb', 'trace_fighter.glb']);
+  scene.add(modelCopy(deckModel, [0, 0, 13]));
+  const telescope = modelCopy(telescopeModel, [16, 10, -22], -.55, 1.2); scene.add(telescope);
 
   const planet = new THREE.Group(); planet.position.set(-1, 9.5, -52); scene.add(planet);
   const planetMaterial = new THREE.ShaderMaterial({
@@ -185,26 +138,20 @@ export async function createCosmos(container, onError) {
   });
   scene.add(new THREE.Points(starGeometry, starMaterial));
 
-  const rockGeometry = new THREE.DodecahedronGeometry(1, 0);
-  const rockMaterial = standard('#6d675e', { flatShading: true, roughness: 0.84 });
   const belt = new THREE.Group(); belt.position.copy(planet.position); scene.add(belt);
+  const beltParts = crowdFrom(asteroids.scene, 42);
+  const pose = new THREE.Object3D();
   for (let i = 0; i < 42; i++) {
-    const angle = random() * Math.PI * 2;
-    const distance = 20 + random() * 12;
-    const rock = mesh(rockGeometry, rockMaterial, [Math.cos(angle) * distance, (random() - 0.5) * 1.6, Math.sin(angle) * distance], [0.18 + random() * 0.38, 0.14 + random() * 0.22, 0.16 + random() * 0.3], belt);
-    rock.rotation.set(random() * 3, random() * 3, random() * 3);
+    const angle = random() * Math.PI * 2, distance = 20 + random() * 12;
+    pose.position.set(Math.cos(angle) * distance, (random() - .5) * 1.6, Math.sin(angle) * distance);
+    pose.rotation.set(random() * 3, random() * 3, random() * 3);
+    pose.scale.set(.18 + random() * .38, .14 + random() * .22, .16 + random() * .3);
+    pose.updateMatrix();
+    for (const part of beltParts) part.mesh.setMatrixAt(i, pose.matrix);
   }
-
-  const probe = new THREE.Group(); scene.add(probe);
-  box(hull, [0, 0, 0], [1.5, 0.32, 0.62], probe);
-  box(screen, [0, 0.02, 0.34], [0.46, 0.22, 0.04], probe);
-  box(new THREE.MeshBasicMaterial({ color: '#8ea2e8' }), [-1.7, 0, 0], [1.7, 0.035, 0.48], probe);
-  box(new THREE.MeshBasicMaterial({ color: '#8ea2e8' }), [1.7, 0, 0], [1.7, 0.035, 0.48], probe);
-  const dish = mesh(new THREE.ConeGeometry(0.28, 0.4, 12), trim, [0, 0, -0.48], [1, 1, 1], probe);
-  dish.rotation.x = Math.PI / 2;
-  const probeLight = new THREE.PointLight('#9eb4ff', 6, 8, 2);
-  probeLight.position.set(0, 0, 0.4); probe.add(probeLight);
-  probe.scale.setScalar(0.85);
+  for (const part of beltParts) { part.mesh.count = 42; part.mesh.instanceMatrix.needsUpdate = true; belt.add(part.mesh); }
+  const probe = modelCopy(probeModel, [6.5, 8.1, 13], 0, .55); scene.add(probe);
+  const probeLight = new THREE.PointLight('#9eb4ff', 6, 8, 2); probeLight.position.set(0, 0, .4); probe.add(probeLight);
 
   const moteCount = 160;
   const motes = new Float32Array(moteCount * 3);
@@ -214,11 +161,6 @@ export async function createCosmos(container, onError) {
   const dust = new THREE.Points(moteGeometry, new THREE.PointsMaterial({ color: '#d5def8', size: 0.035, transparent: true, opacity: 0.45, depthWrite: false }));
   scene.add(dust);
 
-  const [asteroids, debris, fighter] = await Promise.all([
-    loadModel('asteroid_set.glb'),
-    loadModel('space_debris_set.glb'),
-    loadModel('trace_fighter.glb'),
-  ]);
   const field = [];
   for (let i = 0; i < 4; i++) {
     const rock = asteroids.scene.clone(true);
@@ -239,6 +181,7 @@ export async function createCosmos(container, onError) {
   ship.scale.setScalar(0.55);
   scene.add(ship);
 
+  enhanceStage(stage, sun, { extent: 23, target: [0, 0, 13], environment: .4 });
   stage.animate(time => {
     planetMaterial.uniforms.time.value = rings.material.uniforms.time.value = nebula.material.uniforms.time.value = starMaterial.uniforms.time.value = time;
     moonPivot.rotation.y = time * 0.08;
@@ -247,6 +190,7 @@ export async function createCosmos(container, onError) {
     probe.position.set(Math.cos(time * 0.16) * 6.5, 8.1 + Math.sin(time * 0.42) * 0.35, deckCenter.z + Math.sin(time * 0.16) * 4.2);
     probe.rotation.y = -time * 0.16;
     dust.position.y = Math.sin(time * 0.2) * 0.25;
+    telescope.rotation.y = -.55 + time * .035;
     field.forEach((piece, index) => { piece.rotation.y = time * (0.05 + index * 0.01); });
     ship.position.set(Math.cos(time * 0.12) * 14, 6.4 + Math.sin(time * 0.3) * 0.6, deckCenter.z - 6 + Math.sin(time * 0.12) * 10);
     ship.rotation.y = -time * 0.12 + Math.PI;

@@ -5,7 +5,7 @@ import { createHash } from 'node:crypto';
 import { resolve } from 'node:path';
 import { root } from './worlds.mjs';
 
-const worldNames = ['entrance', 'heian'];
+const worldNames = ['entrance', 'heian', 'cosmos'];
 test('detailed world models preserve validated Blender exports and embedded PBR', async () => {
   for (const world of worldNames) {
     const directory = resolve(root, 'worlds', world, 'public/models');
