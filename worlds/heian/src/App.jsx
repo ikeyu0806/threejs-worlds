@@ -12,9 +12,15 @@ export default function App() {
   const current = vistas.find(item => item.id === vista);
 
   useEffect(() => {
-    try { stage.current = createCapital(host.current, setError); setReady(true); }
-    catch (failure) { console.error(failure); setError('3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。'); }
-    return () => stage.current?.dispose();
+    let active = true;
+    createCapital(host.current, setError).then(created => {
+      if (!active) { created.dispose(); return; }
+      stage.current = created; setReady(true);
+    }).catch(failure => {
+      console.error(failure);
+      if (active) setError(failure.message || '3D 表示を開始できません。');
+    });
+    return () => { active = false; stage.current?.dispose(); };
   }, []);
   useEffect(() => { stage.current?.pause(paused); }, [paused]);
   useEffect(() => { stage.current?.quality(quality); }, [quality]);

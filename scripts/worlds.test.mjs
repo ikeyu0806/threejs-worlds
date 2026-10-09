@@ -64,7 +64,7 @@ async function verifyAquariumModels(serverUrl) {
 }
 
 async function verifyDetailedModels(serverUrl) {
-  for (const world of ['entrance']) {
+  for (const world of ['entrance', 'heian']) {
     const modelDirectory = resolve(root, 'worlds', world, 'public/models');
     const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'detail-manifest.json'), 'utf8'));
     const prefix = world === 'entrance' ? '' : `/${world}`;

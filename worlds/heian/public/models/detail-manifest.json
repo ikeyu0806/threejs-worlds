@@ -1,0 +1,100 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "heian",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "84e9f9755950f035187fecec4ae19c0e6b8b147f",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "cherry_tree.glb",
+      "sha256": "92dd7ff255d0eab08c4787bb3346c4c3c90dc3f0e5d06f4647413af79b6c43e7",
+      "triangles": 47256,
+      "materials": 2,
+      "embedded_images": 2,
+      "bytes": 1721952
+    },
+    {
+      "file": "distant_ridge.glb",
+      "sha256": "be6eb0ee4d21137501418329317d8800f2f71d513941d7329855d244bea846b5",
+      "triangles": 960,
+      "materials": 1,
+      "embedded_images": 1,
+      "bytes": 89492
+    },
+    {
+      "file": "garden_pine.glb",
+      "sha256": "6362d5ffb6e56fcd45d9f210538029c139aedbb0373af9f7aa044126ec2d881c",
+      "triangles": 44760,
+      "materials": 2,
+      "embedded_images": 2,
+      "bytes": 1983768
+    },
+    {
+      "file": "garden_rocks.glb",
+      "sha256": "22ec0e35075ea313e62588fbab455bbb7a4635da61c10dd758306e790d6d0afb",
+      "triangles": 952,
+      "materials": 1,
+      "embedded_images": 1,
+      "bytes": 99460
+    },
+    {
+      "file": "garden_wall.glb",
+      "sha256": "d482adabf694f1b795db01cd1e147ee92ca6b4d8db646cb81850949ca67163a4",
+      "triangles": 19252,
+      "materials": 6,
+      "embedded_images": 3,
+      "bytes": 1259392
+    },
+    {
+      "file": "palace_hall.glb",
+      "sha256": "6514de34377742a2b426658bc2553516933ddfee98bc485e25ba524ed11c3398",
+      "triangles": 43608,
+      "materials": 6,
+      "embedded_images": 3,
+      "bytes": 2416768
+    },
+    {
+      "file": "pond_koi.glb",
+      "sha256": "226d1b4535442c1a37e12fe19e463e9866e04b25599f34bc8d3fba9aae530b5a",
+      "triangles": 984,
+      "materials": 3,
+      "embedded_images": 2,
+      "bytes": 111840
+    },
+    {
+      "file": "stepping_stone.glb",
+      "sha256": "adeddd78a3ce99b17025c07e225711bf57c99f61f93dd6f0e127de1eb9823285",
+      "triangles": 252,
+      "materials": 1,
+      "embedded_images": 1,
+      "bytes": 65012
+    },
+    {
+      "file": "stone_lantern.glb",
+      "sha256": "d9719b2cbf51cdcc6601f5cfcd4af9d76fed9a8b08989561298bb82bdcf8c2c7",
+      "triangles": 1968,
+      "materials": 2,
+      "embedded_images": 1,
+      "bytes": 130400
+    },
+    {
+      "file": "suzaku_gate.glb",
+      "sha256": "859672c7f0c5b167332d39d0c6b7011ec8515fac7877eb9e9a76a849d61d7406",
+      "triangles": 58280,
+      "materials": 7,
+      "embedded_images": 3,
+      "bytes": 2964512
+    },
+    {
+      "file": "veranda.glb",
+      "sha256": "5c477dc88ccc8da18d2c59b2c0a5171fdcfa9d85d36a262d4aa2060afeeb022a",
+      "triangles": 18176,
+      "materials": 4,
+      "embedded_images": 3,
+      "bytes": 1028128
+    }
+  ]
+}
