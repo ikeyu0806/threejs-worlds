@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import { createStage, seededRandom } from '../../../shared/stage.js';
-import { crowdFrom, loadModel } from '../../../shared/models.js';
+import { crowdFrom } from '../../../shared/models.js';
+import { loadStageModels, modelCopy, enhanceStage } from '../../../shared/detail-assets.js';
 
 export const vistas = [
   { id: 'street', number: '01', name: '中央通り', en: 'CHUO-DORI', position: [0, 4.2, 18], target: [0, 6, -10], note: '電気街口から、看板の谷を北へ歩く。' },
@@ -31,7 +32,7 @@ export async function createDistrict(container, onError) {
   const stage = createStage(container, {
     background: '#9eb4c6', fog: 0.011, position: vistas[0].position, target: vistas[0].target,
     label: '秋葉原の中央通り。ガラスのホール、黄色い商業棟、頭上の電車。ドラッグで見回せます。',
-    bloom: 0.38, bloomThreshold: 0.64, exposure: 1.05, fov: 54, mobileFov: 76,
+    bloom: 0.22, bloomThreshold: 1.1, exposure: 0.96, fov: 54, mobileFov: 76,
     bounds: { minX: -3.2, maxX: 3.2, minZ: -8, maxZ: 18 }, onError,
   });
   const { scene } = stage;
@@ -68,39 +69,29 @@ export async function createDistrict(container, onError) {
     box(trim, [side * 4.6, 5.2, 8 - index * 4.2], [0.2, 4.2, 0.2]);
   });
 
+  const [radio, discount, camera, train, blade, person, viaduct, arcadeFront, vending, pole] = await loadStageModels(stage, [
+    'radio_hall.glb', 'discount_hall.glb', 'camera_store.glb', 'commuter_train.glb',
+    'blade_sign.glb', 'street_person.glb', 'railway_viaduct.glb', 'arcade_front.glb',
+    'vending_bank.glb', 'utility_pole.glb',
+  ]);
+  scene.add(modelCopy(radio, [-13, 0, 2], Math.PI / 2));
+  scene.add(modelCopy(discount, [13, 0, -8], -Math.PI / 2));
+  scene.add(modelCopy(camera, [0, 0, -32]));
+  scene.add(modelCopy(viaduct, [0, 0, 12]));
+  scene.add(modelCopy(arcadeFront, [9.8, 0, -5], -Math.PI / 2));
+  scene.add(modelCopy(vending, [-8.5, 0, 6], Math.PI / 2));
+  scene.add(modelCopy(vending, [8.2, 0, -14], -Math.PI / 2));
   for (let i = 0; i < 7; i++) {
     const z = 12 - i * 5;
-    box(trim, [-7.2, 9.2, z], [0.12, 18, 0.12]);
-    box(trim, [7.2, 9.2, z], [0.12, 18, 0.12]);
-    box(standard('#22262a', { metalness: 0.4 }), [0, 11.4, z], [14.6, 0.08, 0.08]);
+    for (const side of [-1, 1]) scene.add(modelCopy(pole, [side * 7.2, 0, z]));
+    box(trim, [0, 12.38, z], [14.6, 0.035, 0.035]);
   }
-  box(standard('#4a555c', { metalness: 0.35, roughness: 0.45 }), [0, 8.2, 12], [28, 1.1, 2.4]);
-  box(standard('#2c343a'), [0, 6.2, 12], [22, 2.6, 1.4]);
-  for (const x of [-8, 8]) box(standard('#3a444c'), [x, 5.4, 12], [1.2, 10.8, 1.6]);
-
-  const [radio, discount, camera, train, blade, person] = await Promise.all([
-    loadModel('radio_hall.glb'),
-    loadModel('discount_hall.glb'),
-    loadModel('camera_store.glb'),
-    loadModel('commuter_train.glb'),
-    loadModel('blade_sign.glb'),
-    loadModel('street_person.glb'),
-  ]);
-  radio.scene.position.set(-13, 0, 2);
-  radio.scene.rotation.y = Math.PI / 2;
-  discount.scene.position.set(13, 0, -8);
-  discount.scene.rotation.y = -Math.PI / 2;
-  camera.scene.position.set(0, 0, -32);
-  scene.add(radio.scene, discount.scene, camera.scene);
   for (let i = 0; i < 8; i++) {
-    const sign = blade.scene.clone(true);
     const side = i % 2 ? 1 : -1;
-    sign.position.set(side * 5.2, 0, 10 - i * 4.5);
-    sign.rotation.y = side > 0 ? -Math.PI / 2 : Math.PI / 2;
-    scene.add(sign);
+    scene.add(modelCopy(blade, [side * 5.2, 0, 10 - i * 4.5], side > 0 ? -Math.PI / 2 : Math.PI / 2));
   }
-  train.scene.position.set(-16, 8.8, 12);
-  scene.add(train.scene);
+  const movingTrain = modelCopy(train, [-16, 8.68, 12], Math.PI / 2);
+  scene.add(movingTrain);
 
   const arcade = new THREE.PointLight('#7ee7ff', 20, 12, 2);
   arcade.position.set(8.5, 2.4, -6);
@@ -121,8 +112,9 @@ export async function createDistrict(container, onError) {
   const dummy = new THREE.Object3D();
   const coatColor = new THREE.Color();
 
+  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -10], environment: 0.3 });
   stage.animate(time => {
-    train.scene.position.x = ((time * 4.2) % 40) - 20;
+    movingTrain.position.x = ((time * 4.2) % 40) - 20;
     arcade.intensity = 16 + Math.sin(time * 3) * 4;
     walkers.forEach((walker, index) => {
       const travel = ((walker.phase + time * walker.speed * 0.08) % 1) * 36 - 14;

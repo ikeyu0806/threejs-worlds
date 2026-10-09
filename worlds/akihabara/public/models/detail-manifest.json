@@ -1,0 +1,76 @@
+{
+  "asset_id": "worlds_detail_kit",
+  "world": "akihabara",
+  "source_repository": "ikeyu0806/blender-works",
+  "source_commit": "779b1c33f8bc98d57f47a70b1ce555aa5705aeba",
+  "blender_version": "5.2.2 LTS",
+  "units": "meters",
+  "up": "+Y",
+  "forward": "+Z",
+  "assets": [
+    {
+      "file": "arcade_front.glb",
+      "sha256": "c1dc5210537c56ff1a15d51535e79681963d2d1afab83ec2ae4b5ee60e4371b2",
+      "triangles": 13388,
+      "materials": 8,
+      "embedded_images": 2,
+      "bytes": 624260
+    },
+    {
+      "file": "camera_store.glb",
+      "sha256": "26d22f180de5ef19b0cf8f9ec2f5320ad3da265bf3a8a4e7bc6ce1a72adca5ff",
+      "triangles": 8964,
+      "materials": 6,
+      "embedded_images": 2,
+      "bytes": 456100
+    },
+    {
+      "file": "commuter_train.glb",
+      "sha256": "93fe39d85ce2320295db17364750ab95d1a211b5f62096e8ba8c1670191fa076",
+      "triangles": 14652,
+      "materials": 5,
+      "embedded_images": 1,
+      "bytes": 637560
+    },
+    {
+      "file": "discount_hall.glb",
+      "sha256": "e0ffceff06ebf424b37f9de687b048252af9a9f535ced02b44fbf7402df1f96c",
+      "triangles": 10044,
+      "materials": 7,
+      "embedded_images": 2,
+      "bytes": 501760
+    },
+    {
+      "file": "radio_hall.glb",
+      "sha256": "be40baa4e5031c36f38b6329ec7b0fdd86e360912145c07d26a47f6142b2b172",
+      "triangles": 12096,
+      "materials": 8,
+      "embedded_images": 2,
+      "bytes": 588768
+    },
+    {
+      "file": "railway_viaduct.glb",
+      "sha256": "d2b2b0055c5503664c16ff330dc922326292261e6b8667bf90440781b0979736",
+      "triangles": 30352,
+      "materials": 4,
+      "embedded_images": 2,
+      "bytes": 1299624
+    },
+    {
+      "file": "utility_pole.glb",
+      "sha256": "223223200df7fe2ae991ad31e1c2a8897c35a2019feab7f978532e314a3c055c",
+      "triangles": 4936,
+      "materials": 4,
+      "embedded_images": 2,
+      "bytes": 295296
+    },
+    {
+      "file": "vending_bank.glb",
+      "sha256": "92ca1cf0720976594539329c9a9e98272e5f79536cd94a5c174fce5b465e72e0",
+      "triangles": 22236,
+      "materials": 6,
+      "embedded_images": 1,
+      "bytes": 884388
+    }
+  ]
+}
