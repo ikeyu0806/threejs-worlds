@@ -1,5 +1,7 @@
 # SHINJUKU — 新宿
 
+アーカイブです。エントランスのゲートには出していません。
+
 西新宿の夜です。通りの先に段状の冠を持つ双塔、左手前に白い斜格子の楕円塔、車道のタクシーと歩道の人を置いています。双塔は東京都庁第一本庁舎、楕円塔はモード学園コクーンタワーの量塊を参照しています。形状は blender-works の worlds detail kit と既存hero kitから構成しています。カメラは歩道の目の高さから塔を見上げます。夜の並びは [西新宿の超高層ビル街](https://www.gotokyo.org/jp/destinations/western-tokyo/shinjuku/index.html) を参照しています。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/shinjuku/` を開いてください。

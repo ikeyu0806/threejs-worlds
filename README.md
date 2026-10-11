@@ -1,6 +1,6 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md)、[渋谷](./worlds/shibuya/README.md)、[秋葉原](./worlds/akihabara/README.md)、[新宿](./worlds/shinjuku/README.md) へ移動できます。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md)、[古都](./worlds/heian/README.md) へ移動できます。
 
 ## 公開ワールド
 
@@ -13,6 +13,13 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
 | [宇宙（APHELION）](https://threejs-worlds.pages.dev/cosmos/) | 環のある惑星と星雲を眺める観測甲板です。 |
 | [古都（HEIAN）](https://threejs-worlds.pages.dev/heian/) | 朝霧のなか、朱雀門と庭の池を歩く古都です。 |
+
+## アーカイブ
+
+渋谷、秋葉原、新宿はエントランスに出していません。ソースと URL はそのまま残してあり、直接開くと入れます。
+
+| ワールド | 内容 |
+| --- | --- |
 | [渋谷（SCRAMBLE）](https://threejs-worlds.pages.dev/shibuya/) | 夕方のスクランブル交差点です。 |
 | [秋葉原（AKIBA）](https://threejs-worlds.pages.dev/akihabara/) | 縦看板が並ぶ電気街です。 |
 | [新宿（SHINJUKU）](https://threejs-worlds.pages.dev/shinjuku/) | 夜の大通りと都庁のツインタワーです。 |
@@ -26,9 +33,9 @@ worlds/
   aquarium/          # PELAGIC：静かな海の水族館
   cosmos/            # APHELION：遠い軌道の宇宙
   heian/             # HEIAN：朝霧の古都
-  shibuya/           # SCRAMBLE：渋谷の交差点
-  akihabara/         # AKIBA：秋葉原の電気街
-  shinjuku/          # SHINJUKU：新宿の夜の塔
+  shibuya/           # アーカイブ SCRAMBLE：渋谷の交差点
+  akihabara/         # アーカイブ AKIBA：秋葉原の電気街
+  shinjuku/          # アーカイブ SHINJUKU：新宿の夜の塔
 shared/              # ワールド一覧・描画・操作の共通処理
 scripts/             # まとめて起動・ビルド結果の集約
 package.json
@@ -58,9 +65,9 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 | 水族館 | `/aquarium/` |
 | 宇宙 | `/cosmos/` |
 | 古都 | `/heian/` |
-| 渋谷 | `/shibuya/` |
-| 秋葉原 | `/akihabara/` |
-| 新宿 | `/shinjuku/` |
+| 渋谷（アーカイブ） | `/shibuya/` |
+| 秋葉原（アーカイブ） | `/akihabara/` |
+| 新宿（アーカイブ） | `/shinjuku/` |
 
 各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
 
@@ -84,7 +91,7 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 
 砂漠やオーロラのある雪のワールドも同じ階層に追加する予定です。
 
-新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` に追加します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
+新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` の `worlds` に追加します。エントランスから外すワールドは同じファイルの `archivedWorlds` に移します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
 
 水族館の生きもの・珊瑚・岩・海藻・海底・水槽ギャラリーは、blender-works の PELAGIC Aquarium で制作した13点のGLBです。[制作・受け渡し仕様](./worlds/aquarium/MODEL_BRIEF.md) に再生成手順とモデル一覧を記載しています。街の建物と人物も同じく blender-works で作り、各ワールドの `public/models/` に置いています。
 

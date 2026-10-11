@@ -1,5 +1,7 @@
 # SCRAMBLE — 渋谷
 
+アーカイブです。エントランスのゲートには出していません。
+
 夕方のスクランブル交差点です。ハチ公口側から、北東の曲面ビジョン、西の円筒商業ビル、駅前広場の秋田犬、斜めに渡る人を配置しています。建物と人物の形状は blender-works の `assets/environments/worlds_hero_kit` で作り、`public/models/` の GLB を置いています。並びは渋谷駅ハチ公口、QFRONT 側の大型ビジョン、スクランブルスクエア方面の塔、円筒のファッションビルを参照しています。商標のロゴは入れていません。カメラは路上の目の高さ（1.65m）で、画角は50mm前後の立ち位置に寄せています。路上の夜景は [渋谷スクランブルの撮影位置](https://dokey.tokyo/tokyo-areas/shibuyaku/shibuya-crossing-photo-guide/) と [PAKUTASO の夜のスクランブル](https://www.pakutaso.com/en/20240627155post-51468.html) を参照しています。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/shibuya/` を開いてください。

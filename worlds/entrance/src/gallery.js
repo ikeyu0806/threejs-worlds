@@ -76,7 +76,7 @@ export async function createGallery(container, { onHover, onError }) {
   scene.add(modelCopy(atrium));
 
   const portalShader = world => new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3, shibuya: 4, akihabara: 5, shinjuku: 6 }[world.id] ?? 1 }, focus: { value: 0 } },
+    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3 }[world.id] ?? 1 }, focus: { value: 0 } },
     vertexShader: 'varying vec2 vUv; varying vec3 vPosition; void main(){vUv=uv; vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vUv; varying vec3 vPosition; uniform float time; uniform float kind; uniform float focus;
       float hash(float p){return fract(sin(p*127.1)*43758.5453);}
@@ -129,26 +129,6 @@ export async function createGallery(container, { onHover, onError }) {
           c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.22,.28))*vec2(8.,10.))*3.);
           c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.8,.24))*vec2(8.,10.))*3.);
           c=mix(c,vec3(.78,.74,.68),smoothstep(.22,0.,uv.y)*.45);
-        }else if(kind<4.5){
-          c=mix(vec3(.16,.1,.14),vec3(.45,.22,.32),uv.y);
-          float stripe=step(.55,fract(uv.y*9.));
-          if(uv.y<.28) c=mix(vec3(.12,.12,.14),vec3(.85,.86,.88),stripe);
-          float screen=step(.42,uv.y)*step(uv.y,.78)*step(abs(uv.x-.32),.18);
-          c=mix(c,mix(vec3(.95,.2,.45),vec3(.15,.75,.85),step(.5,fract(uv.y*5.+time*.2))),screen);
-          c+=vec3(.9,.35,.55)*exp(-length((uv-vec2(.75,.62))*vec2(5.,3.))*2.);
-        }else if(kind<5.5){
-          c=mix(vec3(.08,.05,.08),vec3(.22,.08,.1),uv.y);
-          float sign=step(.5,fract(uv.x*7.));
-          if(sign>.5&&uv.y>.2&&uv.y<.86) c=mix(vec3(.85,.16,.18),vec3(.95,.78,.2),step(.5,fract(uv.y*3.+floor(uv.x*7.))));
-          c+=vec3(.2,.55,.95)*step(.35,fract(uv.x*11.))*step(.25,uv.y)*step(uv.y,.45);
-        }else{
-          c=mix(vec3(.02,.04,.1),vec3(.08,.1,.18),uv.y);
-          float tower=step(abs(uv.x-.32),.12)+step(abs(uv.x-.68),.14);
-          if(tower>.5&&uv.y>.15){ c=vec3(.04,.06,.1);
-            vec2 w=fract(uv*vec2(18.,28.));
-            if(w.x>.25&&w.x<.7&&w.y>.2&&w.y<.65) c+=mix(vec3(.95,.78,.42),vec3(.45,.62,.9),step(.7,fract(uv.x*9.+uv.y*4.)));
-          }
-          c+=vec3(.95,.7,.35)*exp(-length((uv-vec2(.5,.16))*vec2(8.,14.))*2.2);
         }
         c*=1.+focus*.3; gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>

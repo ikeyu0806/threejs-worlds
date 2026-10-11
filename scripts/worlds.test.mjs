@@ -6,6 +6,12 @@ import { once } from 'node:events';
 import { readFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
 import { root } from './worlds.mjs';
+import { archivedWorlds, worlds } from '../shared/worlds.js';
+
+test('archived city worlds stay off the entrance', () => {
+  assert.deepEqual(worlds.map(world => world.id), ['cyberpunk', 'aquarium', 'cosmos', 'heian']);
+  assert.deepEqual(archivedWorlds.map(world => world.id), ['shibuya', 'akihabara', 'shinjuku']);
+});
 
 const routes = [
   { path: '/', title: 'ORBIT', directory: 'entrance' },
