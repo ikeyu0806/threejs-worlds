@@ -1,52 +1,52 @@
 {
   "source_repository": "blender-works",
   "source_asset": "assets/environments/pelagic_aquarium",
-  "source_commit": "34b6055914b23fd8f76e7433dcb471154aa3ae9e",
+  "source_commit": "d08fd2d8f07142e27c9a6092c76d8febce692474",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
   "forward": "+Z",
   "models": {
     "manta.glb": {
-      "sha256": "92af5b2f02b2c8021b06f61ec69c809d92e52e53d0b702941db091047dd0db36",
-      "bytes": 307352,
-      "triangles": 5120,
-      "maximum_triangles": 12000,
+      "sha256": "4770fe9310c5b64b4b440cac9b8782b13d00042183812ed92f891ab34d2840c3",
+      "bytes": 354136,
+      "triangles": 5032,
+      "maximum_triangles": 14000,
       "animated": true
     },
     "turtle.glb": {
-      "sha256": "5ae2f22fc81bbdfdd0e9025cb7b37144fe2cbb5d47abfc934382f3b7d156707a",
-      "bytes": 353840,
-      "triangles": 5328,
-      "maximum_triangles": 10000,
+      "sha256": "ce28a877be6396332601c4c1ed8b3f5515c631adf53b335e5da7a6c2d021e9b8",
+      "bytes": 395508,
+      "triangles": 8104,
+      "maximum_triangles": 42000,
       "animated": true
     },
     "whale_shark.glb": {
-      "sha256": "2e10db5c6ac19dc8480d5a83ae2cdbbc2addb14976d8ecde168378fd6be23044",
-      "bytes": 528756,
-      "triangles": 11292,
-      "maximum_triangles": 18000,
+      "sha256": "30e1324c4e6a332ede1865b2abe12886740be9010a46cf9b126b278d1f4c984e",
+      "bytes": 576320,
+      "triangles": 11204,
+      "maximum_triangles": 22000,
       "animated": true
     },
     "silver_fish.glb": {
-      "sha256": "9720866e8760193c67ee93bf866f0ab92c2edcea33fffe541c2e56a09fbdfa0a",
-      "bytes": 195088,
-      "triangles": 3184,
-      "maximum_triangles": 9000,
+      "sha256": "60dade8f79351f683ed935bbb04b520037fe43ffe1070c3ecff3287086aa4e36",
+      "bytes": 363136,
+      "triangles": 4372,
+      "maximum_triangles": 14000,
       "animated": true
     },
     "blue_tang.glb": {
-      "sha256": "3731c2d0ef449e96d117419a846db54b84717fb77e4d8428f48d4ea7288c0728",
-      "bytes": 190408,
-      "triangles": 3184,
-      "maximum_triangles": 9000,
+      "sha256": "1b5f0a632800390b521f5a012e38657c90a266be94070fd9053fee86a42d3537",
+      "bytes": 364580,
+      "triangles": 4388,
+      "maximum_triangles": 14000,
       "animated": true
     },
     "clownfish.glb": {
-      "sha256": "f3a654cd0cf43657cfed3b0b5593fe4c647b8f4aa543fb9fc4be4b932e19a1e0",
-      "bytes": 185100,
-      "triangles": 3092,
-      "maximum_triangles": 9000,
+      "sha256": "6ec210de3e136d1804f0e6ad973ab97829412aa1ba70e6e706f37fbbc4fb5fcf",
+      "bytes": 358344,
+      "triangles": 4384,
+      "maximum_triangles": 14000,
       "animated": true
     },
     "moon_jelly.glb": {
@@ -57,17 +57,17 @@
       "animated": true
     },
     "coral_staghorn.glb": {
-      "sha256": "f342a27cb81f0306bd9184b4a2011995d82dcfe5612e4f7fecfa318b4ecc5483",
-      "bytes": 445540,
-      "triangles": 8096,
-      "maximum_triangles": 22000,
+      "sha256": "800477051ebd41966675c1decad3e454fda6121af0952acd769c895e9b84dead",
+      "bytes": 1167932,
+      "triangles": 25004,
+      "maximum_triangles": 52000,
       "animated": false
     },
     "coral_fan.glb": {
-      "sha256": "2051cf22e98e4cd1d1381a458f5de40f814cb74003afa1c5d400290fc66f24c6",
-      "bytes": 364116,
-      "triangles": 4492,
-      "maximum_triangles": 20000,
+      "sha256": "6809e1bbbcfd2d69db9adc6a8fbc500bb1197190e2ac88a70a1e29732ed87c5c",
+      "bytes": 870088,
+      "triangles": 10708,
+      "maximum_triangles": 28000,
       "animated": false
     },
     "reef_rock.glb": {

@@ -2,7 +2,7 @@
 
 大水槽のアクリルの前に立つ水族館です。視点は目の高さで、窓の向こうの青へ少し見上げます。生きもの、珊瑚、岩、海藻、海底、水槽の厚い窓枠・アクリル・観覧ギャラリーは、blender-works の `assets/environments/pelagic_aquarium/` で制作したGLBです。ジンベエザメ、マンタ2体、ウミガメ、銀色の魚群、ナンヨウハギ、クマノミ、ミズクラゲが泳ぎます。窓に近い魚は手前を横切り、奥の魚は青い霞に溶けます。
 
-魚は種ごとの胴とヒレ、海藻は茎と波打つ葉、珊瑚は枝と扇の骨格です。表面は頂点色に、鱗・葉脈・孔の法線を重ねています。Three.js側は配置、目線、アクリルの透過、水面から落ちる光、距離による色の吸収を担当します。
+魚は種ごとの胴とヒレ、海藻は茎と波打つ葉、珊瑚は枝と扇の骨格です。表面は頂点色に、鱗・角質・孔の法線と粗さの差を重ねています。眼球は白い点を置かず、虹彩と瞳孔、クリアコートの反射で見ます。Three.js側は配置、目線、アクリルの透過、水面から落ちる光、距離による色の吸収を担当します。
 
 ## 参照
 
@@ -11,7 +11,13 @@
 - [aquarium-night](https://github.com/StarKnightt/aquarium-night)
 - [ocean-simulator](https://github.com/forbiddenlink/ocean-simulator)
 
-形状とテクスチャはオリジナルです。上の作品からは、ガラス越しの視線、光の筋、距離で青くなる水の扱いを参照しています。
+生きものの形は次の記載に合わせ、テクスチャはオリジナルです。上の作品からは、ガラス越しの視線、光の筋、距離で青くなる水の扱いを参照しています。
+
+- アオウミガメの甲板と頭鱗: [NOAA species profile, Chelonia mydas](https://www.sealifebase.se/FieldGuide/FieldGuideSummary.php?genusname=Chelonia&speciesname=mydas&c_code=508)（椎甲板5、肋甲板4対、縁甲板、前額板1対）
+- ナンヨウハギ: [Australian Museum, Blue Tang](https://australian.museum/learn/animals/fishes/blue-tang-paracanthurus-hepatus/) と [USGS species profile](https://nas.er.usgs.gov/queries/FactSheet.aspx?SpeciesID=3339)（眼から続く黒いパレット模様、黄色い尾）
+- カクレクマノミ: [Fishes of Australia, Amphiprion ocellaris](https://fishesofaustralia.net.au/home/species/1275)（三本の白帯、白い帯の黒い縁は細い）
+- ミドリイシ: [Naturalis, Acropora cervicornis](https://caribbean-diving.linnaeus.naturalis.nl/linnaeus_ng/app/views/species/taxon.php?id=6710)（円い枝、軸サンゴ個体と放射サンゴ個体）
+- ウミウチワ: [NSU, Gorgonia ventalina](https://nsuworks.nova.edu/octocoral_g_ventalina/)（一平面の網目）
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/aquarium/` を開いてください。
 

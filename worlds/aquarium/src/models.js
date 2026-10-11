@@ -95,9 +95,9 @@ export function addCausticMaterial(surface, time) {
       float haze = 1. - exp(-viewDistance * .02);
       outgoingLight *= mix(vec3(.9, 1., 1.03), vec3(.55, .82, .98), waterDepth * .5);
       outgoingLight += diffuseColor.rgb * vec3(.32, .55, .5) * caustic * .7;
-      outgoingLight = mix(outgoingLight, vec3(.03, .14, .18), haze * .62);
+      outgoingLight = mix(outgoingLight, vec3(.03, .14, .18), haze * .45);
       #include <opaque_fragment>
     `);
   };
-  surface.customProgramCacheKey = () => 'pelagic-caustics-v3';
+  surface.customProgramCacheKey = () => 'pelagic-caustics-v4';
 }

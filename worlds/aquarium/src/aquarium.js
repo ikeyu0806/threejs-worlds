@@ -51,7 +51,7 @@ function populateAquarium(stage, assets) {
 
   const environment = new RoomEnvironment(), generator = new THREE.PMREMGenerator(renderer);
   const reflections = generator.fromScene(environment, .08);
-  scene.environment = reflections.texture; scene.environmentIntensity = .38;
+  scene.environment = reflections.texture; scene.environmentIntensity = .58;
   generator.dispose(); environment.dispose();
   stage.onDispose(() => reflections.dispose());
   scene.add(new THREE.HemisphereLight('#9fd0de', '#102228', .48));
