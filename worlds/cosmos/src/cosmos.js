@@ -4,16 +4,16 @@ import { crowdFrom } from '../../../shared/models.js';
 import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
 
 export const vistas = [
-  { id: 'deck', number: '01', name: '観測甲板', en: 'OBSERVATION', position: [0, 4.5, 20], target: [-1, 8, -40], note: '甲板の縁から、環のある星を眺める。' },
-  { id: 'rings', number: '02', name: '環の光', en: 'RINGLIGHT', position: [10, 6.2, 14], target: [-6, 7, -46], note: '薄い環が、星の光をすくっている。' },
-  { id: 'nebula', number: '03', name: '星雲の縁', en: 'NEBULA', position: [-10, 7.4, 16], target: [12, 12, -36], note: '色をほどいた雲が、ゆっくり流れる。' },
+  { id: 'deck', number: '01', name: '観測甲板', en: 'OBSERVATION', position: [0, 3.05, 18], target: [-1, 9, -40], note: '甲板の縁から、環のある星を眺める。' },
+  { id: 'rings', number: '02', name: '環の光', en: 'RINGLIGHT', position: [8, 3.1, 16], target: [-4, 8, -46], note: '薄い環が、星の光をすくっている。' },
+  { id: 'nebula', number: '03', name: '星雲の縁', en: 'NEBULA', position: [-8, 3.2, 16], target: [12, 11, -36], note: '色をほどいた雲が、ゆっくり流れる。' },
 ];
 
 export async function createCosmos(container, onError) {
   const stage = createStage(container, {
     background: '#070814', fog: 0.0065, position: vistas[0].position, target: vistas[0].target,
     label: '環のある惑星と星雲、観測甲板。ドラッグで見回せます。',
-    bloom: 0.48, bloomThreshold: 0.72, exposure: 1.12, fov: 52, mobileFov: 76,
+    bloom: 0.36, bloomThreshold: 0.82, exposure: 1.08, fov: 46, mobileFov: 62,
     bounds: { minX: -11, maxX: 11, minZ: 6, maxZ: 23 }, onError,
   });
   const { scene } = stage;
@@ -60,7 +60,7 @@ export async function createCosmos(container, onError) {
         #include <colorspace_fragment>
       }`,
   });
-  mesh(new THREE.SphereGeometry(13, 72, 48), planetMaterial, [0, 0, 0], [1, 1, 1], planet);
+  mesh(new THREE.SphereGeometry(13, 96, 64), planetMaterial, [0, 0, 0], [1, 1, 1], planet);
   const atmosphere = new THREE.ShaderMaterial({
     transparent: true, depthWrite: false, side: THREE.BackSide,
     vertexShader: 'varying vec3 vNormal; varying vec3 vWorld; void main(){vec4 world=modelMatrix*vec4(position,1.); vWorld=world.xyz; vNormal=normalize(mat3(modelMatrix)*normal); gl_Position=projectionMatrix*viewMatrix*world;}',
@@ -71,8 +71,8 @@ export async function createCosmos(container, onError) {
       #include <colorspace_fragment>
     }`,
   });
-  mesh(new THREE.SphereGeometry(14.3, 48, 32), atmosphere, [0, 0, 0], [1, 1, 1], planet);
-  const rings = new THREE.Mesh(new THREE.RingGeometry(17.5, 28, 96, 6), new THREE.ShaderMaterial({
+  mesh(new THREE.SphereGeometry(14.3, 64, 40), atmosphere, [0, 0, 0], [1, 1, 1], planet);
+  const rings = new THREE.Mesh(new THREE.RingGeometry(17.5, 28, 128, 8), new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } }, transparent: true, side: THREE.DoubleSide, depthWrite: false,
     vertexShader: 'varying vec2 vPos; void main(){vPos=position.xy; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vPos; uniform float time; void main(){
@@ -181,7 +181,7 @@ export async function createCosmos(container, onError) {
   ship.scale.setScalar(0.55);
   scene.add(ship);
 
-  enhanceStage(stage, sun, { extent: 23, target: [0, 0, 13], environment: .4 });
+  enhanceStage(stage, sun, { extent: 23, target: [0, 0, 13], environment: .28, sky: '#12182c', ground: '#1a140e' });
   stage.animate(time => {
     planetMaterial.uniforms.time.value = rings.material.uniforms.time.value = nebula.material.uniforms.time.value = starMaterial.uniforms.time.value = time;
     moonPivot.rotation.y = time * 0.08;

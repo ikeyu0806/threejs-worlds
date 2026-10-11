@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "shinjuku",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "c220bb7910aa8175e37fae62a69c8da553c6f677",
+  "source_commit": "43f757abeac3e4983a3ed21b8144e31132bb51fc",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -10,7 +10,7 @@
   "assets": [
     {
       "file": "avenue_furniture.glb",
-      "sha256": "f19913d227afc56e8c109464ae7d669be9142f15e2ece6ed873f45d7969c11bb",
+      "sha256": "52c4046776c5b40f8a0f55aa75b29c652c07297017b51b5f62ff1b63fc962b03",
       "triangles": 3264,
       "materials": 7,
       "embedded_images": 3,
@@ -18,23 +18,23 @@
     },
     {
       "file": "black_taxi.glb",
-      "sha256": "63e6578c9329c4e77c8ceee91380ff609bfe4dd7dc5fd6082c885db4d80907d4",
-      "triangles": 11524,
+      "sha256": "dec29382b8a636f7d3ef386a14bcac01dfd8a90d7ccc6ab181a1e3f4ceae7f7b",
+      "triangles": 13316,
       "materials": 5,
       "embedded_images": 1,
-      "bytes": 488232
+      "bytes": 546856
     },
     {
       "file": "cocoon.glb",
-      "sha256": "894190d4d189fb46101df40ff7f96fdd62a909b047cc1a5acfeb80b95c9720b3",
-      "triangles": 34924,
+      "sha256": "7e89f8a1c85f4a1cbe76a0e99994e1ea9866eb30c1a0834d528af99b9231ed1c",
+      "triangles": 58108,
       "materials": 5,
       "embedded_images": 2,
-      "bytes": 1998472
+      "bytes": 2777324
     },
     {
       "file": "office_facade.glb",
-      "sha256": "12f9fa7ee50cfa751a26e341df5d8f738fdea55a46903103bdf595e5c770b431",
+      "sha256": "3bbecc2433dfb904478e7924742e4e6542a086011a12d42ea9d7aae38bc0fbde",
       "triangles": 51948,
       "materials": 6,
       "embedded_images": 2,
@@ -42,7 +42,7 @@
     },
     {
       "file": "station_canopy.glb",
-      "sha256": "c9ebc6162a8a6462d2d9d3133571e1a4db901bc2da9845a985124c2190d92afd",
+      "sha256": "9c3c4009b98d0379234c22b21316c17e78950824e4688c57845ead053077f6e0",
       "triangles": 2472,
       "materials": 4,
       "embedded_images": 2,
@@ -50,19 +50,19 @@
     },
     {
       "file": "street_person.glb",
-      "sha256": "72cb3edd3acfc4380154ab80aa7b606de075d6104ea61d26732cad4e509be209",
-      "triangles": 2200,
+      "sha256": "4e6ddc671d9433a0b4b0a5e0d49f67f9d9797aef97117d16e848768f18e0de6d",
+      "triangles": 3484,
       "materials": 4,
       "embedded_images": 1,
-      "bytes": 140912
+      "bytes": 177612
     },
     {
       "file": "tocho.glb",
-      "sha256": "456e56e69a6fd3ead2f7ed2a175a0892a267d3db605924dfe250a012d1cc8121",
-      "triangles": 12944,
+      "sha256": "86a8c95c11630c7755a953df15c68d45f24928bea34fc7d6acba97ab331ca976",
+      "triangles": 14864,
       "materials": 8,
       "embedded_images": 2,
-      "bytes": 839032
+      "bytes": 870776
     }
   ]
 }

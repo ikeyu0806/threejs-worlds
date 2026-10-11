@@ -3,14 +3,16 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { crowdFrom, disposeModelTree } from '../../../shared/models.js';
 import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail-assets.js';
 
 export const DISTRICTS = [
-  { id: 'alley', name: '龍門路地', en: 'DRAGON ALLEY', number: '01', position: [0, 2.3, 17], yaw: 0, pitch: 0.09, description: '眠らない屋台。消えないネオン。街の入口は、いつも雨の匂いがする。' },
-  { id: 'market', name: '電脳闇市', en: 'BLACK MARKET', number: '02', position: [0.5, 1.75, -27], yaw: -0.12, pitch: 0.12, description: '記憶、義体、偽造ID。ここでは、値段のつかないものはない。' },
-  { id: 'bridge', name: '第九連絡橋', en: 'SECTOR 09', number: '03', position: [-0.8, 2.1, -61], yaw: 0.12, pitch: 0.18, description: '企業の光が届く、その少し手前。見上げれば、もうひとつの街。' },
+  { id: 'alley', name: '龍門路地', en: 'DRAGON ALLEY', number: '01', position: [0, 1.68, 16], yaw: 0, pitch: 0.06, description: '眠らない屋台。消えないネオン。街の入口は、いつも雨の匂いがする。' },
+  { id: 'market', name: '電脳闇市', en: 'BLACK MARKET', number: '02', position: [0.4, 1.68, -27], yaw: -0.12, pitch: 0.08, description: '記憶、義体、偽造ID。ここでは、値段のつかないものはない。' },
+  { id: 'bridge', name: '第九連絡橋', en: 'SECTOR 09', number: '03', position: [-0.6, 1.68, -61], yaw: 0.12, pitch: 0.14, description: '企業の光が届く、その少し手前。見上げれば、もうひとつの街。' },
 ];
 
 // A stable seed keeps the city reproducible across sessions and machines.
@@ -30,10 +32,10 @@ export async function createCity(container, callbacks = {}) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#0a151e');
   scene.fog = new THREE.FogExp2('#122833', 0.018);
-  const camera = new THREE.PerspectiveCamera(64, 1, 0.1, 220);
+  const camera = new THREE.PerspectiveCamera(48, 1, 0.1, 220);
   camera.rotation.order = 'YXZ';
   camera.position.fromArray(DISTRICTS[0].position);
-  let yaw = 0, pitch = 0.09;
+  let yaw = 0, pitch = 0.06;
   let mode = 'cinematic', paused = false, rainAmount = 0.7, disposed = false;
   let destination = null;
   const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
@@ -48,6 +50,7 @@ export async function createCity(container, callbacks = {}) {
   composer.addPass(new RenderPass(scene, camera));
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), 0.55, 0.5, 0.85);
   composer.addPass(bloom);
+  composer.addPass(new SMAAPass());
   composer.addPass(new OutputPass());
   const hemisphere = new THREE.HemisphereLight('#a5d7e8', '#13202c', 1.35);
   scene.add(hemisphere);
@@ -99,7 +102,7 @@ export async function createCity(container, callbacks = {}) {
     purple: own(new THREE.MeshBasicMaterial({ color: new THREE.Color('#bb6bff').multiplyScalar(2) })),
     awning: own(new THREE.MeshStandardMaterial({ color: '#532b31', roughness: 0.85, side: THREE.DoubleSide })),
   };
-  const boxGeometry = own(new THREE.BoxGeometry(1, 1, 1));
+  const boxGeometry = own(new RoundedBoxGeometry(1, 1, 1, 2, 0.08));
   const batches = new Map();
   const matrixObject = new THREE.Object3D();
   function box(material, x, y, z, w, h, d, rotation = 0) {
@@ -117,7 +120,7 @@ export async function createCity(container, callbacks = {}) {
   };
   function cable(points, thickness = 0.028, material = materials.black) {
     const curve = new THREE.CatmullRomCurve3(points.map(p => new THREE.Vector3(...p)));
-    return addMesh(new THREE.TubeGeometry(curve, 16, thickness, 4, false), material, 0, 0, 0);
+    return addMesh(new THREE.TubeGeometry(curve, 24, thickness, 8, false), material, 0, 0, 0);
   }
   function pointLight(color, intensity, x, y, z, distance = 18) {
     const light = new THREE.PointLight(color, intensity, distance, 1.8);
@@ -262,7 +265,7 @@ export async function createCity(container, callbacks = {}) {
   const holoGroup = new THREE.Group(); holoGroup.position.set(2, 22, -106); scene.add(holoGroup);
   const holoMat = own(new THREE.MeshBasicMaterial({ color: '#76eed9', transparent: true, opacity: 0.7, blending: THREE.AdditiveBlending, depthWrite: false }));
   for (let i = 0; i < 3; i++) {
-    const ring = new THREE.Mesh(own(new THREE.TorusGeometry(3 + i * 0.4, 0.025, 6, 80)), holoMat);
+    const ring = new THREE.Mesh(own(new THREE.TorusGeometry(3 + i * 0.4, 0.025, 12, 96)), holoMat);
     ring.rotation.y = i * 0.6; holoGroup.add(ring);
   }
   const core = new THREE.Mesh(own(new THREE.IcosahedronGeometry(2, 1)), own(new THREE.MeshBasicMaterial({ color: '#89fce2', wireframe: true, transparent: true, opacity: 0.25 })));
@@ -441,7 +444,7 @@ export async function createCity(container, callbacks = {}) {
   scene.add(modelCopy(terminalModel, [5.05, 0, -23], -Math.PI / 2));
   drone.add(modelCopy(droneModel));
   stall.scene.position.set(-4.2, 0, -3); stall.scene.rotation.y = Math.PI / 2; scene.add(stall.scene);
-  enhanceStage(lightingStage, moon, { extent: 65, target: [0, 0, -40], environment: .3 });
+  enhanceStage(lightingStage, moon, { extent: 65, target: [0, 0, -40], environment: .34, sky: '#0c1824', ground: '#12161c' });
   for (let i = 0; i < 10; i++) {
     const person = rainPerson.scene.clone(true);
     person.position.set((random() - 0.5) * 5.2, 0, 8 - random() * 90);

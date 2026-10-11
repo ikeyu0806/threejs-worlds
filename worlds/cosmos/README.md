@@ -1,6 +1,6 @@
 # APHELION — 遠い軌道
 
-観測甲板から、環のある惑星と星雲を眺める Three.js の宇宙です。小惑星、デブリ、観測船は blender-works の既存 GLB（asteroid set、space debris、Trace Fighter）を配置しています。
+観測甲板の床に立って、環のある惑星と星雲を眺める Three.js の宇宙です。小惑星、デブリ、観測船は blender-works の既存 GLB（asteroid set、space debris、Trace Fighter）を配置しています。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/cosmos/` を開いてください。
 

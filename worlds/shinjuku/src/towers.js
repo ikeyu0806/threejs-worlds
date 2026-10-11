@@ -1,25 +1,26 @@
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 import { loadStageModels, modelCopy, enhanceStage } from '../../../shared/detail-assets.js';
 
 export const vistas = [
-  { id: 'avenue', number: '01', name: '西新宿', en: 'AVENUE', position: [0, 6.2, 22], target: [0, 24, -36], note: '通りの先に、段状の双塔が立つ。' },
-  { id: 'rise', number: '02', name: 'コクーン', en: 'COCOON', position: [-6, 8, 8], target: [-16, 28, -10], note: '楕円の塔を、白い斜めの肋骨が包む。' },
-  { id: 'tocho', number: '03', name: '都庁', en: 'TWIN TOWERS', position: [2, 9, 4], target: [0, 40, -40], note: 'ふたつの冠が、夜の先で対になっている。' },
+  { id: 'avenue', number: '01', name: '西新宿', en: 'AVENUE', position: [0, 1.7, 20], target: [0, 22, -36], note: '通りの先に、段状の双塔が立つ。' },
+  { id: 'rise', number: '02', name: 'コクーン', en: 'COCOON', position: [-5.2, 1.7, 12], target: [-16, 26, -8], note: '楕円の塔を、白い斜めの肋骨が包む。' },
+  { id: 'tocho', number: '03', name: '都庁', en: 'TWIN TOWERS', position: [1.6, 1.7, 10], target: [0, 36, -40], note: 'ふたつの冠が、夜の先で対になっている。' },
 ];
 
 export async function createTowers(container, onError) {
   const stage = createStage(container, {
     background: '#070b16', fog: 0.007, position: vistas[0].position, target: vistas[0].target,
     label: '新宿の夜。都庁の双塔と、楕円の格子塔。ドラッグで見回せます。',
-    bloom: 0.28, bloomThreshold: 1.1, exposure: 1.05, fov: 50, mobileFov: 72,
+    bloom: 0.2, bloomThreshold: 1.15, exposure: 1.02, fov: 44, mobileFov: 60,
     bounds: { minX: -7, maxX: 7, minZ: 2, maxZ: 24 }, onError,
   });
   const { scene } = stage;
   const random = seededRandom(1603);
   const standard = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.62, ...extra });
-  const cube = new THREE.BoxGeometry(1, 1, 1);
+  const cube = new RoundedBoxGeometry(1, 1, 1, 2, 0.08);
   function box(material, position, scale) {
     const result = new THREE.Mesh(cube, material);
     result.position.set(...position);
@@ -79,7 +80,7 @@ export async function createTowers(container, onError) {
   const dummy = new THREE.Object3D();
   const coatColor = new THREE.Color();
 
-  enhanceStage(stage, moon, { extent: 65, target: [0, 0, -28], environment: 0.4 });
+  enhanceStage(stage, moon, { extent: 65, target: [0, 0, -28], environment: 0.32, sky: '#10182a', ground: '#141820' });
   stage.animate(time => {
     taxis.forEach(taxi => {
       const travel = ((taxi.userData.offset + time * 0.04) % 1) * 50 - 10;

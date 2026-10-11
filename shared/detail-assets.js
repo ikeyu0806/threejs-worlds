@@ -1,5 +1,4 @@
 import * as THREE from 'three';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { loadModel } from './models.js';
 
 // Hidden prototypes keep shared GLB textures/geometries in the scene's ownership
@@ -28,11 +27,26 @@ export function modelCopy(gltf, position = [0, 0, 0], yaw = 0, scale = 1) {
   return model;
 }
 
-export function enhanceStage(stage, sun, { extent = 30, target = [0, 0, 0], environment = 0.35 } = {}) {
+function reflectionScene(skyColor, groundColor) {
+  const environmentScene = new THREE.Scene();
+  const sky = new THREE.Mesh(new THREE.SphereGeometry(12, 32, 16), new THREE.MeshBasicMaterial({ color: skyColor, side: THREE.BackSide }));
+  const ground = new THREE.Mesh(new THREE.CircleGeometry(12, 32), new THREE.MeshBasicMaterial({ color: groundColor }));
+  ground.rotation.x = -Math.PI / 2;
+  const sunLight = new THREE.DirectionalLight('#fff6ea', 2.4);
+  sunLight.position.set(-4, 7, 2);
+  environmentScene.add(sky, ground, new THREE.HemisphereLight(skyColor, groundColor, 1.15), sunLight);
+  return environmentScene;
+}
+
+export function enhanceStage(stage, sun, { extent = 30, target = [0, 0, 0], environment = 0.35, sky = '#c5d0d8', ground = '#6a6458' } = {}) {
   const pmrem = new THREE.PMREMGenerator(stage.renderer);
-  const room = new RoomEnvironment();
-  const reflection = pmrem.fromScene(room, 0.04);
-  room.dispose(); pmrem.dispose();
+  const environmentScene = reflectionScene(sky, ground);
+  const reflection = pmrem.fromScene(environmentScene, 0.04);
+  environmentScene.traverse(object => {
+    if (object.isMesh) { object.geometry.dispose(); object.material.dispose(); }
+    if (object.isLight) object.dispose?.();
+  });
+  pmrem.dispose();
   stage.scene.environment = reflection.texture;
   stage.scene.environmentIntensity = environment;
   stage.onDispose(() => { stage.scene.environment = null; reflection.dispose(); });

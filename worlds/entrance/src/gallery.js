@@ -31,7 +31,7 @@ const portalPoses = portalLayout(worlds.length);
 const portalXs = portalPoses.map(item => item.x);
 const crowded = worlds.length > 4;
 const halfSpan = Math.max(...portalXs.map(x => Math.abs(x)), 5.5);
-const viewAngle = crowded ? 31 : worlds.length > 2 ? 27 : 24;
+const viewAngle = crowded ? 24 : worlds.length > 2 ? 22 : 20;
 const galleryDistance = (halfSpan + (crowded ? 2.2 : 4.2)) / Math.tan(THREE.MathUtils.degToRad(viewAngle));
 
 export async function createGallery(container, { onHover, onError }) {
@@ -43,7 +43,7 @@ export async function createGallery(container, { onHover, onError }) {
     return raycaster.intersectObjects(portals, false)[0]?.object.userData.world;
   }
   const stage = createStage(container, {
-    background: '#e8e4dc', fog: crowded ? 0.011 : 0.015, position: [0, 5.4, galleryDistance - 1], target: [0, 3.6, -2], fov: crowded ? 62 : worlds.length > 2 ? 54 : 48, mobileFov: 88,
+    background: '#e8e4dc', fog: crowded ? 0.011 : 0.015, position: [0, 2.2, galleryDistance - 1], target: [0, 3.2, -2], fov: crowded ? 50 : worlds.length > 2 ? 46 : 42, mobileFov: 66,
     label: `石造りのギャラリーに浮かぶ球体と${worlds.length}つのゲート。ゲートまたは画面下のリンクからワールドへ移動できます。`,
     exposure: 0.95, bloom: 0.12, bloomThreshold: 2.5, onError,
     onHover: event => { const world = intersect(event); stage.canvas.style.cursor = world ? 'pointer' : 'grab'; onHover(world?.id ?? null); },
@@ -186,7 +186,7 @@ export async function createGallery(container, { onHover, onError }) {
     const shadow = mesh(new THREE.PlaneGeometry(6, 6), new THREE.MeshBasicMaterial({ map: shadowTexture, transparent: true, depthWrite: false }), [pose.x, -0.075, pose.z]); shadow.rotation.x = -Math.PI / 2;
   }
 
-  enhanceStage(stage, sunlight, { extent: 32, environment: 0.28 });
+  enhanceStage(stage, sunlight, { extent: 32, environment: 0.42, sky: '#efe6d6', ground: '#c4b8a4' });
 
   let focused = null;
   stage.animate(time => {

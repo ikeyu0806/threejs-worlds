@@ -3,6 +3,7 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+import { SMAAPass } from 'three/addons/postprocessing/SMAAPass.js';
 import { disposeModelTree } from './models.js';
 
 export function seededRandom(seed) {
@@ -34,6 +35,8 @@ export function createStage(container, options) {
   const bloom = new UnrealBloomPass(new THREE.Vector2(1, 1), options.bloom ?? 0.3, 0.5, options.bloomThreshold ?? 0.85);
   composer.addPass(new RenderPass(scene, camera));
   composer.addPass(bloom);
+  // Composerの描画先はMSAAされない。SMAAはOutputPassの前で輪郭のギザギザを取る。
+  composer.addPass(new SMAAPass());
   composer.addPass(new OutputPass());
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
   const position = new THREE.Vector3(...options.position);

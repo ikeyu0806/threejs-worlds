@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "entrance",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "a5f966ad56f56fac59f597007948df13892ef8f9",
+  "source_commit": "43f757abeac3e4983a3ed21b8144e31132bb51fc",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -10,27 +10,27 @@
   "assets": [
     {
       "file": "limestone_atrium.glb",
-      "sha256": "e247deeb5f43ce73c37ebefbb372c3a7f7a496c20572aef7f111583d7bdba660",
+      "sha256": "36e8e0037f0742aa6eb35911f8b650dcc1aab1cc920ac77a03723a4aa84be3d0",
       "triangles": 32184,
       "materials": 5,
       "embedded_images": 2,
-      "bytes": 1419216
+      "bytes": 1419392
     },
     {
       "file": "orbit_sculpture.glb",
-      "sha256": "9bbd0189450a230260eba6cb2ac08669f33a9e4551ed56dcff0ca044034cac74",
-      "triangles": 27440,
+      "sha256": "a0cf45fa432482436a105656d26a35133f31d28f7060cc5b27f1c50289890491",
+      "triangles": 24368,
       "materials": 2,
       "embedded_images": 1,
-      "bytes": 1032344
+      "bytes": 816984
     },
     {
       "file": "portal_frame.glb",
-      "sha256": "b97e58460d936ba7ce13bb30dd3b9c4339df4aeb351bdd9da2b21b13e06ee2b6",
+      "sha256": "5ef827413615f9984f998f47e7a1a76379e46cc81ac6169e9453d95dfe8b3b1d",
       "triangles": 13084,
       "materials": 3,
       "embedded_images": 2,
-      "bytes": 617756
+      "bytes": 617852
     }
   ]
 }

@@ -4,16 +4,16 @@ import { crowdFrom } from '../../../shared/models.js';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 
 export const vistas = [
-  { id: 'gate', number: '01', name: '朱雀門', en: 'SUZAKU', position: [0, 3.6, 16], target: [0, 5.2, -14], note: '朝の門が、砂利の道の先に立つ。' },
-  { id: 'pond', number: '02', name: '庭の池', en: 'STILL POND', position: [4.5, 3.3, 8], target: [8.5, 1.4, -4], note: '水面が、空の色をたたえている。' },
-  { id: 'moon', number: '03', name: '月の縁側', en: 'MOON VERANDA', position: [-10.2, 4.2, 9.2], target: [-2, 8.5, -16], note: '薄い月が、屋根の上に残っている。' },
+  { id: 'gate', number: '01', name: '朱雀門', en: 'SUZAKU', position: [0, 1.65, 14], target: [0, 4.2, -14], note: '朝の門が、砂利の道の先に立つ。' },
+  { id: 'pond', number: '02', name: '庭の池', en: 'STILL POND', position: [4.2, 1.55, 7], target: [8.5, 1.15, -4], note: '水面が、空の色をたたえている。' },
+  { id: 'moon', number: '03', name: '月の縁側', en: 'MOON VERANDA', position: [-9.4, 1.7, 8.4], target: [-2, 5.6, -16], note: '薄い月が、屋根の上に残っている。' },
 ];
 
 export async function createCapital(container, onError) {
   const stage = createStage(container, {
     background: '#d7c8b4', fog: 0.006, position: vistas[0].position, target: vistas[0].target,
     label: '朝霧の古都。朱雀門、庭の池、縁側。ドラッグで見回せます。',
-    bloom: 0.12, bloomThreshold: 1.25, exposure: 0.95, fov: 50, mobileFov: 74,
+    bloom: 0.1, bloomThreshold: 1.3, exposure: 0.98, fov: 44, mobileFov: 60,
     bounds: { minX: -12, maxX: 12, minZ: 3, maxZ: 18 }, onError,
   });
   const { scene } = stage;
@@ -99,7 +99,7 @@ export async function createCapital(container, onError) {
   }));
   const dummy = new THREE.Object3D();
 
-  enhanceStage(stage, morning, { extent: 32, target: [0, 0, -10], environment: .25 });
+  enhanceStage(stage, morning, { extent: 32, target: [0, 0, -10], environment: .4, sky: '#e4d4c0', ground: '#8a7a62' });
   stage.animate((time, dt) => {
     water.uniforms.time.value = time;
     koiData.forEach((fish, index) => {

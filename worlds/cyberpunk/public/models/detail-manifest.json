@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "cyberpunk",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "6db2e4c5b4b2ef6134241c296b8ac9f8844a7bc7",
+  "source_commit": "43f757abeac3e4983a3ed21b8144e31132bb51fc",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -10,51 +10,51 @@
   "assets": [
     {
       "file": "alley_facade.glb",
-      "sha256": "2f680f34843511a76f3099863968135830a90a5f00a4a1ff45073ebd915c61ea",
-      "triangles": 48564,
+      "sha256": "6d870708c4b3e0a418073f5abecf6f8fe6b14eb24fa87e2223457a28f873fc80",
+      "triangles": 46164,
       "materials": 7,
-      "embedded_images": 2,
-      "bytes": 2095584
+      "embedded_images": 3,
+      "bytes": 1993104
     },
     {
       "file": "alley_facade_distant.glb",
-      "sha256": "0bb3a8437be4edc1bc24f476caef17f14172a14945c554da8dbce0f9b1f4ffce",
+      "sha256": "19a945ea7da2fb4c670a96d33a7ce37c875fb9959f2d723b165ec957e76e1d93",
       "triangles": 3484,
       "materials": 7,
-      "embedded_images": 2,
-      "bytes": 325972
+      "embedded_images": 3,
+      "bytes": 367500
     },
     {
       "file": "alley_props.glb",
-      "sha256": "f6bfb7372725b8fc73c11ccd3458dc890493728f57d303f5ac597ff83d2b1afb",
-      "triangles": 4980,
+      "sha256": "e304900ce26bba401fd741fa912dcc8346df996e18c0d9208d69d8d83b45f622",
+      "triangles": 5876,
       "materials": 4,
       "embedded_images": 2,
-      "bytes": 271444
+      "bytes": 303580
     },
     {
       "file": "pedestrian_bridge.glb",
-      "sha256": "9c02619e2f02f216f283840db2928d16b661231b48f4b50b9b143ae63125477b",
+      "sha256": "b0590970848fe09fc2430a3a2de417ebe1ad2aaefa1885aa8331fc0e83af7b96",
       "triangles": 19760,
       "materials": 3,
       "embedded_images": 1,
-      "bytes": 800720
+      "bytes": 800828
     },
     {
       "file": "service_drone.glb",
-      "sha256": "7b8a0daae5981261e4d240ef79ab81d825cc1c7bbab4f53550fb56c813850e3d",
-      "triangles": 15360,
+      "sha256": "99e725ac27811295a479e88cd852cb403a26671aed03721f2b6bc4a10322c379",
+      "triangles": 11520,
       "materials": 5,
-      "embedded_images": 1,
-      "bytes": 629916
+      "embedded_images": 2,
+      "bytes": 449668
     },
     {
       "file": "vending_terminal.glb",
-      "sha256": "bdaf876b14002ed9437c2ecdaf46fb4c87cc51374feab0e0ed2e70565dc9bbab",
+      "sha256": "db75337a1a060717f6858174810e218a14c89781039e12c0b673d304091d7038",
       "triangles": 3644,
       "materials": 5,
       "embedded_images": 1,
-      "bytes": 180136
+      "bytes": 180308
     }
   ]
 }

@@ -13,4 +13,4 @@
 
 参考画像の著作権は各作者に帰属します。アプリ内では出典へのリンクとリモートの参考画像を紹介しています。3Dの形状、看板、コンクリート、路面、ポスター、霧のテクスチャはオリジナルです。
 
-技術資料： [Three.js Color Management](https://threejs.org/manual/pages/color-management.html)、[UnrealBloomPass](https://threejs.org/docs/pages/UnrealBloomPass.html)。
+技術資料： [Three.js Color Management](https://threejs.org/manual/pages/color-management.html)、[UnrealBloomPass](https://threejs.org/docs/pages/UnrealBloomPass.html)、[SMAA](https://threejs.org/docs/pages/SMAAPass.html)。カメラは路地に立った目の高さで、画角は広角の歪みを抑えています。

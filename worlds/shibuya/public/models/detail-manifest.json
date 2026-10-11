@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "shibuya",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "9fdc3da901802d3a4eeea754c55a80a15f55a5f1",
+  "source_commit": "43f757abeac3e4983a3ed21b8144e31132bb51fc",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -10,7 +10,7 @@
   "assets": [
     {
       "file": "commercial_block.glb",
-      "sha256": "dbad5f4febace574d5679b2aea6f93864b1aeac5e695d4f3fd6ff83d8c1a75d5",
+      "sha256": "581924510c3b0341311bd2da53d6535c8da1f7a43c9d8cfc6ee872c75ea5205d",
       "triangles": 19008,
       "materials": 6,
       "embedded_images": 2,
@@ -18,31 +18,31 @@
     },
     {
       "file": "electric_bus.glb",
-      "sha256": "6b4555eeeb55e355a382584293e0eb6d2ada38f1b350d136b6447949e4130cdc",
-      "triangles": 15512,
+      "sha256": "8002a901afd83fa62acd72ddf844e62b487bc2eb35adea6adfcc0270c27cad14",
+      "triangles": 17416,
       "materials": 6,
       "embedded_images": 1,
-      "bytes": 652280
+      "bytes": 714428
     },
     {
       "file": "fashion_tower.glb",
-      "sha256": "f1e6a450d529ea5c6bc6ca12c255388914666e7c42a68a2f585a9c28c45123a7",
-      "triangles": 44088,
+      "sha256": "439c17dd37f9fd644d6bf58f319b7e904e9ab77ce05fd8c44718d9e14567777e",
+      "triangles": 43368,
       "materials": 6,
       "embedded_images": 2,
-      "bytes": 1879332
+      "bytes": 1838412
     },
     {
       "file": "meet_dog.glb",
-      "sha256": "301cf2e71e18d5ea8dcae54b93f108f85722734147098b81622ff79844a04bd5",
-      "triangles": 6016,
+      "sha256": "6c0c2bc2d5ac2026fc2b7986e46890633b45b4c19c55f6ff486f451700fa639a",
+      "triangles": 5632,
       "materials": 3,
       "embedded_images": 2,
-      "bytes": 280776
+      "bytes": 259372
     },
     {
       "file": "plaza_furniture.glb",
-      "sha256": "de27134e217d33b6078f153c2fcd35bcacee4e5e87ed6e3ac8fa37f6c47ef4a6",
+      "sha256": "732c11ebfb079063de5defb59fa4e4c33b1dd0d2db58baeab18c6dd96bc4124b",
       "triangles": 4576,
       "materials": 7,
       "embedded_images": 3,
@@ -50,7 +50,7 @@
     },
     {
       "file": "qfront.glb",
-      "sha256": "78d352b8ea6c79f25d23e794a5eba9e071d77311433545364e90b91477934bda",
+      "sha256": "22a113dd85ec59e94f4e66d9181781500b320dbecd7faebe15a00ef4cbfa9d91",
       "triangles": 11340,
       "materials": 7,
       "embedded_images": 2,
@@ -58,7 +58,7 @@
     },
     {
       "file": "signal_mast.glb",
-      "sha256": "4663a8c5e372ead5082e7094b75fba67332bca14cd1dfac319c59d171c265385",
+      "sha256": "1a031212b2f3769e89903f4a6ba15bbc393e5333178355bb5f2a97def74f9978",
       "triangles": 2276,
       "materials": 5,
       "embedded_images": 1,
@@ -66,7 +66,7 @@
     },
     {
       "file": "sky_tower.glb",
-      "sha256": "6305d97f2455b132db510812ecd7b4953e175869d206023bd9016887a815fbc9",
+      "sha256": "9310c00ce58cb0b1a3975f71993c33d9f0049bd794e56d5a60bb47302cc1724a",
       "triangles": 36212,
       "materials": 6,
       "embedded_images": 2,
@@ -74,11 +74,11 @@
     },
     {
       "file": "street_person.glb",
-      "sha256": "e37678fbbb27fd1a23615aa4c52747327c2ff42b816df751f1cffc550fe04df3",
-      "triangles": 2200,
+      "sha256": "325b02195f673993d1f1c06d0ce845f2cf70048ed2a70d32a519b6a6f8770348",
+      "triangles": 3484,
       "materials": 4,
       "embedded_images": 1,
-      "bytes": 140912
+      "bytes": 177608
     }
   ]
 }

@@ -1,12 +1,13 @@
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { createStage, seededRandom } from '../../../shared/stage.js';
 import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 import { loadStageModels, modelCopy, enhanceStage } from '../../../shared/detail-assets.js';
 
 export const vistas = [
-  { id: 'street', number: '01', name: '中央通り', en: 'CHUO-DORI', position: [0, 4.2, 18], target: [0, 6, -10], note: '電気街口から、看板の谷を北へ歩く。' },
-  { id: 'signs', number: '02', name: '縦看板', en: 'SIGNS', position: [-2, 5.2, 6], target: [-8, 12, 2], note: 'ガラスのホールから、色の看板が通りへ出ている。' },
-  { id: 'arcade', number: '03', name: 'アーケード', en: 'ARCADE', position: [3.2, 3.4, 2], target: [10, 4, -4], note: '黄色い商業棟の足元で、ゲームの光がこぼれる。' },
+  { id: 'street', number: '01', name: '中央通り', en: 'CHUO-DORI', position: [0, 1.65, 16], target: [0, 5.2, -12], note: '電気街口から、看板の谷を北へ歩く。' },
+  { id: 'signs', number: '02', name: '縦看板', en: 'SIGNS', position: [-1.6, 1.65, 8], target: [-7, 11, 1], note: 'ガラスのホールから、色の看板が通りへ出ている。' },
+  { id: 'arcade', number: '03', name: 'アーケード', en: 'ARCADE', position: [2.4, 1.62, 4], target: [9, 3.4, -4], note: '黄色い商業棟の足元で、ゲームの光がこぼれる。' },
 ];
 
 function signTexture(lines, background, ink) {
@@ -32,14 +33,14 @@ export async function createDistrict(container, onError) {
   const stage = createStage(container, {
     background: '#9eb4c6', fog: 0.011, position: vistas[0].position, target: vistas[0].target,
     label: '秋葉原の中央通り。ガラスのホール、黄色い商業棟、頭上の電車。ドラッグで見回せます。',
-    bloom: 0.22, bloomThreshold: 1.1, exposure: 0.96, fov: 54, mobileFov: 76,
+    bloom: 0.16, bloomThreshold: 1.15, exposure: 0.98, fov: 46, mobileFov: 62,
     bounds: { minX: -3.2, maxX: 3.2, minZ: -8, maxZ: 18 }, onError,
   });
   const { scene } = stage;
   const random = seededRandom(1980);
   const standard = (color, extra = {}) => new THREE.MeshStandardMaterial({ color, roughness: 0.72, ...extra });
   const trim = standard('#2c2826', { roughness: 0.45, metalness: 0.25 });
-  const cube = new THREE.BoxGeometry(1, 1, 1);
+  const cube = new RoundedBoxGeometry(1, 1, 1, 2, 0.08);
   function box(material, position, scale) {
     const result = new THREE.Mesh(cube, material);
     result.position.set(...position);
@@ -112,7 +113,7 @@ export async function createDistrict(container, onError) {
   const dummy = new THREE.Object3D();
   const coatColor = new THREE.Color();
 
-  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -10], environment: 0.3 });
+  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -10], environment: 0.48, sky: '#b7c6d4', ground: '#6e726c' });
   stage.animate(time => {
     movingTrain.position.x = ((time * 4.2) % 40) - 20;
     arcade.intensity = 16 + Math.sin(time * 3) * 4;

@@ -2,7 +2,7 @@
   "asset_id": "worlds_detail_kit",
   "world": "cosmos",
   "source_repository": "ikeyu0806/blender-works",
-  "source_commit": "d6d664271ceccd3016ae3311e469d06b44eb9eed",
+  "source_commit": "43f757abeac3e4983a3ed21b8144e31132bb51fc",
   "blender_version": "5.2.2 LTS",
   "units": "meters",
   "up": "+Y",
@@ -10,35 +10,35 @@
   "assets": [
     {
       "file": "cratered_asteroid.glb",
-      "sha256": "16718b42dd92b83db33ab098caae77aa7cceff0b8e2399ffc338040f39516b67",
+      "sha256": "9c843bc343fe349758521f9cebdc3518756d9ac6b82630c1939c376727a281ae",
       "triangles": 5120,
       "materials": 1,
       "embedded_images": 1,
-      "bytes": 248404
+      "bytes": 248440
     },
     {
       "file": "observation_deck.glb",
-      "sha256": "d2d0974d657955432befb401163d106a6151e6c3826be3a4dd36a2588bd9a8e1",
-      "triangles": 75040,
+      "sha256": "45a01390084aeafd6ecc58c7157f4d638d87e60b994a278bd01ddd5ca22671da",
+      "triangles": 71712,
       "materials": 6,
       "embedded_images": 1,
-      "bytes": 2943000
+      "bytes": 2803688
     },
     {
       "file": "orbital_telescope.glb",
-      "sha256": "40ff12d4b4166b2368eed9e081961338fde80d8f9430c8a1b07a68950c3cc4f4",
-      "triangles": 49040,
+      "sha256": "35ff370628a6cc0d9ed4f92b53c41dfe0586f692967f3c8400e08c793584ac43",
+      "triangles": 46736,
       "materials": 5,
       "embedded_images": 2,
-      "bytes": 2049424
+      "bytes": 1916988
     },
     {
       "file": "survey_probe.glb",
-      "sha256": "8016b6dc2be991f155c94188e0579c98b69471cc03b5a93c550a5241ab43c436",
+      "sha256": "13e11835415d2abc42ba0427750b2b617f5aa51b9a2e08de3e24b93dfe75c2e9",
       "triangles": 20248,
       "materials": 5,
       "embedded_images": 1,
-      "bytes": 836752
+      "bytes": 836924
     }
   ]
 }

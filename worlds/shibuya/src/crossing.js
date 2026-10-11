@@ -4,9 +4,9 @@ import { enhanceStage, loadStageModels, modelCopy } from '../../../shared/detail
 import { crowdFrom, setCrowdPose } from '../../../shared/models.js';
 
 export const vistas = [
-  { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 8.2, 18], target: [2, 4, -8], note: 'ハチ公口の前で、全員が一度に渡る。' },
-  { id: 'screens', number: '02', name: '大型ビジョン', en: 'SCREENS', position: [4, 7.4, 2], target: [6, 12, -16], note: '曲面のビジョンが、交差点の北東を染めている。' },
-  { id: 'station', number: '03', name: '駅前', en: 'STATION', position: [-4, 4.2, 16], target: [-7, 1.2, 10], note: '秋田犬のいる広場は、待ち合わせの場所。' },
+  { id: 'scramble', number: '01', name: 'スクランブル', en: 'CROSSING', position: [0, 1.65, 16], target: [1.2, 4.8, -8], note: 'ハチ公口の前で、全員が一度に渡る。' },
+  { id: 'screens', number: '02', name: '大型ビジョン', en: 'SCREENS', position: [3.4, 1.65, 7], target: [6, 12, -16], note: '曲面のビジョンが、交差点の北東を染めている。' },
+  { id: 'station', number: '03', name: '駅前', en: 'STATION', position: [-3.6, 1.65, 15], target: [-7, 1.15, 9], note: '秋田犬のいる広場は、待ち合わせの場所。' },
 ];
 
 function paintCrossing() {
@@ -41,7 +41,7 @@ export async function createCrossing(container, onError) {
   const stage = createStage(container, {
     background: '#4a3040', fog: 0.012, position: vistas[0].position, target: vistas[0].target,
     label: '渋谷のスクランブル交差点。曲面ビジョン、円筒の商業ビル、駅前の広場。ドラッグで見回せます。',
-    bloom: 0.28, bloomThreshold: 0.82, exposure: 1.02, fov: 52, mobileFov: 74,
+    bloom: 0.22, bloomThreshold: 0.88, exposure: 1.02, fov: 46, mobileFov: 62,
     bounds: { minX: -9, maxX: 9, minZ: 0, maxZ: 18 }, onError,
   });
   const { scene } = stage;
@@ -75,12 +75,16 @@ export async function createCrossing(container, onError) {
       vertexShader: 'varying vec2 vUv; uniform float useModelUV; uniform vec4 bounds; void main(){vUv=useModelUV>.5?(position.xy-bounds.xy)/bounds.zw:uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
       fragmentShader: `varying vec2 vUv; uniform float time; uniform vec3 tint;
         void main(){
-          float col=floor(vUv.x*6.);
-          float row=floor(vUv.y*8.+time*.28);
-          float h=fract(sin(col*127.1+row*311.7)*43758.5);
-          vec3 c=mix(vec3(.04,.03,.05), mix(tint, vec3(.45,.42,.48), step(.7,h)), step(.22,h));
-          c*=.55;
-          c*=.8+.2*step(.9,fract(vUv.y*22.-time*1.4));
+          vec2 grid=vUv*vec2(48.,64.);
+          vec2 cell=fract(grid);
+          float col=floor(grid.x);
+          float row=floor(grid.y+time*.4);
+          float region=fract(sin(floor(col/7.)*19.1+floor(row/9.+time*.05)*47.3)*23421.7);
+          float spark=fract(sin(col*127.1+row*311.7)*43758.5);
+          vec3 c=mix(vec3(.03,.025,.04), mix(tint, vec3(.62,.58,.6), step(.55,region)), step(.16,region));
+          c=mix(c, tint*1.15, step(.92,spark)*.35);
+          float pixel=smoothstep(.06,.14,cell.x)*smoothstep(.94,.86,cell.x)*smoothstep(.06,.14,cell.y)*smoothstep(.94,.86,cell.y);
+          c*=.42+.58*pixel;
           gl_FragColor=vec4(c,1.);
           #include <tonemapping_fragment>
           #include <colorspace_fragment>
@@ -148,7 +152,7 @@ export async function createCrossing(container, onError) {
   const dummy = new THREE.Object3D();
   const coatColor = new THREE.Color();
 
-  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -5], environment: .35 });
+  enhanceStage(stage, sun, { extent: 38, target: [0, 0, -5], environment: .42, sky: '#5c3a4a', ground: '#2a2428' });
   stage.animate(time => {
     for (const material of screens) material.uniforms.time.value = time;
     const cycle = (time % 16);

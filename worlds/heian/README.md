@@ -1,6 +1,6 @@
 # HEIAN — 雅の古都
 
-朝霧の庭、朱雀門、池を歩く Three.js の古都です。池には鯉が回り、門や松、花、月は手続き生成しています。
+朝霧の庭、朱雀門、池を歩く Three.js の古都です。池には鯉が回り、門や松、花、月は手続き生成しています。カメラは砂利の上の目の高さです。庭の奥行きは [平安神宮](https://www.heianjingu.or.jp/) と [Japan Guide の神苑](https://www.japan-guide.com/e/e3918.html) の池と門の並びを参照しています。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/heian/` を開いてください。
 
