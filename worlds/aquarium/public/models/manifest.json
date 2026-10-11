@@ -1,102 +1,19 @@
 {
-  "source_repository": "blender-works",
-  "source_asset": "assets/environments/pelagic_aquarium",
-  "source_commit": "d08fd2d8f07142e27c9a6092c76d8febce692474",
-  "blender_version": "5.2.2 LTS",
-  "units": "meters",
-  "up": "+Y",
+  "name": "Rhincodon typus",
+  "generator": "blender-works/assets/creatures/kuroshio_whale_shark/build.py",
+  "original": true,
+  "length_m": 8.306,
+  "triangles": 133428,
+  "materials": 6,
+  "base_color_resolution": [
+    4096,
+    2048
+  ],
+  "file": "whale-shark.glb",
+  "bytes": 4230700,
+  "sha256": "7c926abdf554b65cbdaae781803732713dd8360b2be1916602345f1064bfa7a4",
   "forward": "+Z",
-  "models": {
-    "manta.glb": {
-      "sha256": "4770fe9310c5b64b4b440cac9b8782b13d00042183812ed92f891ab34d2840c3",
-      "bytes": 354136,
-      "triangles": 5032,
-      "maximum_triangles": 14000,
-      "animated": true
-    },
-    "turtle.glb": {
-      "sha256": "ce28a877be6396332601c4c1ed8b3f5515c631adf53b335e5da7a6c2d021e9b8",
-      "bytes": 395508,
-      "triangles": 8104,
-      "maximum_triangles": 42000,
-      "animated": true
-    },
-    "whale_shark.glb": {
-      "sha256": "30e1324c4e6a332ede1865b2abe12886740be9010a46cf9b126b278d1f4c984e",
-      "bytes": 576320,
-      "triangles": 11204,
-      "maximum_triangles": 22000,
-      "animated": true
-    },
-    "silver_fish.glb": {
-      "sha256": "60dade8f79351f683ed935bbb04b520037fe43ffe1070c3ecff3287086aa4e36",
-      "bytes": 363136,
-      "triangles": 4372,
-      "maximum_triangles": 14000,
-      "animated": true
-    },
-    "blue_tang.glb": {
-      "sha256": "1b5f0a632800390b521f5a012e38657c90a266be94070fd9053fee86a42d3537",
-      "bytes": 364580,
-      "triangles": 4388,
-      "maximum_triangles": 14000,
-      "animated": true
-    },
-    "clownfish.glb": {
-      "sha256": "6ec210de3e136d1804f0e6ad973ab97829412aa1ba70e6e706f37fbbc4fb5fcf",
-      "bytes": 358344,
-      "triangles": 4384,
-      "maximum_triangles": 14000,
-      "animated": true
-    },
-    "moon_jelly.glb": {
-      "sha256": "b5ef9106f5bca214450edd5f60ce804ec48eab63015eb16c01faf428f3be3322",
-      "bytes": 306864,
-      "triangles": 5300,
-      "maximum_triangles": 6500,
-      "animated": true
-    },
-    "coral_staghorn.glb": {
-      "sha256": "800477051ebd41966675c1decad3e454fda6121af0952acd769c895e9b84dead",
-      "bytes": 1167932,
-      "triangles": 25004,
-      "maximum_triangles": 52000,
-      "animated": false
-    },
-    "coral_fan.glb": {
-      "sha256": "6809e1bbbcfd2d69db9adc6a8fbc500bb1197190e2ac88a70a1e29732ed87c5c",
-      "bytes": 870088,
-      "triangles": 10708,
-      "maximum_triangles": 28000,
-      "animated": false
-    },
-    "reef_rock.glb": {
-      "sha256": "5b249d69d3b10928f04877db31d161970217e880c6281339558efda6268bcffa",
-      "bytes": 109368,
-      "triangles": 1280,
-      "maximum_triangles": 5000,
-      "animated": false
-    },
-    "kelp.glb": {
-      "sha256": "886eac75789c2fb1621becfaa1930564d59e73da064da6046d4327b87b6ece49",
-      "bytes": 182588,
-      "triangles": 3412,
-      "maximum_triangles": 12000,
-      "animated": true
-    },
-    "gallery.glb": {
-      "sha256": "04b229c052e469996f6e832e97634b23fef0cbcae88daf603080dfd638af2489",
-      "bytes": 507856,
-      "triangles": 10152,
-      "maximum_triangles": 15000,
-      "animated": false
-    },
-    "seabed.glb": {
-      "sha256": "b1f1c5ed99c1cb705c5fbd4bac97bb075d5f36df45c23b144da5642fa8bfe4e2",
-      "bytes": 221596,
-      "triangles": 4752,
-      "maximum_triangles": 6000,
-      "animated": false
-    }
-  }
+  "up": "+Y",
+  "mesh_local_forward": "-X",
+  "source_report": "blender-works/output/kuroshio_whale_shark/reports/validation.json"
 }

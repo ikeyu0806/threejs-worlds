@@ -1,115 +1,333 @@
-import { useEffect, useRef, useState } from 'react';
-import { Icon } from '../../../shared/icons.jsx';
-import Copyright from '../../../shared/Copyright.jsx';
-import { createAquarium, exhibits } from './aquarium.js';
+import { useEffect, useRef, useState } from "react";
+import { createAquarium, viewpoints } from "./aquarium.js";
 
+function Icon({ name }) {
+  const paths = {
+    back: "M19 12H5m6-6-6 6 6 6",
+    pause: "M9 5v14M15 5v14",
+    play: "m9 5 10 7-10 7V5Z",
+    camera: "M4 7h4l2-3h4l2 3h4v13H4V7Zm12 6a4 4 0 1 1-8 0 4 4 0 0 1 8 0Z",
+    expand: "M4 9V4h5m6 0h5v5m0 6v5h-5m-6 0H4v-5",
+    eye: "M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Zm13 0a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z",
+    close: "m6 6 12 12M6 18 18 6",
+  };
+  return (
+    <svg
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.4"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d={paths[name]} />
+    </svg>
+  );
+}
 export default function App() {
-  const host = useRef(null), stage = useRef(null), settings = useRef(null);
-  const [ready, setReady] = useState(false), [error, setError] = useState('');
-  const [exhibit, setExhibit] = useState('ocean'), [walking, setWalking] = useState(false);
-  const [paused, setPaused] = useState(false), [hidden, setHidden] = useState(false);
-  const [quality, setQuality] = useState('high'), [status, setStatus] = useState('');
-  const current = exhibits.find(item => item.id === exhibit);
-
+  const host = useRef(null),
+    stage = useRef(null),
+    guide = useRef(null);
+  const [ready, setReady] = useState(false),
+    [error, setError] = useState(""),
+    [progress, setProgress] = useState(0);
+  const [view, setView] = useState("front"),
+    [paused, setPaused] = useState(
+      () => matchMedia("(prefers-reduced-motion: reduce)").matches,
+    );
+  const [hidden, setHidden] = useState(false),
+    [quality, setQuality] = useState("high"),
+    [status, setStatus] = useState("");
   useEffect(() => {
-    let active = true;
-    (async () => {
-      try {
-        const created = await createAquarium(host.current, setError);
-        if (!active) { created.dispose(); return; }
-        stage.current = created;
+    let active = true,
+      created;
+    createAquarium(host.current, {
+      onError: (message) => active && setError(message),
+      onProgress: (value) => active && setProgress(value),
+      reducedMotion: matchMedia("(prefers-reduced-motion: reduce)").matches,
+    })
+      .then((value) => {
+        created = value;
+        if (!active) {
+          value.dispose();
+          return;
+        }
+        stage.current = value;
         setReady(true);
-      } catch (failure) {
+      })
+      .catch((failure) => {
         console.error(failure);
-        if (active) setError(failure.message.startsWith('水族館のモデル')
-          ? '海の生きものを読み込めませんでした。通信状態を確認して、再読み込みしてください。'
-          : '3D 表示を開始できません。WebGL 2 対応のブラウザで、ハードウェアアクセラレーションを有効にしてください。');
-      }
-    })();
-    return () => { active = false; stage.current?.dispose(); };
-  }, []);
-  useEffect(() => {
-    if (!ready) return;
-    const selected = exhibits.find(item => item.id === exhibit);
-    stage.current?.travel(selected.position, selected.target);
-  }, [ready, exhibit]);
-  useEffect(() => { stage.current?.pause(paused); }, [paused, ready]);
-  useEffect(() => { stage.current?.quality(quality); }, [quality, ready]);
-  useEffect(() => { stage.current?.walk(walking); }, [walking, ready]);
-  useEffect(() => {
-    const keydown = event => {
-      if (['INPUT', 'SELECT', 'TEXTAREA'].includes(event.target.tagName) || settings.current?.open) return;
-      if (event.code === 'KeyH') setHidden(value => !value);
-      if (event.code === 'Escape') { setWalking(false); setHidden(false); }
+        if (active)
+          setError(
+            failure.message.includes("ジンベエザメ")
+              ? failure.message
+              : "3D 表示を開始できませんでした。WebGL 2 に対応したブラウザでお試しください。",
+          );
+      });
+    return () => {
+      active = false;
+      created?.dispose();
+      stage.current = null;
     };
-    window.addEventListener('keydown', keydown);
-    return () => window.removeEventListener('keydown', keydown);
   }, []);
-  function travel(item) {
-    setWalking(false); setExhibit(item.id);
-    stage.current?.travel(item.position, item.target);
-  }
-  function walk() {
-    setWalking(value => !value);
-    if (!walking) requestAnimationFrame(() => stage.current?.canvas.focus({ preventScroll: true }));
+  useEffect(() => {
+    stage.current?.pause(paused);
+  }, [paused, ready]);
+  useEffect(() => {
+    stage.current?.quality(quality);
+  }, [quality, ready]);
+  useEffect(() => {
+    const motion = matchMedia("(prefers-reduced-motion: reduce)");
+    const changed = (event) => {
+      if (event.matches) setPaused(true);
+    };
+    motion.addEventListener("change", changed);
+    const key = (event) => {
+      if (
+        event.altKey ||
+        event.ctrlKey ||
+        event.metaKey ||
+        guide.current?.open ||
+        ["INPUT", "SELECT", "TEXTAREA", "BUTTON"].includes(event.target.tagName)
+      )
+        return;
+      if (event.code === "KeyH") setHidden((value) => !value);
+      if (event.code === "Space") {
+        event.preventDefault();
+        setPaused((value) => !value);
+      }
+      if (event.code === "Escape") setHidden(false);
+    };
+    window.addEventListener("keydown", key);
+    return () => {
+      window.removeEventListener("keydown", key);
+      motion.removeEventListener("change", changed);
+    };
+  }, []);
+  function changeView(id) {
+    setView(id);
+    stage.current?.selectView(id);
   }
   async function capture() {
     try {
       const blob = await stage.current?.capture();
-      if (!blob) throw new Error('No image');
-      const url = URL.createObjectURL(blob), link = document.createElement('a');
-      link.href = url; link.download = `pelagic-${exhibit}.png`; link.click();
-      setTimeout(() => URL.revokeObjectURL(url), 1000); setStatus('風景を PNG で保存しました。');
-    } catch { setStatus('撮影できませんでした。もう一度お試しください。'); }
+      if (!blob) throw Error();
+      const url = URL.createObjectURL(blob),
+        a = document.createElement("a");
+      a.href = url;
+      a.download = "pelagic-kuroshio.png";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+      setStatus("水槽の写真を保存しました。");
+    } catch {
+      setStatus("写真を保存できませんでした。もう一度お試しください。");
+    }
   }
-
-  return <main className={`aquarium ${hidden ? 'hidden-ui' : ''} ${walking ? 'walking' : ''}`}>
-    <div className="ocean-canvas" ref={host} />
-    <div className="ocean-vignette" aria-hidden="true" />
-    <a href="#exhibits" className="skip-link">展示の選択へ</a>
-    <header className="aquarium-header hud">
-      <a href="/" className="entrance-link"><Icon name="back" size={16} /><span>エントランス</span></a>
-      <a href="/aquarium/" className="aquarium-brand" aria-label="PELAGIC 水族館の入口"><svg viewBox="0 0 32 32" width="30" height="30" fill="none" aria-hidden="true"><path d="M2 17c7-10 19-10 27 0-8 9-20 9-27 0Zm0 0v-6m0 6v6" stroke="currentColor" strokeWidth="1.1"/><circle cx="23" cy="15" r="1" fill="currentColor"/></svg><span>PELAGIC<small>A QUIET AQUARIUM</small></span></a>
-      <button className="quiet-button" onClick={() => settings.current.showModal()}>館内ガイド <span>＋</span></button>
-    </header>
-
-    <section className="ocean-hero hud">
-      <div className="eyebrow"><i /> OCEAN SANCTUARY <span>／</span> 海の静寂</div>
-      <h1>A quiet<br />kind of <em>blue.</em></h1>
-      <p className="hero-ja">青の奥へ、ゆっくりと。</p>
-      <p className="hero-copy">流れる光。ゆらぐ影。<br />ここでは、時間も泳いでいる。</p>
-      <button className="walk-button" onClick={walk} disabled={!ready || !!error}><Icon name="compass" size={17} />{walking ? '眺めるモードへ' : '館内を歩く'}<Icon size={17} /></button>
-    </section>
-
-    <aside className="tank-label hud"><span>THE LIVING WINDOW</span><div>海と、<br />ひと息。</div><small>PELAGIC / OPEN OCEAN</small></aside>
-
-    <div className="aquarium-bottom hud">
-      <nav className="exhibit-nav" id="exhibits" aria-label="展示を選択" tabIndex="-1">
-        {exhibits.map(item => <button key={item.id} aria-pressed={exhibit === item.id} onClick={() => travel(item)}><span className="exhibit-number">{item.number}</span><span>{item.name}<small>{item.en}</small></span><span className="exhibit-arrow">{exhibit === item.id ? '●' : '↗'}</span></button>)}
-      </nav>
-      <footer className="aquarium-footer">
-        <div className="world-footer-identity"><div className="exhibit-caption"><span>{current.number} /</span> {current.note}</div><Copyright /></div>
-        <div className="toolbar">
-          <button aria-label={paused ? '生きものの動きを再開' : '生きものの動きを停止'} aria-pressed={paused} onClick={() => setPaused(value => !value)}><Icon name={paused ? 'play' : 'pause'} size={17} /></button>
-          <button aria-label="風景を PNG 保存" disabled={!ready || !!error} onClick={capture}><Icon name="camera" size={18} /></button>
-          <button aria-label="UIを隠す" onClick={() => setHidden(true)}><Icon name="eye" size={19} /></button>
+  async function fullscreen() {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else if (document.documentElement.requestFullscreen)
+        await document.documentElement.requestFullscreen();
+      else setStatus("このブラウザは全画面表示に対応していません。");
+    } catch {
+      setStatus("全画面表示に切り替えられませんでした。");
+    }
+  }
+  return (
+    <main className={`aquarium ${hidden ? "immersed" : ""}`}>
+      <div className="canvas-host" ref={host} />
+      <div className="vignette" aria-hidden="true" />
+      <header className="topbar hud">
+        <a className="back" href="/" aria-label="エントランスへ戻る">
+          <Icon name="back" />
+          <span>WORLDS</span>
+        </a>
+        <a className="brand" href="/aquarium/">
+          PELAGIC<span>AQUARIUM STUDIES</span>
+        </a>
+        <button
+          className="guide-button"
+          onClick={() => guide.current.showModal()}
+        >
+          この水槽について<span>＋</span>
+        </button>
+      </header>
+      <div className="exhibit-index hud">
+        <span className="live-dot" /> ONE TANK. ONE ENCOUNTER.
+        <span className="index-rule" />
+        STUDY 01
+      </div>
+      <div className="bottom-panel hud">
+        <section className="title-block">
+          <p className="eyebrow">黒潮に、身をゆだねる。</p>
+          <h1>
+            Kuroshio<span>黒潮</span>
+          </h1>
+          <p className="subtitle">ジンベエザメのいる、大きな青。</p>
+        </section>
+        <div className="specimen">
+          <span className="specimen-line" />
+          <div>
+            <p>ジンベエザメ</p>
+            <i>Rhincodon typus</i>
+            <small>WHALE SHARK</small>
+          </div>
         </div>
-      </footer>
-      <div className="interaction-note">{walking ? <><kbd>W A S D</kbd> 移動 <span>·</span> Shift で速く <span>·</span> Esc で戻る</> : <>ドラッグで見回す <span>·</span> <kbd>H</kbd> UI を隠す</>}</div>
-    </div>
-    {walking && <div className="touch-pad hud" aria-label="館内の移動">{[[0, 1, 'up', '前に移動'], [-1, 0, 'left', '左に移動'], [0, -1, 'down', '後ろに移動'], [1, 0, 'right', '右に移動']].map(([x, z, icon, label]) => <button key={label} aria-label={label} onPointerDown={event => { event.currentTarget.setPointerCapture(event.pointerId); stage.current?.move(x, z); }} onPointerUp={() => stage.current?.move(0, 0)} onPointerCancel={() => stage.current?.move(0, 0)} onLostPointerCapture={() => stage.current?.move(0, 0)}><Icon name={icon} size={18} /></button>)}</div>}
-    {hidden && <button className="restore-ui" onClick={() => setHidden(false)}><Icon name="eye" size={16} /> UI を表示</button>}
-    {!ready && !error && <div className="scene-message" role="status">海の光を集めています。</div>}
-    {error && <div className="scene-message" role="alert"><h2>海に接続できません</h2><p>{error}</p><button onClick={() => location.reload()}>再読み込み</button><a href="/">エントランスへ戻る</a></div>}
-    <span className="sr-only" role="status">{status}</span>
-
-    <dialog ref={settings} className="guide" aria-labelledby="guide-title" onClose={() => stage.current?.pause(paused)}>
-      <div className="guide-heading"><span>FIELD NOTES / PELAGIC</span><button aria-label="ガイドを閉じる" onClick={() => settings.current.close()}><Icon name="close" /></button></div>
-      <h2 id="guide-title">海の時間の過ごし方</h2>
-      <p>展示ボタンで、大海・珊瑚・クラゲの前へ移動できます。画面をドラッグすると周囲を見回せます。</p>
-      <dl><div><dt>館内を歩く</dt><dd>WASD / 矢印キー</dd></div><div><dt>速く移動する</dt><dd>Shift</dd></div><div><dt>眺めるモードへ戻る</dt><dd>Esc</dd></div><div><dt>UI の表示切替</dt><dd>H</dd></div></dl>
-      <p className="guide-small">スマートフォンでは、歩くモードの矢印ボタンで移動できます。生きものの動きは右下のボタンで停止できます。</p>
-      <label className="quality-label" htmlFor="quality">描画品質<select id="quality" value={quality} onChange={event => setQuality(event.target.value)}><option value="high">高品質</option><option value="low">軽量（発光を省略）</option></select></label>
-    </dialog>
-  </main>;
+        <div className="control-row">
+          <nav className="viewpoints" aria-label="観覧位置">
+            {viewpoints.map((item) => (
+              <button
+                key={item.id}
+                aria-pressed={view === item.id}
+                disabled={!ready || !!error}
+                onClick={() => changeView(item.id)}
+              >
+                <small>{item.number}</small>
+                {item.label}
+              </button>
+            ))}
+          </nav>
+          <p className="gesture-hint">
+            ドラッグで見回す<span> · </span>スクロールで近づく
+          </p>
+          <div className="tools">
+            <button
+              aria-label={paused ? "泳ぎを再開" : "泳ぎを止める"}
+              title={paused ? "泳ぎを再開" : "泳ぎを止める"}
+              aria-pressed={paused}
+              disabled={!ready || !!error}
+              onClick={() => setPaused((value) => !value)}
+            >
+              <Icon name={paused ? "play" : "pause"} />
+            </button>
+            <button
+              aria-label="写真を保存"
+              title="写真を保存"
+              disabled={!ready || !!error}
+              onClick={capture}
+            >
+              <Icon name="camera" />
+            </button>
+            <button
+              aria-label="全画面表示"
+              title="全画面表示"
+              onClick={fullscreen}
+            >
+              <Icon name="expand" />
+            </button>
+            <button
+              aria-label="操作表示を隠す"
+              title="操作表示を隠す（H）"
+              onClick={() => setHidden(true)}
+            >
+              <Icon name="eye" />
+            </button>
+          </div>
+        </div>
+        <footer>
+          <span>
+            PELAGIC <span className="muted">/</span> A MOMENT UNDER THE SURFACE
+          </span>
+          <span>© {new Date().getFullYear()} ikeyu</span>
+        </footer>
+      </div>
+      {hidden && (
+        <button
+          className="restore"
+          onClick={() => setHidden(false)}
+          aria-label="操作表示を戻す"
+        >
+          <Icon name="eye" />
+          <span>操作を表示</span>
+        </button>
+      )}
+      {(!ready || error) && (
+        <div className="loading" role={error ? "alert" : "status"}>
+          <span className="loading-mark">P</span>
+          <h2>{error ? "水槽を表示できません" : "青の向こうへ。"}</h2>
+          <p>{error || "ジンベエザメを迎えています"}</p>
+          {error ? (
+            <button onClick={() => window.location.reload()}>再読み込み</button>
+          ) : (
+            <div className="loading-track">
+              <span style={{ width: `${Math.max(4, progress * 100)}%` }} />
+            </div>
+          )}
+        </div>
+      )}
+      <div className="toast" role="status" onAnimationEnd={() => setStatus("")}>
+        {status}
+      </div>
+      <dialog ref={guide} className="guide" aria-labelledby="guide-title">
+        <button
+          className="close"
+          aria-label="閉じる"
+          onClick={() => guide.current.close()}
+        >
+          <Icon name="close" />
+        </button>
+        <p className="eyebrow">PELAGIC / STUDY 01</p>
+        <h2 id="guide-title">
+          ひとつの水槽を、
+          <br />
+          ゆっくり眺める。
+        </h2>
+        <p>
+          幅広い頭、小さな目、5対のえら。白い斑点をまとったジンベエザメが、尾をゆっくり振って回遊します。観覧室の目の高さから、大きさと水の奥行きを感じてください。
+        </p>
+        <dl>
+          <div>
+            <dt>モデルの全長</dt>
+            <dd>約 8.3 m</dd>
+          </div>
+          <div>
+            <dt>観覧窓の寸法</dt>
+            <dd>22.5 × 8.2 m</dd>
+          </div>
+          <div>
+            <dt>操作</dt>
+            <dd>ドラッグ / ピンチ・スクロール</dd>
+          </div>
+          <div>
+            <dt>キーボード</dt>
+            <dd>矢印：見回す / Space：停止 / H：表示</dd>
+          </div>
+        </dl>
+        <label className="quality-setting">
+          描画品質
+          <select
+            value={quality}
+            onChange={(event) => setQuality(event.target.value)}
+          >
+            <option value="high">高精細</option>
+            <option value="low">軽量（床の反射を省略）</option>
+          </select>
+        </label>
+        <p className="reference-note">
+          沖縄美ら海水族館の大水槽と、生物学的な資料を参考に制作したオリジナルの
+          CG です。実在する施設や個体を正確に再現したものではありません。
+        </p>
+        <div className="reference-links">
+          <a
+            href="https://churaumi.okinawa/area/the-kuroshio/kuroshio/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            美ら海水族館「黒潮の海」 ↗
+          </a>
+          <a
+            href="https://www.floridamuseum.ufl.edu/discover-fish/species-profiles/whale-shark/"
+            target="_blank"
+            rel="noreferrer"
+          >
+            Florida Museum / 形状の資料 ↗
+          </a>
+          <a href="/aquarium-legacy/">旧 PELAGIC アーカイブ ↗</a>
+        </div>
+      </dialog>
+    </main>
+  );
 }

@@ -5,8 +5,8 @@ export const worlds = [
     href: '/cyberpunk/', color: '#c88472', category: 'URBAN / NIGHT',
   },
   {
-    id: 'aquarium', number: '02', title: 'PELAGIC', subtitle: '静かな海の水族館',
-    description: '青の奥へ、ゆっくりと。海の住人と過ごす時間。',
+    id: 'aquarium', number: '02', title: 'PELAGIC', subtitle: 'ジンベエザメの大水槽',
+    description: '大きな青に、身をゆだねる。ジンベエザメと過ごす時間。',
     href: '/aquarium/', color: '#76b8b4', category: 'OCEAN / SANCTUARY',
   },
   {
@@ -36,5 +36,10 @@ export const archivedWorlds = [
     id: 'shinjuku', number: '07', title: 'SHINJUKU', subtitle: '新宿',
     description: '塔の足元で、夜が濃くなる。',
     href: '/shinjuku/', color: '#7eb6ff', category: 'CITY / NIGHT',
+  },
+  {
+    id: 'aquarium-legacy', number: '08', title: 'PELAGIC ARCHIVE', subtitle: '旧水族館',
+    description: '2026年10月11日までの水族館。旧モデルと展示を保存。',
+    href: '/aquarium-legacy/', color: '#76b8b4', category: 'ARCHIVE / AQUARIUM',
   },
 ];
