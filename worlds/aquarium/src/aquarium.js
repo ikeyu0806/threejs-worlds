@@ -4,17 +4,17 @@ import { createStage, seededRandom } from '../../../shared/stage.js';
 import { loadAquariumModels, creature, instances, addCausticMaterial } from './models.js';
 
 export const exhibits = [
-  { id: 'ocean', number: '01', name: '大海の窓', en: 'OPEN OCEAN', position: [0, 3.7, 15], target: [0, 5, -15], note: 'ゆるやかに泳ぐエイと、光をほどく魚群。' },
-  { id: 'reef', number: '02', name: '珊瑚の庭', en: 'CORAL GARDEN', position: [11, 3.1, 5.5], target: [10, 2.7, -12], note: '珊瑚のあいだに、小さな暮らしが息づく。' },
-  { id: 'jelly', number: '03', name: '月の漂流', en: 'MOON JELLIES', position: [-11, 3.9, 5.5], target: [-12, 5.3, -12], note: '淡い光をまとって、ただ、漂う。' },
+  { id: 'ocean', number: '01', name: '大海の窓', en: 'OPEN OCEAN', position: [0.15, 1.62, 0.45], target: [0.4, 4.15, -18], note: 'ゆるやかに泳ぐエイと、光をほどく魚群。' },
+  { id: 'reef', number: '02', name: '珊瑚の庭', en: 'CORAL GARDEN', position: [8.1, 1.58, 0.2], target: [10.4, 1.05, -10.5], note: '珊瑚のあいだに、小さな暮らしが息づく。' },
+  { id: 'jelly', number: '03', name: '月の漂流', en: 'MOON JELLIES', position: [-7.1, 1.6, 0.35], target: [-11.4, 4.9, -11], note: '淡い光をまとって、ただ、漂う。' },
 ];
 
 export async function createAquarium(container, onError) {
   const stage = createStage(container, {
-    background: '#031923', fog: .014, position: exhibits[0].position, target: exhibits[0].target,
+    background: '#041820', fog: .007, position: exhibits[0].position, target: exhibits[0].target,
     label: '大水槽の魚群、マンタ、ウミガメ、ジンベエザメ、クラゲ。ドラッグで見回せます。',
-    bloom: .25, exposure: 1.12, fov: 57,
-    bounds: { minX: -15, maxX: 15, minZ: 3, maxZ: 18 }, onError,
+    bloom: .08, bloomThreshold: .92, exposure: .98, fov: 46, mobileFov: 60,
+    bounds: { minX: -14, maxX: 14, minZ: -1.5, maxZ: 12 }, onError,
   });
   try {
     const assets = await loadAquariumModels(stage);
@@ -51,31 +51,36 @@ function populateAquarium(stage, assets) {
 
   const environment = new RoomEnvironment(), generator = new THREE.PMREMGenerator(renderer);
   const reflections = generator.fromScene(environment, .08);
-  scene.environment = reflections.texture; scene.environmentIntensity = .25;
+  scene.environment = reflections.texture; scene.environmentIntensity = .38;
   generator.dispose(); environment.dispose();
   stage.onDispose(() => reflections.dispose());
-  scene.add(new THREE.HemisphereLight('#bbf1fa', '#233e43', .95));
-  const sun = new THREE.DirectionalLight('#aee9ed', 2.8);
-  sun.position.set(-7, 22, -12); sun.target.position.set(0, 0, -18);
+  scene.add(new THREE.HemisphereLight('#9fd0de', '#102228', .48));
+  const sun = new THREE.DirectionalLight('#e7fbff', 2.4);
+  sun.position.set(-3, 26, -6); sun.target.position.set(0, 0, -16);
   sun.castShadow = !compact; sun.shadow.mapSize.set(2048, 2048);
   Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: .5, far: 65 });
   sun.shadow.bias = -.0002; sun.shadow.normalBias = .03;
   scene.add(sun, sun.target);
-  const rim = new THREE.DirectionalLight('#328fb9', 1.9);
-  rim.position.set(12, 7, -30); scene.add(rim);
-  const reefLight = new THREE.PointLight('#ead5b3', 48, 24, 1.5);
-  reefLight.position.set(12, 7, -10); scene.add(reefLight);
-  const jellyLight = new THREE.PointLight('#a2c8ef', 30, 18, 1.5);
-  jellyLight.position.set(-12, 7, -9); scene.add(jellyLight);
+  const rim = new THREE.DirectionalLight('#2f86b0', 1.15);
+  rim.position.set(10, 8, -28); scene.add(rim);
+  const reefLight = new THREE.PointLight('#f0d7b4', 16, 18, 2);
+  reefLight.position.set(11, 4.5, -9); scene.add(reefLight);
+  const jellyLight = new THREE.PointLight('#b7d4f4', 11, 14, 2);
+  jellyLight.position.set(-11, 5.5, -9); scene.add(jellyLight);
 
   const gallery = assets.gallery.scene.clone(true); scene.add(gallery);
   gallery.traverse(object => {
-    if (object.isMesh && object.material.name === 'Gallery.Acrylic') {
-      object.material.depthWrite = false;
-      object.material.opacity = .025;
-      object.material.side = THREE.FrontSide;
-      object.renderOrder = 3;
-    }
+    if (!object.isMesh || object.material.name !== 'Gallery.Acrylic') return;
+    // 厚いアクリルは前面だけを透過させ、室の反射と縁のフレネルでガラスだと読ませる。
+    const glass = new THREE.MeshPhysicalMaterial({
+      color: '#d5f3f6', roughness: .05, metalness: 0, transmission: .9, thickness: .28,
+      ior: 1.49, attenuationColor: new THREE.Color('#8fd0d8'), attenuationDistance: 2.4,
+      clearcoat: .2, clearcoatRoughness: .45, envMapIntensity: .18,
+      transparent: true, opacity: 1, side: THREE.FrontSide, depthWrite: false,
+    });
+    object.material = glass;
+    object.renderOrder = 2;
+    stage.onDispose(() => glass.dispose());
   });
   const seabed = assets.seabed.scene.clone(true);
   seabed.position.set(0, -.16, -20); scene.add(seabed);
@@ -86,12 +91,11 @@ function populateAquarium(stage, assets) {
     vertexShader: 'varying vec2 vUv; void main(){vUv=uv; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vUv; uniform float time;
       void main(){
-        vec3 deep=vec3(.007,.045,.09), shallow=vec3(.065,.3,.36);
+        vec3 deep=vec3(.008,.042,.08), shallow=vec3(.035,.16,.2);
         float ray=pow(max(0.,sin(vUv.x*41.+vUv.y*3.+sin(time*.17)*.3)),14.);
         float ray2=pow(max(0.,sin(vUv.x*69.-vUv.y*6.-time*.035)),24.);
-        vec3 c=mix(deep,shallow,pow(vUv.y,1.5));
-        c+=vec3(.15,.35,.37)*(ray*.34+ray2*.16)*pow(vUv.y,1.05);
-        c+=vec3(.03,.09,.11)*exp(-length((vUv-vec2(.47,.72))*vec2(2.,1.))*3.);
+        vec3 c=mix(deep,shallow,pow(vUv.y,1.6));
+        c+=vec3(.08,.2,.22)*(ray*.16+ray2*.08)*pow(vUv.y,1.2);
         gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>
         #include <colorspace_fragment>
@@ -121,15 +125,17 @@ function populateAquarium(stage, assets) {
       float width=mix(.25,.48,1.-vUv.y);
       float edge=pow(max(0.,1.-abs(vUv.x-.5)/width),3.);
       float fade=smoothstep(0.,.2,vUv.y)*(1.-smoothstep(.85,1.,vUv.y));
-      float drift=.75+.25*sin(time*.27+vUv.y*8.);
-      gl_FragColor=vec4(.24,.66,.73,edge*fade*drift*.085);
+      float drift=.72+.28*sin(time*.22+vUv.y*6.);
+      gl_FragColor=vec4(.32,.7,.76,edge*fade*drift*.04);
     }`,
   });
-  const shaftGeometry = new THREE.PlaneGeometry(3.5, 13);
-  for (let i = 0; i < 7; i++) {
+  const shaftGeometry = new THREE.PlaneGeometry(1.6, 11);
+  for (let i = 0; i < 9; i++) {
     const shaft = new THREE.Mesh(shaftGeometry, shafts);
-    shaft.position.set(-15 + i * 5.4, 7, -23 - i % 3 * 2);
-    shaft.rotation.z = -.16; scene.add(shaft);
+    shaft.position.set(-16 + i * 4, 6.4, -10 - (i % 4) * 3.4);
+    shaft.rotation.z = -.2 + (i % 4) * .035;
+    shaft.rotation.y = .2;
+    scene.add(shaft);
   }
 
   function scatter(name, count, placement) {
@@ -141,13 +147,13 @@ function populateAquarium(stage, assets) {
   }
   scatter('reef_rock', compact ? 30 : 45, (i, transform) => {
     const size = .45 + random() * 1.6;
-    transform.position.set((random() - .5) * 40, -.06, -9 - random() * 22);
+    transform.position.set((random() - .5) * 40, -.06, -7.4 - random() * 22);
     transform.scale.set(size * 1.25, size * .55, size);
     transform.rotation.set(0, random() * Math.PI * 2, 0);
   });
   for (const name of ['coral_staghorn', 'coral_fan']) {
     scatter(name, compact ? 10 : 18, (i, transform) => {
-      transform.position.set(5 + random() * 13, .02, -9 - random() * 14);
+      transform.position.set(4.2 + random() * 14, .02, -7.2 - random() * 13);
       transform.scale.setScalar(.6 + random() * 1.25);
       transform.rotation.set(0, random() * Math.PI * 2, 0);
     });
@@ -155,13 +161,14 @@ function populateAquarium(stage, assets) {
   const plantCount = compact ? 30 : 55;
   const plants = instances(stage, assets.kelp, plantCount, 'kelp');
   const plantData = Array.from({ length: plantCount }, () => ({
-    position: [(random() - .5) * 38, .015, -9 - random() * 23],
+    position: [(random() - .5) * 38, .015, -7.2 - random() * 22],
     size: .7 + random() * 1.3, rotation: random() * Math.PI * 2, phase: random() * 4,
   }));
   const schoolSpecifications = [
-    { name: 'silver_fish', count: compact ? 80 : 150, size: [1, 1.8], center: -2, radius: [4, 13], height: [3, 9], depth: [-17, -27] },
-    { name: 'blue_tang', count: compact ? 16 : 30, size: [1, 1.7], center: 11, radius: [1.5, 4], height: [1.6, 4], depth: [-10, -16] },
-    { name: 'clownfish', count: compact ? 12 : 22, size: [1, 1.5], center: 10, radius: [.8, 3], height: [1, 2.7], depth: [-10, -14] },
+    { name: 'silver_fish', count: compact ? 70 : 130, size: [1, 1.7], center: -1, radius: [4, 12], height: [2.4, 7.2], depth: [-12, -25] },
+    { name: 'silver_fish', count: compact ? 14 : 28, size: [.85, 1.35], center: 1.2, radius: [2.2, 6.5], height: [1.35, 3.6], depth: [-6.6, -10] },
+    { name: 'blue_tang', count: compact ? 16 : 30, size: [.9, 1.45], center: 10.2, radius: [1.4, 3.6], height: [1.15, 2.8], depth: [-8.2, -13] },
+    { name: 'clownfish', count: compact ? 12 : 22, size: [.85, 1.3], center: 9.6, radius: [.7, 2.4], height: [.7, 2.1], depth: [-7.6, -11.5] },
   ];
   const between = range => range[0] + random() * (range[1] - range[0]);
   const schools = schoolSpecifications.map(specification => ({
@@ -184,10 +191,10 @@ function populateAquarium(stage, assets) {
     return { ...animal, base, phase: i * 1.7 };
   });
 
-  const particleCount = compact ? 130 : 260, particles = new Float32Array(particleCount * 3);
-  for (let i = 0; i < particleCount; i++) particles.set([(random() - .5) * 40, random() * 11, -7 - random() * 27], i * 3);
+  const particleCount = compact ? 180 : 420, particles = new Float32Array(particleCount * 3);
+  for (let i = 0; i < particleCount; i++) particles.set([(random() - .5) * 42, .4 + random() * 10.2, -6 - random() * 26], i * 3);
   const dustGeometry = new THREE.BufferGeometry(); dustGeometry.setAttribute('position', new THREE.BufferAttribute(particles, 3));
-  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: '#a8d9df', size: .025, transparent: true, opacity: .4, depthWrite: false }));
+  const dust = new THREE.Points(dustGeometry, new THREE.PointsMaterial({ color: '#d5f3f4', size: .035, transparent: true, opacity: .34, depthWrite: false, sizeAttenuation: true }));
   scene.add(dust);
 
   function update(time, dt) {
@@ -203,13 +210,13 @@ function populateAquarium(stage, assets) {
       });
       set.commit();
     }
-    manta.root.position.set(3 + Math.sin(time * .1) * 5, 6.8 + Math.sin(time * .24) * .6, -16 + Math.cos(time * .1) * 2);
-    manta.root.rotation.set(.25, -.4 + Math.sin(time * .1) * .8, Math.sin(time * .3) * .06);
-    mantaTwo.root.position.set(-4 + Math.cos(time * .08) * 6, 4.2 + Math.sin(time * .2) * .4, -20);
-    mantaTwo.root.rotation.set(.18, .8 + Math.sin(time * .08) * .5, -.08);
-    turtle.root.position.set(9 + Math.sin(time * .12) * 3, 4.3 + Math.cos(time * .25) * .35, -14);
+    manta.root.position.set(2.2 + Math.sin(time * .1) * 6, 4.6 + Math.sin(time * .24) * .55, -11.5 + Math.cos(time * .1) * 2.4);
+    manta.root.rotation.set(.22, -.4 + Math.sin(time * .1) * .8, Math.sin(time * .3) * .06);
+    mantaTwo.root.position.set(-3.5 + Math.cos(time * .08) * 5.5, 3.3 + Math.sin(time * .2) * .35, -15);
+    mantaTwo.root.rotation.set(.16, .8 + Math.sin(time * .08) * .5, -.08);
+    turtle.root.position.set(8.2 + Math.sin(time * .12) * 2.4, 2.4 + Math.cos(time * .25) * .28, -9.5);
     turtle.root.rotation.set(.08, Math.PI / 2 - .65 + Math.sin(time * .12) * .3, .06);
-    whale.root.position.set(-7 + Math.sin(time * .06) * 9, 4.8 + Math.sin(time * .18) * .35, -24);
+    whale.root.position.set(-6 + Math.sin(time * .06) * 8, 3.6 + Math.sin(time * .18) * .3, -18);
     whale.root.rotation.set(.03, Math.PI / 2 + Math.cos(time * .06) * .35, Math.sin(time * .22) * .035);
     for (const animal of [manta, mantaTwo, turtle, whale, ...jellies]) animal.update(dt);
     for (const { root, base, phase } of jellies) {
@@ -222,7 +229,13 @@ function populateAquarium(stage, assets) {
       plants.write(i, dummy, time * .3 + plant.phase);
     });
     plants.commit();
-    dust.position.y = Math.sin(time * .15) * .3;
+    dust.position.y = Math.sin(time * .15) * .25;
+    if (dt > 0) {
+      const breathe = Math.sin(time * .9);
+      stage.camera.position.x += Math.sin(time * .33) * .012;
+      stage.camera.position.y += breathe * .016;
+      stage.camera.rotateX(breathe * .0035);
+    }
   }
   // Initialize all instance matrices even when reduced motion stops the stage clock.
   update(0, 0);

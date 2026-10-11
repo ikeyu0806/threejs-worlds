@@ -51,6 +51,7 @@ button:focus-visible, a:focus-visible, select:focus-visible, canvas:focus-visibl
 .interaction-note { position: absolute; bottom: 22px; left: 50%; transform: translateX(-50%); font-size: .53rem; color: #a3bfbb; display: flex; align-items: center; gap: 12px; white-space: nowrap; }
 kbd { font: inherit; padding: 2px 5px; border: 1px solid #a3bfbb5e; border-radius: 2px; }
 .hidden-ui .hud { display: none; }
+.hidden-ui .ocean-vignette { background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 12, 18, .42)); }
 .restore-ui { position: fixed; bottom: 24px; right: 24px; padding: 14px 20px; background: #082b36c9; border: 1px solid #95cfc14d; display: flex; gap: 12px; align-items: center; font-size: .7rem; }
 .touch-pad { display: flex; position: absolute; right: 4.2vw; bottom: 196px; gap: 8px; }
 .touch-pad button { display: grid; place-items: center; width: 44px; height: 44px; border: 1px solid #b3d7d366; background: #092b37bb; touch-action: none; }

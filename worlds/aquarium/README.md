@@ -1,8 +1,17 @@
 # PELAGIC — 静かな海の水族館
 
-大水槽を眺める水族館です。生きもの、珊瑚、岩、海藻、海底、水槽の厚い窓枠・アクリル・観覧ギャラリーは、blender-works の `assets/environments/pelagic_aquarium/` で制作したGLBです。ジンベエザメ、マンタ2体、ウミガメ、銀色の魚群、ナンヨウハギ、クマノミ、ミズクラゲが泳ぎます。
+大水槽のアクリルの前に立つ水族館です。視点は目の高さで、窓の向こうの青へ少し見上げます。生きもの、珊瑚、岩、海藻、海底、水槽の厚い窓枠・アクリル・観覧ギャラリーは、blender-works の `assets/environments/pelagic_aquarium/` で制作したGLBです。ジンベエザメ、マンタ2体、ウミガメ、銀色の魚群、ナンヨウハギ、クマノミ、ミズクラゲが泳ぎます。窓に近い魚は手前を横切り、奥の魚は青い霞に溶けます。
 
-コンソールゲームの水中場面のような立体感を目指し、頂点色の模様、埋め込み法線テクスチャ、滑らかな遊泳モーフ、水中の光、柔らかい影、床の反射を組み合わせています。魚群・珊瑚・岩・海藻はインスタンス描画し、GPUで魚と海藻のモーフを再生します。形状の正本はBlender側に置き、Three.js側は配置・光・水の表現を担当します。
+魚は種ごとの胴とヒレ、海藻は茎と波打つ葉、珊瑚は枝と扇の骨格です。表面は頂点色に、鱗・葉脈・孔の法線を重ねています。Three.js側は配置、目線、アクリルの透過、水面から落ちる光、距離による色の吸収を担当します。
+
+## 参照
+
+- Sam Brimlow, [UE5 Aquarium: Refraction](https://sambrimlow.com/2025/02/04/the-art-of-connection/)
+- Epic Developer Community, [Forest in a (Water) Bottle](https://forums.unrealengine.com/t/forest-in-a-water-bottle-virtual-aquarium/2650585)
+- [aquarium-night](https://github.com/StarKnightt/aquarium-night)
+- [ocean-simulator](https://github.com/forbiddenlink/ocean-simulator)
+
+形状とテクスチャはオリジナルです。上の作品からは、ガラス越しの視線、光の筋、距離で青くなる水の扱いを参照しています。
 
 ルートで `npm install`、`npm run dev` を実行し、`http://localhost:5173/aquarium/` を開いてください。
 
@@ -18,6 +27,7 @@ WebGL 2 対応のブラウザが必要です。モデルの再生成・受け渡
 - Blender 5.2.2 LTSで13点を生成。保存blendの再読込、GLB再取込、形状・材質・4秒ループを検査し、再生成2回の主要計測値が一致。
 - `npm run build` / `npm test` で全8ワールドと13点のモデル配信、モデルのハッシュ、PBR・モーフ・アニメーションの仕様を検査。
 - Chromeの1440×960と390×844で、全展示・停止・歩行・撮影・軽量表示・UI切り替えを確認。動きを減らす設定での初期配置、読み込み失敗時の表示と描画の破棄も確認。
-- 本番用のビルドをブラウザで再確認。[大海](artifacts/pelagic-desktop.jpg)、[珊瑚](artifacts/pelagic-reef.jpg)、[クラゲ](artifacts/pelagic-jelly.jpg)、[モバイル](artifacts/pelagic-mobile.jpg) のスクリーンショットを保存。
+- 本番用のビルドをブラウザで再確認。[大海](artifacts/pelagic-desktop.jpg)、[珊瑚](artifacts/pelagic-reef.jpg)、[クラゲ](artifacts/pelagic-jelly.jpg)、[モバイル](artifacts/pelagic-mobile.jpg) のスクリーンショットは、目線を下げる前の構図です。
+- 2026-10-11 に、目の高さの窓、魚3種、海藻、枝珊瑚、扇珊瑚を更新し、ブラウザで大海・珊瑚・クラゲの切り替え、館内歩行、UIを隠した状態、幅390pxのレイアウトを確認した。
 
-現時点で写実的なスキャン素材や骨リグ、LOD切り替えは使用していません。表面の微細法線は256pxの反復テクスチャで、大型生物はそれぞれ1材質です。
+現時点で写実的なスキャン素材や骨リグ、LOD切り替えは使用していません。魚・海藻・珊瑚の微細法線は512px、その他は256pxです。大型生物はそれぞれ1材質です。カメラは館内の床に立ち、アクリル越しに水槽を見上げます。

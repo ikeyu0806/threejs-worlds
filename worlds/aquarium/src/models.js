@@ -91,10 +91,13 @@ export function addCausticMaterial(surface, time) {
       float b = sin(p.y + sin(p.x * .83 - pelagicTime * .21) * 1.8);
       float caustic = pow(max(0., 1. - abs(a * .52 + b * .48)), 15.);
       float waterDepth = clamp((12. - vPelagicWorld.y) / 14., 0., 1.);
-      outgoingLight *= mix(vec3(.93, 1., 1.02), vec3(.64, .87, 1.), waterDepth * .42);
-      outgoingLight += diffuseColor.rgb * vec3(.25, .48, .45) * caustic * .55;
+      float viewDistance = distance(vPelagicWorld, cameraPosition);
+      float haze = 1. - exp(-viewDistance * .02);
+      outgoingLight *= mix(vec3(.9, 1., 1.03), vec3(.55, .82, .98), waterDepth * .5);
+      outgoingLight += diffuseColor.rgb * vec3(.32, .55, .5) * caustic * .7;
+      outgoingLight = mix(outgoingLight, vec3(.03, .14, .18), haze * .62);
       #include <opaque_fragment>
     `);
   };
-  surface.customProgramCacheKey = () => 'pelagic-caustics-v1';
+  surface.customProgramCacheKey = () => 'pelagic-caustics-v3';
 }
