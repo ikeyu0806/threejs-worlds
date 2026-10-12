@@ -3,15 +3,15 @@
   "generator": "blender-works/assets/creatures/kuroshio_whale_shark/build.py",
   "original": true,
   "length_m": 8.344986,
-  "triangles": 133428,
+  "triangles": 133420,
   "materials": 6,
   "base_color_resolution": [
     4096,
     2048
   ],
   "file": "whale-shark.glb",
-  "bytes": 4230700,
-  "sha256": "7c926abdf554b65cbdaae781803732713dd8360b2be1916602345f1064bfa7a4",
+  "bytes": 4230492,
+  "sha256": "5f8c9bbc518e524198a6353afae8ea5b4e848d4596c2bdcbb25d62583bbb7aa1",
   "forward": "+Z",
   "up": "+Y",
   "mesh_local_forward": "-X",
