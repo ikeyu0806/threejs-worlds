@@ -1,6 +1,6 @@
 ---
 name: threejs-worlds
-description: Three.jsのワールドを追加・修正し、必要な3Dモデルをblender-worksで制作して配置する。採用したモデルはblender-worksの3Dモデルカタログにも掲載する。渋谷、秋葉原、新宿、水族館、サイバーパンク、宇宙、古都、エントランスの見た目、建物、人物、生物を扱うときに使う。
+description: Three.jsのワールドを追加・修正し、必要な3Dモデルをblender-worksで制作して配置する。採用したモデルはblender-worksの3Dモデルカタログにも掲載する。水族館、サイバーパンク、宇宙、エントランスの見た目、建物、人物、生物を扱うときに使う。
 ---
 
 # Three.js Worlds

@@ -4,7 +4,7 @@ import { execFileSync } from 'node:child_process';
 import { createHash } from 'node:crypto';
 
 const [world, sourceRoot = '/Users/ikegayayuuki/workspace/blender-works'] = process.argv.slice(2);
-const allowed = ['entrance', 'heian', 'cosmos', 'cyberpunk', 'shibuya', 'akihabara', 'shinjuku'];
+const allowed = ['entrance', 'cosmos', 'cyberpunk'];
 if (!allowed.includes(world)) throw new Error('Choose one detailed world');
 const output = join(sourceRoot, 'output/worlds_detail_kit');
 const destination = resolve(`worlds/${world}/public/models`);

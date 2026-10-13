@@ -76,7 +76,7 @@ export async function createGallery(container, { onHover, onError }) {
   scene.add(modelCopy(atrium));
 
   const portalShader = world => new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, heian: 3 }[world.id] ?? 1 }, focus: { value: 0 } },
+    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2 }[world.id] ?? 1 }, focus: { value: 0 } },
     vertexShader: 'varying vec2 vUv; varying vec3 vPosition; void main(){vUv=uv; vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vUv; varying vec3 vPosition; uniform float time; uniform float kind; uniform float focus;
       float hash(float p){return fract(sin(p*127.1)*43758.5453);}
@@ -117,18 +117,6 @@ export async function createGallery(container, { onHover, onError }) {
           float ring=smoothstep(.018,.0,abs(length(pc*vec2(.9,2.5))-.24));
           c+=ring*vec3(.75,.68,.5)*(1.-body);
           c+=vec3(.32,.24,.52)*exp(-length((uv-vec2(.78,.66))*vec2(3.,2.2))*2.);
-        }else if(kind<3.5){
-          c=mix(vec3(.55,.45,.38),vec3(.93,.88,.8),smoothstep(.15,.85,uv.y));
-          float gate=step(.18,uv.y)*step(uv.y,.72)*step(abs(uv.x-.5),.2);
-          float roof=step(.6,uv.y)*step(uv.y,.8)*step(abs(uv.x-.5),.3);
-          float door=step(.22,uv.y)*step(uv.y,.58)*step(abs(uv.x-.5),.055);
-          c=mix(c,vec3(.62,.24,.18),clamp(gate+roof,0.,1.));
-          c=mix(c,vec3(.28,.22,.2),door);
-          float moon=smoothstep(.055,.04,length(uv-vec2(.78,.78)));
-          c=mix(c,vec3(.97,.94,.88),moon);
-          c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.22,.28))*vec2(8.,10.))*3.);
-          c+=vec3(.55,.32,.12)*exp(-length((uv-vec2(.8,.24))*vec2(8.,10.))*3.);
-          c=mix(c,vec3(.78,.74,.68),smoothstep(.22,0.,uv.y)*.45);
         }
         c*=1.+focus*.3; gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>

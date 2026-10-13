@@ -9,21 +9,18 @@ import { root } from './worlds.mjs';
 import { archivedWorlds, worlds } from '../shared/worlds.js';
 
 test('archived worlds stay off the entrance', () => {
-  assert.deepEqual(worlds.map(world => world.id), ['cyberpunk', 'aquarium', 'cosmos', 'heian']);
-  assert.deepEqual(archivedWorlds.map(world => world.id), ['shibuya', 'akihabara', 'shinjuku', 'aquarium-legacy']);
+  assert.deepEqual(worlds.map(world => world.id), ['cyberpunk', 'aquarium', 'cosmos']);
+  assert.deepEqual(archivedWorlds, []);
 });
 
 const routes = [
   { path: '/', title: 'ORBIT', directory: 'entrance' },
   { path: '/aquarium/', title: 'PELAGIC', directory: 'aquarium' },
-  { path: '/aquarium-legacy/', title: 'PELAGIC', directory: 'aquarium-legacy' },
   { path: '/cyberpunk/', title: 'AFTERLIGHT', directory: 'cyberpunk' },
   { path: '/cosmos/', title: 'APHELION', directory: 'cosmos' },
-  { path: '/heian/', title: 'HEIAN', directory: 'heian' },
-  { path: '/shibuya/', title: 'SCRAMBLE', directory: 'shibuya' },
-  { path: '/akihabara/', title: 'AKIBA', directory: 'akihabara' },
-  { path: '/shinjuku/', title: 'SHINJUKU', directory: 'shinjuku' },
 ];
+
+const removedPaths = ['/aquarium-legacy/', '/heian/', '/shibuya/', '/akihabara/', '/shinjuku/'];
 
 async function start(script) {
   const socket = createServer(); socket.listen(0, '127.0.0.1'); await once(socket, 'listening');
@@ -62,7 +59,7 @@ async function request(url) { return fetch(url, { signal: AbortSignal.timeout(10
 async function verifyAquariumModels(serverUrl) {
   const modelDirectory = resolve(root, 'worlds/aquarium/public/models');
   const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'community-manifest.json'), 'utf8'));
-  assert.equal((await request(`${serverUrl}/aquarium-legacy/models/manta.glb`)).status, 404);
+  for (const path of removedPaths) assert.equal((await request(`${serverUrl}${path}`)).status, 404, path);
   const newModel = await request(`${serverUrl}/aquarium/models/whale-shark.glb`);
   assert.equal(newModel.status, 200);
   assert.deepEqual(Buffer.from(await newModel.arrayBuffer()), await readFile(resolve(root, 'worlds/aquarium/public/models/whale-shark.glb')));
@@ -75,7 +72,7 @@ async function verifyAquariumModels(serverUrl) {
 }
 
 async function verifyDetailedModels(serverUrl) {
-  for (const world of ['entrance', 'heian', 'cosmos', 'cyberpunk', 'shibuya', 'akihabara', 'shinjuku']) {
+  for (const world of ['entrance', 'cosmos', 'cyberpunk']) {
     const modelDirectory = resolve(root, 'worlds', world, 'public/models');
     const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'detail-manifest.json'), 'utf8'));
     const prefix = world === 'entrance' ? '' : `/${world}`;

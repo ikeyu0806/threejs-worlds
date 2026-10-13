@@ -341,7 +341,6 @@ export default function App() {
           >
             Florida Museum / 形状の資料 ↗
           </a>
-          <a href="/aquarium-legacy/">旧 PELAGIC アーカイブ ↗</a>
         </div>
       </dialog>
     </main>

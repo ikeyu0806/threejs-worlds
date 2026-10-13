@@ -1,7 +1,5 @@
 # Kuroshio / Whale shark model
 
-旧13点のモデル仕様は [アーカイブ](../aquarium-legacy/MODEL_BRIEF.md) に保存しています。
-
 ## 再生成
 
 Blender 5.2.2 LTS の標準 Python と NumPy で制作しています。制作元は [blender-works](https://github.com/ikeyu0806/blender-works/tree/main/assets/creatures/kuroshio_whale_shark) です。そのリポジトリのルートで次を実行します。

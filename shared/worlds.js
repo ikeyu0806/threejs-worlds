@@ -14,32 +14,6 @@ export const worlds = [
     description: '光の少ない海で、環のある星を見る。',
     href: '/cosmos/', color: '#9aa8e8', category: 'SPACE / QUIET ORBIT',
   },
-  {
-    id: 'heian', number: '04', title: 'HEIAN', subtitle: '雅の古都',
-    description: '朝霧の庭で、都の静けさに触れる。',
-    href: '/heian/', color: '#c46a45', category: 'CAPITAL / DAWN',
-  },
 ];
 
-export const archivedWorlds = [
-  {
-    id: 'shibuya', number: '05', title: 'SCRAMBLE', subtitle: '渋谷',
-    description: '信号が変わるたび、人が街を横切る。',
-    href: '/shibuya/', color: '#e25b8a', category: 'CITY / CROSSING',
-  },
-  {
-    id: 'akihabara', number: '06', title: 'AKIBA', subtitle: '秋葉原',
-    description: '看板の谷間を、ゆっくり歩く。',
-    href: '/akihabara/', color: '#f0b429', category: 'CITY / ELECTRIC',
-  },
-  {
-    id: 'shinjuku', number: '07', title: 'SHINJUKU', subtitle: '新宿',
-    description: '塔の足元で、夜が濃くなる。',
-    href: '/shinjuku/', color: '#7eb6ff', category: 'CITY / NIGHT',
-  },
-  {
-    id: 'aquarium-legacy', number: '08', title: 'PELAGIC ARCHIVE', subtitle: '旧水族館',
-    description: 'はじまりの水族館を、3つの展示の写真で振り返る。',
-    href: '/aquarium-legacy/', color: '#76b8b4', category: 'ARCHIVE / AQUARIUM',
-  },
-];
+export const archivedWorlds = [];

@@ -21,20 +21,25 @@
 
 ```json
 {
-  "id": "heian_suzaku_gate",
+  "id": "cosmos_survey_probe",
   "published": true,
-  "title": "二層門",
-  "description": "古都で使う二層門。",
-  "alt": "二層門の3Dモデル",
-  "category": "古都",
-  "tags": ["environment", "heian"],
+  "title": "探査機",
+  "description": "宇宙で使う探査機。",
+  "alt": "探査機の3Dモデル",
+  "category": "宇宙",
+  "tags": ["environment", "cosmos"],
+  "used_in": [
+    { "project": "threejs-worlds", "world": "APHELION", "path": "/cosmos/" }
+  ],
   "sources": {
-    "glb": "output/worlds_detail_kit/exports/heian/suzaku_gate.glb",
-    "preview": "output/worlds_detail_kit/previews/heian/suzaku_gate.png",
-    "report": "output/worlds_detail_kit/reports/heian/suzaku_gate.json"
+    "glb": "output/worlds_detail_kit/exports/cosmos/survey_probe.glb",
+    "preview": "output/worlds_detail_kit/previews/cosmos/survey_probe.png",
+    "report": "output/worlds_detail_kit/reports/cosmos/survey_probe.json"
   }
 }
 ```
+
+`used_in` には、その GLB を置いているワールドを書く。`project` は利用先リポジトリ、`world` は表示名、`path` は公開 URL のパス。ワールドで使わない見本は空配列にする。
 
 `sources` は blender-works のルートからの相対パスにする。GLB はワールドへコピーした採用ファイルと同じ内容、preview は検査時の用途照明画像、report は `passed` で `source.bounds_m.dimensions` を持つものを指す。
 
@@ -54,8 +59,7 @@ cd catalog && npm test
 
 作業前に、そのワールドが何を再現するかを固定する。
 
-- 渋谷・秋葉原・新宿は、交差点や通りから見える建物の並びを確認してから置く。人物、信号、横断歩道、看板、電車など、その場所に必要なものもモデルかシーン側の配置で足す。
-- 水族館は、実在の大水槽（アクリルの大窓、ジンベエザメ、マンタ、ウミガメ）と、光の筋・魚群が主役の海の描写を参照する。
+- 水族館は、実在の大水槽（アクリルの大窓、ジンベエザメ、マンタ）と、光の筋・魚群が主役の海の描写を参照する。
 - サイバーパンクは、雨に濡れた路地、屋台、縦看板、巨大な背景ビルが同居する近年の夜の都市を参照する。
 - 遠景のシルエット、中景の看板や生物、近景の人物と小物を分ける。カメラの歩く範囲は既存の bounds に合わせる。
 
