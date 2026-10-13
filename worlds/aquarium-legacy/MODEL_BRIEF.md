@@ -1,3 +1,5 @@
+> 旧3D展示の歴史資料です。2026-10-13にモデル配信を終了し、展示ページは画像アーカイブへ移行しました。
+
 # 水族館モデルの制作・受け渡し
 
 制作の正本は `/Users/ikegayayuuki/workspace/blender-works/assets/environments/pelagic_aquarium/`。Blenderで生きもの・海底・水槽ギャラリーを制作し、検査済みのGLBだけをこのワールドの `public/models/` にコピーする。

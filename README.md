@@ -9,7 +9,7 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | ワールド | 内容 |
 | --- | --- |
 | [エントランス（ORBIT）](https://threejs-worlds.pages.dev/) | 各ワールドへつながるギャラリーです。 |
-| [水族館（PELAGIC）](https://threejs-worlds.pages.dev/aquarium/) | ジンベエザメ1頭の形状と水の光に集中した、Kuroshio大水槽です。 |
+| [水族館（PELAGIC）](https://threejs-worlds.pages.dev/aquarium/) | ジンベエザメと7種の魚・エイが泳ぐ、Kuroshio大水槽です。 |
 | [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
 | [宇宙（APHELION）](https://threejs-worlds.pages.dev/cosmos/) | 環のある惑星と星雲を眺める観測甲板です。 |
 | [古都（HEIAN）](https://threejs-worlds.pages.dev/heian/) | 朝霧のなか、朱雀門と庭の池を歩く古都です。 |
@@ -20,7 +20,7 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 
 | ワールド | 内容 |
 | --- | --- |
-| [旧水族館（PELAGIC ARCHIVE）](https://threejs-worlds.pages.dev/aquarium-legacy/) | 2026-10-11の再制作前の展示・13点のモデルを保存しています。 |
+| [旧水族館（PELAGIC ARCHIVE）](https://threejs-worlds.pages.dev/aquarium-legacy/) | 再制作前の展示を画像で保存しています。旧モデルの配信は終了しました。 |
 | [渋谷（SCRAMBLE）](https://threejs-worlds.pages.dev/shibuya/) | 夕方のスクランブル交差点です。 |
 | [秋葉原（AKIBA）](https://threejs-worlds.pages.dev/akihabara/) | 縦看板が並ぶ電気街です。 |
 | [新宿（SHINJUKU）](https://threejs-worlds.pages.dev/shinjuku/) | 夜の大通りと都庁のツインタワーです。 |
@@ -32,7 +32,7 @@ worlds/
   entrance/          # ORBIT：各ワールドの入口
   cyberpunk/         # AFTERLIGHT：雨とネオンの街
   aquarium/          # PELAGIC：ジンベエザメの大水槽
-  aquarium-legacy/   # アーカイブ：旧水族館の展示とモデル
+  aquarium-legacy/   # アーカイブ：旧水族館の展示画像
   cosmos/            # APHELION：遠い軌道の宇宙
   heian/             # HEIAN：朝霧の古都
   shibuya/           # アーカイブ SCRAMBLE：渋谷の交差点
@@ -96,6 +96,6 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 
 新しいワールドは `worlds/<ワールド名>/` に配置し、`package.json` に一意な名前と `dev`・`build`・`preview` コマンドを定義します。Vite の `base` は `/<ワールド名>/` に設定し、エントランスの一覧は `shared/worlds.js` の `worlds` に追加します。エントランスから外すワールドは同じファイルの `archivedWorlds` に移します。追加後にルートで `npm install` を実行し、更新した `package-lock.json` もコミットします。
 
-現在の水族館は、オリジナルの高精細ジンベエザメと大水槽だけに絞った Kuroshio です。[制作仕様](./worlds/aquarium/MODEL_BRIEF.md) に再生成手順と仕様を記載しています。以前の13点のGLBと展示は [旧水族館](./worlds/aquarium-legacy/README.md) に保存しています。
+現在の水族館は、オリジナルの高精細ジンベエザメと7種の魚・エイが泳ぐ Kuroshio です。[制作仕様](./worlds/aquarium/MODEL_BRIEF.md) に再生成手順と仕様を記載しています。[旧水族館](./worlds/aquarium-legacy/README.md) は画像アーカイブとして残し、13点の旧GLBの配信を終了しました。
 
 入口・古都・宇宙・九龍・渋谷・秋葉原・新宿には、Blenderで制作・検査した49点の詳細モデルを追加しています。[モデルの制作・受け渡し仕様](MODEL_BRIEF.md) に一覧、再生成、検証方法を記載しています。

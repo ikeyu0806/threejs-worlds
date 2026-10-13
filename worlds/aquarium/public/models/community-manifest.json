@@ -1,0 +1,86 @@
+{
+  "generator": "blender-works/assets/creatures/kuroshio_community/build.py",
+  "original": true,
+  "forward": "+Z",
+  "up": "+Y",
+  "models": {
+    "bentfin_devil_ray.glb": {
+      "bytes": 1036672,
+      "sha256": "d4ef994ceb4bc1d322f904921a1ea6bc51d17887ad21e7e9f537b7e154e2a69c",
+      "triangles": 33236,
+      "dimensions_m": [
+        1.7,
+        1.791511,
+        0.2193
+      ],
+      "materials": 1
+    },
+    "giant_manta.glb": {
+      "bytes": 1036628,
+      "sha256": "4e7f89bcbfc0fa0d4131008611c513b03ec2b72dbd5443ab6a3a3dd0cf88dbe5",
+      "triangles": 33236,
+      "dimensions_m": [
+        4.8,
+        4.4688,
+        0.6192
+      ],
+      "materials": 1
+    },
+    "golden_trevally.glb": {
+      "bytes": 700664,
+      "sha256": "ff3e11b8734019800c43061fee12e888f19e8c997e17a1664816da93b469b3d1",
+      "triangles": 22076,
+      "dimensions_m": [
+        0.145609,
+        0.39948,
+        0.222907
+      ],
+      "materials": 1
+    },
+    "indian_mackerel.glb": {
+      "bytes": 953544,
+      "sha256": "7fa44adcc37f7e5458500d8a9ea885ea9bae90ef1572f4a2650934bbdac721fd",
+      "triangles": 31076,
+      "dimensions_m": [
+        0.124416,
+        0.342411,
+        0.1242
+      ],
+      "materials": 1
+    },
+    "reef_manta.glb": {
+      "bytes": 1036620,
+      "sha256": "30758770466222780ace1ed9e0babfb935bb64f27953a1a0296f8a3da853f559",
+      "triangles": 33236,
+      "dimensions_m": [
+        3.4,
+        3.1654,
+        0.4386
+      ],
+      "materials": 1
+    },
+    "remora.glb": {
+      "bytes": 637216,
+      "sha256": "2a8c6204532c70922fe2802a5253edba82f298cb9599da4a5500c326ae8bd7cc",
+      "triangles": 19756,
+      "dimensions_m": [
+        0.237228,
+        0.659002,
+        0.130794
+      ],
+      "materials": 1
+    },
+    "yellowback_fusilier.glb": {
+      "bytes": 700680,
+      "sha256": "69fdddcef52a2d837c8285da84a11ae329f2bd30d4ba4d9ef93cb506e1c5c1d8",
+      "triangles": 22076,
+      "dimensions_m": [
+        0.111288,
+        0.304366,
+        0.108033
+      ],
+      "materials": 1
+    }
+  },
+  "source_commit": "ad4499ffe695001eda60f63efa97552da6ed3696"
+}

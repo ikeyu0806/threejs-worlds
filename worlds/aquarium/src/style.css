@@ -680,3 +680,36 @@ p {
     animation: none;
   }
 }
+
+.species-guide {
+  margin-block: 32px;
+}
+.species-guide h3 {
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+.species-guide ul {
+  list-style: none;
+  margin: 20px 0;
+  padding: 0;
+}
+.species-guide li {
+  padding: 13px 0;
+  border-top: 1px solid #b6dbe322;
+  display: grid;
+  gap: 5px;
+}
+.species-guide strong {
+  font-size: 14px;
+  font-weight: 500;
+}
+.species-guide i {
+  font-size: 11px;
+  color: #8cabb4;
+}
+.species-guide li span {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #afc4ca;
+}

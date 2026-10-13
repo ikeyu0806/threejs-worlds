@@ -60,13 +60,14 @@ async function start(script) {
 async function request(url) { return fetch(url, { signal: AbortSignal.timeout(10000) }); }
 
 async function verifyAquariumModels(serverUrl) {
-  const modelDirectory = resolve(root, 'worlds/aquarium-legacy/public/models');
-  const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'manifest.json'), 'utf8'));
+  const modelDirectory = resolve(root, 'worlds/aquarium/public/models');
+  const manifest = JSON.parse(await readFile(resolve(modelDirectory, 'community-manifest.json'), 'utf8'));
+  assert.equal((await request(`${serverUrl}/aquarium-legacy/models/manta.glb`)).status, 404);
   const newModel = await request(`${serverUrl}/aquarium/models/whale-shark.glb`);
   assert.equal(newModel.status, 200);
   assert.deepEqual(Buffer.from(await newModel.arrayBuffer()), await readFile(resolve(root, 'worlds/aquarium/public/models/whale-shark.glb')));
   for (const file of Object.keys(manifest.models)) {
-    const response = await request(`${serverUrl}/aquarium-legacy/models/${file}`);
+    const response = await request(`${serverUrl}/aquarium/models/${file}`);
     assert.equal(response.status, 200, file);
     assert.doesNotMatch(response.headers.get('content-type'), /html/, file);
     assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(resolve(modelDirectory, file)), file);

@@ -39,7 +39,7 @@ export const archivedWorlds = [
   },
   {
     id: 'aquarium-legacy', number: '08', title: 'PELAGIC ARCHIVE', subtitle: '旧水族館',
-    description: '2026年10月11日までの水族館。旧モデルと展示を保存。',
+    description: 'はじまりの水族館を、3つの展示の写真で振り返る。',
     href: '/aquarium-legacy/', color: '#76b8b4', category: 'ARCHIVE / AQUARIUM',
   },
 ];

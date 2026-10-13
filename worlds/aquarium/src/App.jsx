@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { species } from "./community-paths.js";
 import { createAquarium, viewpoints } from "./aquarium.js";
 
 function Icon({ name }) {
@@ -156,7 +157,7 @@ export default function App() {
         </button>
       </header>
       <div className="exhibit-index hud">
-        <span className="live-dot" /> ONE TANK. ONE ENCOUNTER.
+        <span className="live-dot" /> LIFE IN THE KUROSHIO.
         <span className="index-rule" />
         STUDY 01
       </div>
@@ -248,7 +249,7 @@ export default function App() {
         <div className="loading" role={error ? "alert" : "status"}>
           <span className="loading-mark">P</span>
           <h2>{error ? "水槽を表示できません" : "青の向こうへ。"}</h2>
-          <p>{error || "ジンベエザメを迎えています"}</p>
+          <p>{error || "海の生きものを迎えています"}</p>
           {error ? (
             <button onClick={() => window.location.reload()}>再読み込み</button>
           ) : (
@@ -296,6 +297,21 @@ export default function App() {
             <dd>矢印：見回す / Space：停止 / H：表示</dd>
           </div>
         </dl>
+        <section className="species-guide" aria-labelledby="species-title">
+          <h3 id="species-title">ジンベエザメと泳ぐ、7種</h3>
+          <p>
+            小さな魚群と、3種のエイ。同じ青の中にも、それぞれの形と泳ぎ方があります。
+          </p>
+          <ul>
+            {species.map((animal) => (
+              <li key={animal.id}>
+                <strong>{animal.name}</strong>
+                <i>{animal.scientific}</i>
+                <span>{animal.note}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
         <label className="quality-setting">
           描画品質
           <select
@@ -303,7 +319,7 @@ export default function App() {
             onChange={(event) => setQuality(event.target.value)}
           >
             <option value="high">高精細</option>
-            <option value="low">軽量（床の反射を省略）</option>
+            <option value="low">軽量（群れを少なく・反射を省略）</option>
           </select>
         </label>
         <p className="reference-note">

@@ -4,9 +4,12 @@ import { readFile } from "node:fs/promises";
 import { createHash } from "node:crypto";
 import { resolve } from "node:path";
 import { root } from "./worlds.mjs";
-import { aquariumModelFiles } from "../worlds/aquarium-legacy/src/models.js";
+import {
+  species,
+  communityPose,
+} from "../worlds/aquarium/src/community-paths.js";
 
-const directory = resolve(root, "worlds/aquarium-legacy/public/models");
+const directory = resolve(root, "worlds/aquarium/public/models");
 
 test("new whale shark has embedded textures, smooth finite geometry and a mobile-sized download", async () => {
   const current = resolve(root, "worlds/aquarium/public/models");
@@ -87,106 +90,106 @@ test("new whale shark has embedded textures, smooth finite geometry and a mobile
   assert.ok(upper[2] > 2.7 && lower[2] < -2.7, "paired broad pectoral fins");
 });
 
-test("archived aquarium models preserve their Blender export, embedded PBR and swim contracts", async () => {
+test("seven newly built species preserve finite geometry, PBR and verified exports", async () => {
   const manifest = JSON.parse(
-    await readFile(resolve(directory, "manifest.json"), "utf8"),
+    await readFile(resolve(directory, "community-manifest.json"), "utf8"),
   );
+  assert.equal(manifest.original, true);
   assert.deepEqual(
     Object.keys(manifest.models).sort(),
-    aquariumModelFiles.map((name) => `${name}.glb`).sort(),
+    species.map((animal) => `${animal.id}.glb`).sort(),
   );
-  assert.equal(manifest.forward, "+Z");
-  assert.equal(manifest.up, "+Y");
-  assert.match(manifest.source_commit, /^[0-9a-f]{40}$/);
+  let totalBytes = 0;
   for (const [file, specification] of Object.entries(manifest.models)) {
     const buffer = await readFile(resolve(directory, file));
+    totalBytes += buffer.length;
     assert.equal(
       createHash("sha256").update(buffer).digest("hex"),
       specification.sha256,
-      `${file} export changed`,
+      file,
     );
-    assert.equal(buffer.length, specification.bytes, file);
-    assert.equal(buffer.toString("ascii", 0, 4), "glTF", file);
-    assert.equal(buffer.readUInt32LE(4), 2, file);
-    assert.equal(buffer.readUInt32LE(8), buffer.length, file);
+    assert.equal(buffer.length, specification.bytes);
+    assert.equal(buffer.toString("ascii", 0, 4), "glTF");
+    assert.equal(buffer.readUInt32LE(8), buffer.length);
     const jsonLength = buffer.readUInt32LE(12);
     const gltf = JSON.parse(buffer.toString("utf8", 20, 20 + jsonLength));
-    const binary = buffer.subarray(20 + jsonLength + 8);
+    const binary = buffer.subarray(28 + jsonLength);
     assert.ok(
-      gltf.nodes.some((node) => node.extras?.asset_id === "pelagic_aquarium"),
-      file,
+      gltf.nodes.some((node) => node.extras?.asset_id === "kuroshio_community"),
     );
-    assert.ok(gltf.materials.length <= 5, file);
+    assert.equal(gltf.meshes.length, 1);
+    assert.equal(gltf.materials.length, 1);
+    assert.ok(gltf.materials[0].normalTexture);
     assert.ok(
-      gltf.buffers.every((reference) => !reference.uri),
-      file,
-    );
-    assert.ok(
-      (gltf.images ?? []).every(
-        (reference) => reference.bufferView !== undefined && !reference.uri,
+      gltf.images.every(
+        (image) => image.bufferView !== undefined && !image.uri,
       ),
-      file,
     );
-    if (file !== "moon_jelly.glb")
-      assert.ok(
-        gltf.materials.some((surface) => surface.normalTexture),
-        `${file} missing PBR normal texture`,
-      );
+    assert.ok(gltf.buffers.every((reference) => !reference.uri));
     let triangles = 0;
-    for (const surface of gltf.meshes)
-      for (const primitive of surface.primitives) {
-        assert.equal(primitive.mode ?? 4, 4, file);
-        assert.ok(
-          primitive.attributes.NORMAL !== undefined &&
-            primitive.attributes.COLOR_0 !== undefined,
-          file,
-        );
+    for (const mesh of gltf.meshes)
+      for (const primitive of mesh.primitives) {
+        assert.ok(primitive.attributes.COLOR_0 !== undefined);
+        assert.ok(primitive.attributes.TEXCOORD_0 !== undefined);
         triangles += gltf.accessors[primitive.indices].count / 3;
-        if (specification.animated)
-          assert.ok(primitive.targets?.length, `${file} missing morph targets`);
+        for (const kind of ["POSITION", "NORMAL"]) {
+          const attribute = gltf.accessors[primitive.attributes[kind]];
+          const view = gltf.bufferViews[attribute.bufferView];
+          assert.equal(attribute.componentType, 5126);
+          const stride = view.byteStride ?? 12,
+            offset = (view.byteOffset ?? 0) + (attribute.byteOffset ?? 0);
+          for (let i = 0; i < attribute.count; i++) {
+            const vector = [0, 1, 2].map((axis) =>
+              binary.readFloatLE(offset + i * stride + axis * 4),
+            );
+            assert.ok(vector.every(Number.isFinite), `${file}: ${kind}`);
+            if (kind === "NORMAL")
+              assert.ok(Math.abs(Math.hypot(...vector) - 1) < 0.01);
+          }
+        }
       }
-    assert.equal(triangles, specification.triangles, file);
-    assert.ok(triangles <= specification.maximum_triangles, file);
-    assert.equal(
-      (gltf.animations ?? []).length,
-      specification.animated ? 1 : 0,
-      file,
-    );
-    if (!specification.animated) continue;
-    const clip = gltf.animations[0];
-    assert.equal(clip.name, "swim", file);
-    const floats = (index) => {
-      const accessor = gltf.accessors[index],
-        view = gltf.bufferViews[accessor.bufferView];
-      assert.equal(accessor.type, "SCALAR", file);
-      assert.equal(accessor.componentType, 5126, file);
-      const offset = (view.byteOffset ?? 0) + (accessor.byteOffset ?? 0);
-      return Array.from({ length: accessor.count }, (_, i) =>
-        binary.readFloatLE(offset + i * 4),
+    assert.equal(triangles, specification.triangles);
+    assert.ok(triangles < 50000);
+    assert.ok(buffer.length < 3 * 1024 * 1024);
+  }
+  assert.ok(totalBytes < 7 * 1024 * 1024, "community download budget");
+});
+
+test("community stays submerged, swims forward and keeps every species in light mode", () => {
+  for (const animal of species) {
+    assert.ok(animal.low > 0 && animal.low <= animal.count);
+    for (let index = 0; index < animal.count; index++)
+      for (let time = 0; time <= 600; time += 2) {
+        const pose = communityPose(animal.id, index, time),
+          next = communityPose(animal.id, index, time + 0.01);
+        assert.ok(Object.values(pose).every(Number.isFinite));
+        assert.ok(pose.y > 0.8 && pose.y < 8.5, animal.id);
+        assert.ok(pose.z < -3 && pose.z > -26, animal.id);
+        assert.ok(Math.abs(pose.x) < 15, animal.id);
+        const dx = next.x - pose.x,
+          dz = next.z - pose.z;
+        assert.ok(
+          dx * Math.sin(pose.yaw) + dz * Math.cos(pose.yaw) > 0,
+          "facing the direction of travel",
+        );
+      }
+  }
+  for (const animal of species.filter(
+    (animal) => animal.kind === "fish" && animal.id !== "remora",
+  )) {
+    for (let time = 0; time < 180; time += 15) {
+      const poses = Array.from({ length: animal.count }, (_, index) =>
+        communityPose(animal.id, index, time),
       );
-    };
-    for (const channel of clip.channels) {
-      assert.equal(
-        channel.target.path,
-        "weights",
-        `${file} must not contain root motion`,
-      );
-      const sampler = clip.samplers[channel.sampler],
-        times = floats(sampler.input),
-        weights = floats(sampler.output);
-      assert.ok(
-        Math.abs(times.at(-1) - times[0] - 4) < 1e-5,
-        `${file} swim duration`,
-      );
-      assert.ok(
-        Math.abs(weights[0] - weights.at(-1)) < 1e-5,
-        `${file} loop seam`,
-      );
-      assert.ok(
-        weights.every(Number.isFinite) &&
-          Math.max(...weights) - Math.min(...weights) > 1.8,
-        `${file} morph must move`,
-      );
+      for (let i = 0; i < poses.length; i++)
+        for (let j = 0; j < i; j++) {
+          const a = poses[i],
+            b = poses[j];
+          assert.ok(
+            Math.hypot(a.x - b.x, a.y - b.y, a.z - b.z) > animal.size * 0.5,
+            `${animal.id}: fish crowding`,
+          );
+        }
     }
   }
 });

@@ -3,6 +3,8 @@ import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 import { Reflector } from "three/addons/objects/Reflector.js";
+import { waterMaterial } from "./water.js";
+import { createCommunity } from "./community.js";
 import { disposeModelTree } from "../../../shared/models.js";
 
 export const viewpoints = [
@@ -29,63 +31,6 @@ export const viewpoints = [
   },
 ];
 
-// Integrate only the submerged sightline, keeping the viewing room free of fog.
-function waterMaterial(material, time, swimming = false) {
-  material.onBeforeCompile = (shader) => {
-    shader.uniforms.waterTime = time;
-    shader.vertexShader = `uniform float waterTime; varying vec3 vWaterWorld;\n${shader.vertexShader}`;
-    if (swimming) {
-      // All anatomical parts share baked local coordinates. Lateral movement and
-      // the normal's rotation grow toward the tail, leaving the head almost still.
-      shader.vertexShader = shader.vertexShader
-        .replace(
-          "#include <beginnormal_vertex>",
-          `
-        #include <beginnormal_vertex>
-        float amountN = clamp((position.x+2.4)/6.6,0.,1.);
-        float phaseN = waterTime*1.28-position.x*.78;
-        float slope = .62*(2.*amountN/6.6*sin(phaseN)-amountN*amountN*.78*cos(phaseN));
-        float angleN = atan(slope);
-        objectNormal.xz = mat2(cos(angleN),sin(angleN),-sin(angleN),cos(angleN))*objectNormal.xz;
-      `,
-        )
-        .replace(
-          "#include <begin_vertex>",
-          `
-        #include <begin_vertex>
-        float amount = clamp((position.x+2.4)/6.6,0.,1.);
-        transformed.z += sin(waterTime*1.28-position.x*.78)*amount*amount*.62;
-      `,
-        );
-    }
-    shader.vertexShader = shader.vertexShader.replace(
-      "#include <project_vertex>",
-      `
-      #include <project_vertex>
-      vWaterWorld = (modelMatrix*vec4(transformed,1.)).xyz;
-    `,
-    );
-    shader.fragmentShader = `uniform float waterTime; varying vec3 vWaterWorld;\n${shader.fragmentShader}`;
-    shader.fragmentShader = shader.fragmentShader.replace(
-      "#include <opaque_fragment>",
-      `
-      float submergedDistance = length(vWaterWorld-cameraPosition);
-      float entry = clamp(cameraPosition.z / max(.001, cameraPosition.z-vWaterWorld.z),0.,1.);
-      submergedDistance *= 1.-entry;
-      vec3 transmittance = exp(-vec3(.095,.028,.019)*submergedDistance);
-      outgoingLight = outgoingLight*transmittance + vec3(.009,.105,.16)*(1.-transmittance);
-      vec2 c = vWaterWorld.xz*.95;
-      float a = sin(c.x+sin(c.y*1.31+waterTime*.19)*1.7+waterTime*.12);
-      float b = sin(c.y+sin(c.x*.93-waterTime*.15)*1.9);
-      float caustic = pow(max(0.,1.-abs(a*.5+b*.5)),18.);
-      outgoingLight += diffuseColor.rgb*caustic*.15*max(0.,normal.y);
-      #include <opaque_fragment>
-    `,
-    );
-  };
-  material.customProgramCacheKey = () =>
-    swimming ? "kuroshio-swim-2" : "kuroshio-water-2";
-}
 function box(scene, size, position, material) {
   const mesh = new THREE.Mesh(new THREE.BoxGeometry(...size), material);
   mesh.position.set(...position);
@@ -115,7 +60,7 @@ export async function createAquarium(
   canvas.setAttribute("role", "img");
   canvas.setAttribute(
     "aria-label",
-    "暗い観覧室から見上げる青い大水槽。白い斑点のあるジンベエザメがゆっくり回遊しています。ドラッグで見回し、スクロールで拡大できます。",
+    "暗い観覧室から見上げる青い大水槽。白い斑点のあるジンベエザメと、7種の魚・エイが回遊しています。ドラッグで見回し、スクロールで拡大できます。",
   );
   const camera = new THREE.PerspectiveCamera(43, 1, 0.1, 100);
   const controls = new OrbitControls(camera, canvas);
@@ -354,11 +299,12 @@ export async function createAquarium(
       "varying float fade;void main(){float d=length(gl_PointCoord-.5);gl_FragColor=vec4(.55,.8,.83,(1.-smoothstep(.12,.5,d))*.16*fade);}",
   });
   scene.add(new THREE.Points(dustGeo, dustMat));
-  let shark;
+  let shark, community;
   try {
     const gltf = await new GLTFLoader().loadAsync(
       `${import.meta.env.BASE_URL}models/whale-shark.glb`,
-      (event) => onProgress?.(event.total ? event.loaded / event.total : 0),
+      (event) =>
+        onProgress?.(event.total ? (event.loaded / event.total) * 0.45 : 0),
     );
     shark = gltf.scene;
     shark.traverse((obj) => {
@@ -377,10 +323,13 @@ export async function createAquarium(
       }
     });
     scene.add(shark);
+    community = await createCommunity(scene, clock, (value) =>
+      onProgress?.(0.45 + value * 0.55),
+    );
   } catch (error) {
     dispose();
     throw new Error(
-      "ジンベエザメを読み込めませんでした。再読み込みしてください。",
+      "ジンベエザメと群れを読み込めませんでした。再読み込みしてください。",
       { cause: error },
     );
   }
@@ -414,6 +363,7 @@ export async function createAquarium(
     shadow.position.z = z;
     shadow.rotation.z = shark.rotation.y + Math.PI / 2;
     clock.value = time;
+    community.update(time);
   }
   function resize() {
     const { width, height } = container.getBoundingClientRect();
@@ -541,6 +491,8 @@ export async function createAquarium(
         value === "low" ? 1 : Math.min(devicePixelRatio, 1.75),
       );
       reflected.visible = value !== "low";
+      community.quality(value);
+      community.update(time);
       resize();
     },
     async capture() {
