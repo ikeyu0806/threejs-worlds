@@ -76,7 +76,7 @@ export async function createGallery(container, { onHover, onError }) {
   scene.add(modelCopy(atrium));
 
   const portalShader = world => new THREE.ShaderMaterial({
-    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2 }[world.id] ?? 1 }, focus: { value: 0 } },
+    uniforms: { time: { value: 0 }, kind: { value: { cyberpunk: 0, aquarium: 1, cosmos: 2, campfire: 3, lakeside: 4, garden: 5 }[world.id] ?? 1 }, focus: { value: 0 } },
     vertexShader: 'varying vec2 vUv; varying vec3 vPosition; void main(){vUv=uv; vPosition=position; gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.);}',
     fragmentShader: `varying vec2 vUv; varying vec3 vPosition; uniform float time; uniform float kind; uniform float focus;
       float hash(float p){return fract(sin(p*127.1)*43758.5453);}
@@ -117,6 +117,22 @@ export async function createGallery(container, { onHover, onError }) {
           float ring=smoothstep(.018,.0,abs(length(pc*vec2(.9,2.5))-.24));
           c+=ring*vec3(.75,.68,.5)*(1.-body);
           c+=vec3(.32,.24,.52)*exp(-length((uv-vec2(.78,.66))*vec2(3.,2.2))*2.);
+        }else if(kind<3.5){
+          c=mix(vec3(.10,.07,.06),vec3(.28,.14,.08),uv.y);
+          float flame=exp(-abs(uv.x-.5)*11.)*(1.-smoothstep(.18,.82,uv.y));
+          flame*=.8+.2*sin(uv.y*24.+time*2.);
+          c+=flame*vec3(1.,.38,.07);
+          c+=vec3(.32,.12,.02)*exp(-length((uv-vec2(.5,.2))*vec2(3.,6.))*2.);
+        }else if(kind<4.5){
+          c=mix(vec3(.018,.09,.13),vec3(.11,.2,.26),uv.y);
+          float horizon=smoothstep(.42,.44,uv.y);
+          c=mix(c,vec3(.035,.14,.19)+.02*sin(uv.y*130.+time),1.-horizon);
+          c+=vec3(.4,.55,.49)*exp(-length((uv-vec2(.75,.73))*vec2(7.,5.))*4.);
+        }else{
+          c=mix(vec3(.025,.03,.10),vec3(.18,.14,.29),uv.y);
+          float petal=exp(-length((uv-vec2(.45+.08*sin(time*.2),.52))*vec2(6.,4.))*3.);
+          c+=petal*vec3(.45,.29,.52);
+          c+=vec3(.08,.23,.19)*exp(-length((uv-vec2(.72,.17))*vec2(5.,4.))*2.);
         }
         c*=1.+focus*.3; gl_FragColor=vec4(c,1.);
         #include <tonemapping_fragment>

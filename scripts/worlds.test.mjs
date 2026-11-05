@@ -9,7 +9,7 @@ import { root } from './worlds.mjs';
 import { archivedWorlds, worlds } from '../shared/worlds.js';
 
 test('archived worlds stay off the entrance', () => {
-  assert.deepEqual(worlds.map(world => world.id), ['cyberpunk', 'aquarium', 'cosmos']);
+  assert.deepEqual(worlds.map(world => world.id), ['cyberpunk', 'aquarium', 'cosmos', 'campfire', 'lakeside', 'garden']);
   assert.deepEqual(archivedWorlds, []);
 });
 
@@ -18,6 +18,9 @@ const routes = [
   { path: '/aquarium/', title: 'PELAGIC', directory: 'aquarium' },
   { path: '/cyberpunk/', title: 'AFTERLIGHT', directory: 'cyberpunk' },
   { path: '/cosmos/', title: 'APHELION', directory: 'cosmos' },
+  { path: '/campfire/', title: 'Campfire', directory: 'campfire' },
+  { path: '/lakeside/', title: 'Lakeside', directory: 'lakeside' },
+  { path: '/garden/', title: 'Nocturnal Garden', directory: 'garden' },
 ];
 
 const removedPaths = ['/aquarium-legacy/', '/heian/', '/shibuya/', '/akihabara/', '/shinjuku/'];
@@ -85,6 +88,24 @@ async function verifyDetailedModels(serverUrl) {
   }
 }
 
+async function verifyMigratedWorlds(serverUrl) {
+  for (const [world, slug] of [
+    ['campfire', 'hearth-fire'], ['lakeside', 'lakeside-glow'], ['garden', 'nocturnal-garden'],
+  ]) {
+    const directory = resolve(root, 'worlds', world, 'public');
+    const files = await Promise.all(['models', 'previews'].map(async folder => {
+      const { readdir } = await import('node:fs/promises');
+      return { folder, names: (await readdir(resolve(directory, folder))).filter(name => name.startsWith(slug + '-')) };
+    }));
+    for (const { folder, names } of files) {
+      assert.equal(names.length, 1, `${world}/${folder}`);
+      const response = await request(`${serverUrl}/${world}/${folder}/${names[0]}`);
+      assert.equal(response.status, 200, `${world}/${folder}`);
+      assert.deepEqual(Buffer.from(await response.arrayBuffer()), await readFile(resolve(directory, folder, names[0])));
+    }
+  }
+}
+
 test('development routes serve the correct world, modules and public assets', async context => {
   const server = await start('dev.mjs'); context.after(() => server.close());
   for (const route of routes) {
@@ -111,6 +132,7 @@ test('development routes serve the correct world, modules and public assets', as
   assert.equal((await request(server.url + '/aquarium/unknown-file.js')).status, 404);
   await verifyAquariumModels(server.url);
   await verifyDetailedModels(server.url);
+  await verifyMigratedWorlds(server.url);
 });
 
 test('assembled production site serves every entry and its own bundled assets', async context => {
@@ -133,4 +155,5 @@ test('assembled production site serves every entry and its own bundled assets', 
   assert.equal((await request(server.url + '/unknown-world/')).status, 404);
   await verifyAquariumModels(server.url);
   await verifyDetailedModels(server.url);
+  await verifyMigratedWorlds(server.url);
 });

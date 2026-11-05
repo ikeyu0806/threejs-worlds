@@ -1,6 +1,6 @@
 # Three.js Worlds
 
-Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から [cyberpunk](./worlds/cyberpunk/README.md)、[水族館](./worlds/aquarium/README.md)、[宇宙](./worlds/cosmos/README.md) へ移動できます。
+Three.js のワールドを、`worlds/` 配下の独立したプロジェクトとして管理します。[エントランス](./worlds/entrance/README.md) から各空間へ移動できます。焚き火・湖畔・夜の花園は、映像作品カタログからこちらへ移しました。
 
 ## 公開ワールド
 
@@ -12,6 +12,9 @@ Three.js のワールドを、`worlds/` 配下の独立したプロジェクト�
 | [水族館（PELAGIC）](https://threejs-worlds.pages.dev/aquarium/) | ジンベエザメと7種の魚・エイが泳ぐ、Kuroshio大水槽です。 |
 | [サイバーパンク（AFTERLIGHT）](https://threejs-worlds.pages.dev/cyberpunk/) | 雨とネオンに包まれた街です。 |
 | [宇宙（APHELION）](https://threejs-worlds.pages.dev/cosmos/) | 環のある惑星と星雲を眺める観測甲板です。 |
+| [焚き火（CAMPFIRE）](https://threejs-worlds.pages.dev/campfire/) | 炎と火の粉を好きな角度から眺める空間です。 |
+| [湖畔（LAKESIDE）](https://threejs-worlds.pages.dev/lakeside/) | 月明かりの湖と蛍の光を見渡す空間です。 |
+| [夜の花園（NOCTURNAL GARDEN）](https://threejs-worlds.pages.dev/garden/) | 絵画の展示室を見渡し、作品へ近づけます。 |
 
 ## 構成
 
@@ -21,6 +24,9 @@ worlds/
   cyberpunk/         # AFTERLIGHT：雨とネオンの街
   aquarium/          # PELAGIC：ジンベエザメの大水槽
   cosmos/            # APHELION：遠い軌道の宇宙
+  campfire/          # CAMPFIRE：焚き火
+  lakeside/          # LAKESIDE：湖畔
+  garden/            # NOCTURNAL GARDEN：没入型絵画
 shared/              # ワールド一覧・描画・操作の共通処理
 scripts/             # まとめて起動・ビルド結果の集約
 package.json
@@ -49,6 +55,9 @@ npm test                    # ビルド後に各ワールドの配信を確認�
 | cyberpunk | `/cyberpunk/` |
 | 水族館 | `/aquarium/` |
 | 宇宙 | `/cosmos/` |
+| 焚き火 | `/campfire/` |
+| 湖畔 | `/lakeside/` |
+| 夜の花園 | `/garden/` |
 
 各ワールドの `dist/` に加え、ルートの `dist/` にサイト全体を集約します。公開する場合はルートの `dist/` をサイトのルートに配置してください。
 
