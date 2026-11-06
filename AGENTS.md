@@ -20,4 +20,5 @@ Three.js で歩くワールドを、`worlds/` 配下の独立したプロジェ�
 
 - 依頼と無関係な未コミット変更を、commit や整形に混ぜない。
 - threejs-worlds の配置と blender-works のカタログ掲載は commit を分ける。
-- `main` への push は、GitHub Actions のビルドとテストの成功後に Cloudflare Pages の本番を更新する。ユーザーが push を依頼したときだけ行う。
+- 依頼された作業は、検証と差分確認を終えた論理単位ごとに commit し、そのまま設定済みのリモートへ push する。commit・push・既存の公開処理について毎回確認を求めない。ユーザーがその依頼で「pushしない」「ローカルのみ」などと指定した場合は従う。
+- `main` への push 後は GitHub Actions のビルド・テストと Cloudflare Pages の本番反映を確認する。複数PJの移行では移行先の公開を確認してから旧URLの転送を公開する。失敗は原因を調べ、無関係な変更の追加やforce pushで回避しない。

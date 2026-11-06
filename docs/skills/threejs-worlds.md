@@ -53,7 +53,7 @@ cd catalog && npm test
 
 掲載処理は、合格した report とファイルがあるときだけ `catalog/public/models/`、`catalog/public/previews/`、`catalog.json` を更新する。プレビューは長辺 640px の AVIF で、1枚 200KB 以下。GLB は 1ファイル 25MiB 以下。失敗したときは、既に掲載済みのカタログを置き換えない。
 
-`https://blender-works.pages.dev/` への再公開は、ユーザーがデプロイを依頼したときだけ行う。`catalog/` で `npm test` と `npm run build` のあと、`npx wrangler pages deploy dist --project-name blender-works --branch main` を実行する。
+カタログ更新を含む依頼は、検証後に blender-works 側を別commitにしてpushし、既存CIによる `https://blender-works.pages.dev/` の再公開まで確認する。手元からの公開が必要なら、`catalog/` で `npm test` と `npm run build` のあと、`npx wrangler pages deploy dist --project-name blender-works --branch main` を実行する。依頼ごとの追加確認は不要で、ユーザーが公開しないと指定した場合だけ省く。
 
 ## 精度
 
@@ -67,4 +67,4 @@ cd catalog && npm test
 
 ## 作業単位
 
-基盤、モデルの取り込み、ワールドごとの配置、カタログ掲載を分け、各単位で表示を確認してから commit する。threejs-worlds の `main` へ push すると GitHub Actions がビルドとテストを実行し、成功後に Cloudflare Pages が `npm run build` の `dist/` を公開する。
+基盤、モデルの取り込み、ワールドごとの配置、カタログ掲載を分け、各単位で表示と関連テストを確認してから commit し、そのままpushする。Git運用の正本は [AGENTS.md](../../AGENTS.md)。threejs-worlds の `main` へ push すると GitHub Actions がビルドとテストを実行し、成功後に Cloudflare Pages が `npm run build` の `dist/` を公開する。CIと公開URLの反映を確認して完了とする。
